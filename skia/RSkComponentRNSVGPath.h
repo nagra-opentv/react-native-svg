@@ -29,11 +29,12 @@ class RSkComponentRNSVGPath final : public RSkComponent,public RSkSVGShape{
     void OnPaint(SkCanvas *canvas) override {};
 
     void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
-    void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,
-                SkPathFillType) const override;
+    void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const override;
+
   private:
     sk_sp<RSkSVGNode> selfNode;
-    mutable SkPath fPath; // mutated in onDraw(), to apply inherited fill types.
+    mutable SkPath path_; // mutated in onDraw(), to apply inherited fill types.
+
     typedef RSkSVGShape INHERITED;
 };
 

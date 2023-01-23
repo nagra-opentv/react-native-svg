@@ -1,8 +1,18 @@
 
-#include "RSkSVGContainer.h"
+/*
+ * Copyright (C) 1994-present OpenTV, Inc. and Nagravision S.A.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 #include "include/core/SkPath.h"
 #include "include/pathops/SkPathOps.h"
+
+#include "RSkSVGContainer.h"
+#include "ReactSkia/RSkThirdPartyFabricComponentsProvider.h"
+
+
 #include "ReactSkia/utils/RnsUtils.h"
 
 namespace facebook {
@@ -11,50 +21,38 @@ namespace react {
 
 RSkSVGContainer::RSkSVGContainer(SkSVGTag t) : INHERITED(t) { }
 
-void RSkSVGContainer::appendChild(sk_sp<RSkSVGNode> node) {
-    
-     if(!node) return;
+void RSkSVGContainer::appendChild(std::shared_ptr<RSkComponent> childComponent) {
 
-    if(!node->nodeName.empty())
-      fIDMapper.insert(std::pair<std::string, sk_sp<RSkSVGNode>>(node->nodeName,node));
-     printf("\n @@@@@@@@@@@ tag [%d] of type container ::[%p]@@@@@@@@\n ",node->tag(),(void *)dynamic_cast<RSkSVGContainer *>(node.get()));
-
-     if(dynamic_cast<RSkSVGContainer *>(node.get())) {
-       dynamic_cast<RSkSVGContainer *>(node.get())->mergeWithParentMap(fIDMapper);
+    if(RSkThirdPartyFabricComponentsProvider(childComponent->getComponentData().componentName)) {
+      RNS_LOG_INFO("Child Node Name : "<<childComponent->getComponentData().componentName);
+     auto node=RSkSVGNode::getRSkSVGNodeForComponetWithName(childComponent);
+     if(node) {
+       RNS_LOG_INFO("Child Node type  : "<<(int)node->tag());
+       if(!node->nodeName.empty()) {
+         RNS_LOG_INFO("Child Node has ID : "<<node->nodeName);
+         IDMapper.set(SkString(node->nodeName),node);
+       }
+       if(dynamic_cast<RSkSVGContainer *>(node.get())) {
+          auto mergeFn= [&](SkString keyName,sk_sp<SkSVGNode> *value){
+            RNS_LOG_ERROR("  MERGING child Defs with It's Parent" );
+            IDMapper.set(keyName,*value);
+          };
+          dynamic_cast<RSkSVGContainer *>(node.get())->IDMapper.foreach(mergeFn);
+       }
+       childrenContainer.push_back(std::move(node));
      }
-      node->setParentNode(sk_sp<RSkSVGNode>(this));
-    
-    childrenContainer.push_back(std::move(node));
+    }
 }
 
- sk_sp<RSkSVGNode> RSkSVGContainer::findNodeById(const char* id) {
-    std::string idStr(id);
-         printf("\n $$$$$$$ Parents[%d]. Map count ;[%lu]$$$$$$$$\n",static_cast<RSkSVGNode *>(this)->tag(),fIDMapper.size());
-
-     RSkSVGIDMapper::iterator it= fIDMapper.find(idStr);
-    return (it != fIDMapper.end() ? it->second: nullptr);
- }
-
- void RSkSVGContainer::mergeWithParentMap(RSkSVGIDMapper &ParentMap) {
-     printf("\n $$$$$$$ Parents[%d]. Map count ;[%lu]$$$$$$$$\n",static_cast<RSkSVGNode *>(this)->tag(),ParentMap.size());
-     RSkSVGIDMapper::iterator it=fIDMapper.begin();
-        while( it != fIDMapper.end()) {
-            printf("\n Parents[%d] name [%s] \n",(int)it->second->tag(),it->second->nodeName.c_str());
-           if(!(it->first.empty())) {
-             ParentMap.insert(std::pair<std::string, sk_sp<RSkSVGNode>>(it->second->nodeName,it->second));
-            ++it;
-           } 
-       }
-     printf("\n $$$$$$$ After insertionParents[%d]. Map count ;[%lu]$$$$$$$$\n",static_cast<RSkSVGNode *>(this)->tag(),ParentMap.size());
-
- }
 
 bool RSkSVGContainer::hasChildren() const {
     return !childrenContainer.empty();
 }
 
 void RSkSVGContainer::onRender(const SkSVGRenderContext& ctx) const {
+     RNS_LOG_INFO("---Render Childern---");
     for (int i = 0; i < childrenContainer.count(); ++i) {
+        RNS_LOG_INFO(" Child Tag : "<<(int)childrenContainer[i]->tag());
         childrenContainer[i]->render(ctx);
     }
 }
@@ -71,6 +69,16 @@ SkPath RSkSVGContainer::onAsPath(const SkSVGRenderContext& ctx) const {
 
     this->mapToParent(&path);
     return path;
+}
+
+void RSkSVGContainer::printContainiersNodeInfo() {
+    for (int i = 0; i < childrenContainer.count(); ++i) {
+        RNS_LOG_INFO(" Child Tag : "<<(int)childrenContainer[i]->tag());
+        if(dynamic_cast<RSkSVGContainer *>(childrenContainer[i].get())) {
+          RNS_LOG_INFO("Is Child Node a container : "<<(void *)dynamic_cast<RSkSVGContainer *>(childrenContainer[i].get()));
+          dynamic_cast<RSkSVGContainer *>(childrenContainer[i].get())->printContainiersNodeInfo();
+       }
+    }
 }
 
 } // namespace react

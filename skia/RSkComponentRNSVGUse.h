@@ -19,8 +19,11 @@ class RSkComponentRNSVGUse: public RSkComponent,public RSkSVGNode {
 
     RnsShell::LayerInvalidateMask updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) override;
     void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override;
-    void appendChild(sk_sp<RSkSVGNode>) override;
+
+    void appendChild(std::shared_ptr<RSkComponent> newChildComponent) override;
+
     sk_sp<RSkSVGNode> getComponentNode(){ return selfNode;}
+
   protected:
     void OnPaint(SkCanvas *canvas) override{};
     void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
@@ -29,10 +32,12 @@ class RSkComponentRNSVGUse: public RSkComponent,public RSkSVGNode {
     SkPath onAsPath(const SkSVGRenderContext&) const override;
 
 private:
+
     sk_sp<RSkSVGNode> selfNode;
-    SkSVGStringType    fHref;
-    SkSVGLength        fX = SkSVGLength(0);
-    SkSVGLength        fY = SkSVGLength(0);
+
+    SkSVGStringType    href_;
+    SkSVGLength        x_ = SkSVGLength(0);
+    SkSVGLength        y_ = SkSVGLength(0);
 
     typedef RSkSVGNode INHERITED;
 };

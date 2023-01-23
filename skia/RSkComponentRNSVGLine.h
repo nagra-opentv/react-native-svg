@@ -16,10 +16,10 @@ namespace react {
 
 using namespace std;
 
-class RSkComponentRNSVGCircle final : public RSkComponent,public RSkSVGShape{
+class RSkComponentRNSVGLine final : public RSkComponent,public RSkSVGShape{
  public:
-  RSkComponentRNSVGCircle(const ShadowView &shadowView);
-  ~RSkComponentRNSVGCircle() = default;
+  RSkComponentRNSVGLine(const ShadowView &shadowView);
+  ~RSkComponentRNSVGLine() = default;
   RnsShell::LayerInvalidateMask updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) override;
   void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override;
 
@@ -27,15 +27,16 @@ class RSkComponentRNSVGCircle final : public RSkComponent,public RSkSVGShape{
 
  protected:
   void OnPaint(SkCanvas *canvas) override{};
-    void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const override;
-    void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
+  void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const override;
+  void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
 
  private:
     sk_sp<RSkSVGNode> selfNode;
 
-    SkSVGLength cx_ = SkSVGLength(0);
-    SkSVGLength cy_ = SkSVGLength(0);
-    SkSVGLength r_  = SkSVGLength(0);
+    SkSVGLength x1 = SkSVGLength(0);
+    SkSVGLength y1 = SkSVGLength(0);
+    SkSVGLength x2 = SkSVGLength(0);
+    SkSVGLength y2 = SkSVGLength(0);
 
     typedef RSkSVGShape INHERITED;
 

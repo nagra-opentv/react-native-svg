@@ -26,7 +26,6 @@ class RSkComponentRNSVGDefs: public RSkComponent,public RSkSVGHiddenContainer {
 
   private:
     sk_sp<RSkSVGNode> selfNode;
-
     typedef RSkSVGHiddenContainer INHERITED;
 };
 

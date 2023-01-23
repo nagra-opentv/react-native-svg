@@ -23,13 +23,12 @@ class RSkComponentRNSVGGroup final : public RSkComponent,public RSkSVGContainer{
 
   RnsShell::LayerInvalidateMask updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) override;
   void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index)override;
- sk_sp<RSkSVGNode> getComponentNode(){ return selfNode;}
+  sk_sp<RSkSVGNode> getComponentNode(){ return selfNode;}
 
  protected:
   void OnPaint(SkCanvas *canvas) override{ };
 
  private:
-
   sk_sp<RSkSVGNode> selfNode;
   typedef RSkSVGContainer INHERITED;
 };

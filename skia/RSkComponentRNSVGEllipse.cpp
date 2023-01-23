@@ -5,22 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <string>
 
+#include "include/core/SkCanvas.h"
 #include "include/core/SkPaint.h"
-
-#include "cxxreact/ModuleRegistry.h"
 
 #include "react/renderer/components/rnsvg/RNSVGProps.h"
 
 #include "RSkComponentRNSVGEllipse.h"
-
-
-
-#include "experimental/svg/model/SkSVGRenderContext.h"
-#include "experimental/svg/model/SkSVGValue.h"
-#include "include/core/SkCanvas.h"
-
 #include "RSkSVGPropsParserUtil.h"
 
 namespace facebook {
@@ -29,7 +20,7 @@ namespace react {
 RSkComponentRNSVGEllipse::RSkComponentRNSVGEllipse(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
     INHERITED(SkSVGTag::kEllipse) {
-      selfNode=sk_sp<RSkSVGNode>(this);
+  selfNode=sk_sp<RSkSVGNode>(this);
 }
 
 void RSkComponentRNSVGEllipse::mountChildComponent(
@@ -50,11 +41,13 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::updateComponentProps(co
   RNS_LOG_INFO(" RX: "<<newRNSVGEllipseProps.rx);
   RNS_LOG_INFO(" RY: "<<newRNSVGEllipseProps.ry);
 
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kCx,newRNSVGEllipseProps.cx.c_str());
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kCy,newRNSVGEllipseProps.cy.c_str());
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kRx,newRNSVGEllipseProps.rx.c_str());
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kRy,newRNSVGEllipseProps.ry.c_str());
- updateCommonNodeProps(newRNSVGEllipseProps,selfNode);
+  setLengthAttribute(SkSVGAttribute::kCx,newRNSVGEllipseProps.cx.c_str());
+  setLengthAttribute(SkSVGAttribute::kCy,newRNSVGEllipseProps.cy.c_str());
+  setLengthAttribute(SkSVGAttribute::kRx,newRNSVGEllipseProps.rx.c_str());
+  setLengthAttribute(SkSVGAttribute::kRy,newRNSVGEllipseProps.ry.c_str());
+
+  updateCommonNodeProps(newRNSVGEllipseProps,selfNode);
+
   return RnsShell::LayerInvalidateNone;
 }
 
@@ -63,22 +56,22 @@ void RSkComponentRNSVGEllipse::onSetAttribute(SkSVGAttribute attr, const SkSVGVa
     switch (attr) {
     case SkSVGAttribute::kCx:
         if (const auto* cx = v.as<SkSVGLengthValue>()) {
-            fCx =*cx;
+            cx_ =*cx;
         }
         break;
     case SkSVGAttribute::kCy:
         if (const auto* cy = v.as<SkSVGLengthValue>()) {
-             fCy =*cy;
+             cy_ =*cy;
         }
         break;
     case SkSVGAttribute::kRx:
         if (const auto* rx = v.as<SkSVGLengthValue>()) {
-            fRx =*rx;
+            rx_ =*rx;
         }
         break;
     case SkSVGAttribute::kRy:
         if (const auto* ry = v.as<SkSVGLengthValue>()) {
-            fRy =*ry;
+            ry_ =*ry;
         }
         break;
     default:
@@ -86,20 +79,17 @@ void RSkComponentRNSVGEllipse::onSetAttribute(SkSVGAttribute attr, const SkSVGVa
     }
 }
 
-SkRect RSkComponentRNSVGEllipse::resolve(const SkSVGLengthContext& lctx) const {
-    const auto cx = lctx.resolve(fCx, SkSVGLengthContext::LengthType::kHorizontal);
-    const auto cy = lctx.resolve(fCy, SkSVGLengthContext::LengthType::kVertical);
-    const auto rx = lctx.resolve(fRx, SkSVGLengthContext::LengthType::kHorizontal);
-    const auto ry = lctx.resolve(fRy, SkSVGLengthContext::LengthType::kVertical);
-
-    return (rx > 0 && ry > 0)
+void RSkComponentRNSVGEllipse::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,const SkPaint& paint, SkPathFillType) const {
+    const auto cx = lctx.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
+    const auto cy = lctx.resolve(cy_, SkSVGLengthContext::LengthType::kVertical);
+    const auto rx = lctx.resolve(rx_, SkSVGLengthContext::LengthType::kHorizontal);
+    const auto ry = lctx.resolve(ry_, SkSVGLengthContext::LengthType::kVertical);
+    
+    SkRect rect =(rx > 0 && ry > 0)
         ? SkRect::MakeXYWH(cx - rx, cy - ry, rx * 2, ry * 2)
         : SkRect::MakeEmpty();
-}
-
-void RSkComponentRNSVGEllipse::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,
-                          const SkPaint& paint, SkPathFillType) const {
-    canvas->drawOval(this->resolve(lctx), paint);
+    
+    canvas->drawOval(rect, paint);
 }
 
 } // namespace react

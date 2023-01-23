@@ -6,21 +6,12 @@
  */
 
 
+#include "include/core/SkCanvas.h"
 #include "include/core/SkPaint.h"
 
-#include "cxxreact/ModuleRegistry.h"
-
 #include "react/renderer/components/rnsvg/RNSVGProps.h"
-#include "rns_shell/compositor/layers/PictureLayer.h"
-
-#include "include/utils/SkParsePath.h"
 
 #include "RSkComponentRNSVGPath.h"
-
-#include "experimental/svg/model/SkSVGRenderContext.h"
-#include "experimental/svg/model/SkSVGValue.h"
-#include "include/core/SkCanvas.h"
-
 #include "RSkSVGPropsParserUtil.h"
 
 namespace facebook {
@@ -28,10 +19,9 @@ namespace react {
 
 RSkComponentRNSVGPath::RSkComponentRNSVGPath(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-      INHERITED(SkSVGTag::kPath)
-       {
-       selfNode=sk_sp<RSkSVGNode>(this);
-  }
+      INHERITED(SkSVGTag::kPath)  {
+  selfNode=sk_sp<RSkSVGNode>(this);
+}
 
 void RSkComponentRNSVGPath::mountChildComponent(
     std::shared_ptr<RSkComponent> newChildComponent,
@@ -44,14 +34,11 @@ RnsShell::LayerInvalidateMask RSkComponentRNSVGPath::updateComponentProps(
     bool forceUpdate) {
   RnsShell::LayerInvalidateMask invalidateMask = RnsShell::LayerInvalidateNone;
 
-  auto component = getComponentData();
+  auto const &newRNSVGPathProps = *std::static_pointer_cast<RNSVGPathProps const>(newShadowView.props);
 
-  auto const &newRNSVGPathProps =
-      *std::static_pointer_cast<RNSVGPathProps const>(newShadowView.props);
+  setPathDataAttribute(SkSVGAttribute::kD,newRNSVGPathProps.d.c_str());
 
-     selfNode->SetPathDataAttribute(selfNode,SkSVGAttribute::kD,newRNSVGPathProps.d.c_str());
-
- updateCommonNodeProps(newRNSVGPathProps,selfNode);
+  updateCommonNodeProps(newRNSVGPathProps,selfNode);
 
   return invalidateMask;
 }
@@ -59,7 +46,7 @@ void RSkComponentRNSVGPath::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
     switch (attr) {
     case SkSVGAttribute::kD:
         if (const auto* path = v.as<SkSVGPathValue>()) {
-            fPath=*path;
+          path_=*path;
         }
         break;
     default:
@@ -69,8 +56,8 @@ void RSkComponentRNSVGPath::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
 
 void RSkComponentRNSVGPath::onDraw(SkCanvas* canvas, const SkSVGLengthContext&, const SkPaint& paint,
                        SkPathFillType fillType) const {
-    fPath.setFillType(fillType);
-    canvas->drawPath(fPath, paint);
+    path_.setFillType(fillType);
+    canvas->drawPath(path_, paint);
 }
 
 

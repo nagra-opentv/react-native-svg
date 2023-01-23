@@ -33,15 +33,12 @@ class RSkComponentRNSVGEllipse final : public RSkComponent ,public RSkSVGShape{
     void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
 
   private:
-
     sk_sp<RSkSVGNode> selfNode;
 
-    SkSVGLength fCx = SkSVGLength(0);
-    SkSVGLength fCy = SkSVGLength(0);
-    SkSVGLength fRx = SkSVGLength(0);
-    SkSVGLength fRy = SkSVGLength(0);
-
-    SkRect resolve(const SkSVGLengthContext&) const;
+    SkSVGLength cx_ = SkSVGLength(0);
+    SkSVGLength cy_ = SkSVGLength(0);
+    SkSVGLength rx_ = SkSVGLength(0);
+    SkSVGLength ry_ = SkSVGLength(0);
 
     typedef RSkSVGShape INHERITED;
 };

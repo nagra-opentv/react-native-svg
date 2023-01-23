@@ -5,28 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#include "include/core/SkCanvas.h"
 #include "include/core/SkPaint.h"
 
-#include "cxxreact/ModuleRegistry.h"
-
 #include "react/renderer/components/rnsvg/RNSVGProps.h"
-#include "rns_shell/compositor/layers/PictureLayer.h"
 
 #include "RSkComponentRNSVGRect.h"
-
-#include "experimental/svg/model/SkSVGRenderContext.h"
-#include "experimental/svg/model/SkSVGValue.h"
-#include "include/core/SkCanvas.h"
-
-
 #include "RSkSVGPropsParserUtil.h"
+
 namespace facebook {
 namespace react {
 
 RSkComponentRNSVGRect::RSkComponentRNSVGRect(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
     INHERITED(SkSVGTag::kRect) {
-      selfNode=sk_sp<RSkSVGNode>(this);
+  selfNode=sk_sp<RSkSVGNode>(this);
 }
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) {
@@ -36,7 +29,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(const
 
   auto const &newRNSVGRectProps = *std::static_pointer_cast<RNSVGRectProps const>(newShadowView.props);
   
-    RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
+  RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
   RNS_LOG_INFO(" X: "<<newRNSVGRectProps.x);
   RNS_LOG_INFO(" Y: "<<newRNSVGRectProps.y);
   RNS_LOG_INFO(" Rx: "<<newRNSVGRectProps.rx);
@@ -44,13 +37,14 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(const
   RNS_LOG_INFO(" Width: "<<newRNSVGRectProps.width);
   RNS_LOG_INFO(" Height: "<<newRNSVGRectProps.height);
 
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kX,newRNSVGRectProps.x.c_str());
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kY,newRNSVGRectProps.y.c_str());
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kRx,newRNSVGRectProps.rx.c_str());
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kRy,newRNSVGRectProps.ry.c_str());
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kWidth,newRNSVGRectProps.width.c_str());
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kHeight,newRNSVGRectProps.height.c_str());
-updateCommonNodeProps(newRNSVGRectProps,selfNode);
+  setLengthAttribute(SkSVGAttribute::kX,newRNSVGRectProps.x.c_str());
+  setLengthAttribute(SkSVGAttribute::kY,newRNSVGRectProps.y.c_str());
+  setLengthAttribute(SkSVGAttribute::kRx,newRNSVGRectProps.rx.c_str());
+  setLengthAttribute(SkSVGAttribute::kRy,newRNSVGRectProps.ry.c_str());
+  setLengthAttribute(SkSVGAttribute::kWidth,newRNSVGRectProps.width.c_str());
+  setLengthAttribute(SkSVGAttribute::kHeight,newRNSVGRectProps.height.c_str());
+
+  updateCommonNodeProps(newRNSVGRectProps,selfNode);
 
   return invalidateMask;
 }
@@ -65,32 +59,32 @@ void RSkComponentRNSVGRect::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
     switch (attr) {
     case SkSVGAttribute::kX:
         if (const auto* x = v.as<SkSVGLengthValue>()) {
-            fX =*x;
+          x_ =*x;
         }
         break;
     case SkSVGAttribute::kY:
         if (const auto* y = v.as<SkSVGLengthValue>()) {
-           fY =*y;
+          y_ =*y;
         }
         break;
     case SkSVGAttribute::kWidth:
         if (const auto* w = v.as<SkSVGLengthValue>()) {
-            fWidth=*w;
+          width_=*w;
         }
         break;
     case SkSVGAttribute::kHeight:
         if (const auto* h = v.as<SkSVGLengthValue>()) {
-            fHeight=*h;
+          height_=*h;
         }
         break;
     case SkSVGAttribute::kRx:
         if (const auto* rx = v.as<SkSVGLengthValue>()) {
-            fRx=*rx;
+            rx_=*rx;
         }
         break;
     case SkSVGAttribute::kRy:
         if (const auto* ry = v.as<SkSVGLengthValue>()) {
-            fRy=*ry;
+          ry_=*ry;
         }
         break;
     default:
@@ -98,21 +92,15 @@ void RSkComponentRNSVGRect::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
     }
 }
 
-SkRRect RSkComponentRNSVGRect::resolve(const SkSVGLengthContext& lctx) const {
-    const SkRect rect = lctx.resolveRect(fX, fY, fWidth, fHeight);
-    const SkScalar rx = lctx.resolve(fRx, SkSVGLengthContext::LengthType::kHorizontal);
-    const SkScalar ry = lctx.resolve(fRy, SkSVGLengthContext::LengthType::kVertical);
-
-    return SkRRect::MakeRectXY(rect, rx ,ry);
-}
-
 void RSkComponentRNSVGRect::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,
                        const SkPaint& paint, SkPathFillType) const {
 
-                               canvas->save();
-
-canvas->drawRRect(this->resolve(lctx), paint);
-    
+  const SkRect rect = lctx.resolveRect(x_,y_,width_,height_);
+  const SkScalar rx = lctx.resolve(rx_, SkSVGLengthContext::LengthType::kHorizontal);
+  const SkScalar ry = lctx.resolve(ry_, SkSVGLengthContext::LengthType::kVertical);
+  
+  SkRRect rrect=SkRRect::MakeRectXY(rect, rx ,ry);
+  canvas->drawRRect(rrect, paint);  
 }
 
 

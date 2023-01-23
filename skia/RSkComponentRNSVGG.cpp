@@ -25,9 +25,8 @@ namespace react {
 
 RSkComponentRNSVGGroup::RSkComponentRNSVGGroup(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT) ,
-     INHERITED(SkSVGTag::kG){
-
-      selfNode=sk_sp<RSkSVGNode>(this);
+     INHERITED(SkSVGTag::kG){ 
+     selfNode=sk_sp<RSkSVGNode>(this);
 }
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGGroup::updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) {
@@ -38,7 +37,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGGroup::updateComponentProps(cons
   auto const &newRNSVGGroupPropsProps = *std::static_pointer_cast<RNSVGGroupProps const>(newShadowView.props);
 
   RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
- updateCommonNodeProps(newRNSVGGroupPropsProps,selfNode);
+  updateCommonNodeProps(newRNSVGGroupPropsProps,selfNode);
 
   return invalidateMask;
 }
@@ -46,18 +45,12 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGGroup::updateComponentProps(cons
 void RSkComponentRNSVGGroup::mountChildComponent(
     std::shared_ptr<RSkComponent> newChildComponent,
     const int index) {
-  RNS_LOG_INFO("@@@@@@@@@@ON mountChildComponent :: RSkComponentRNSVGGroup holding child :" << newChildComponent->getComponentData().componentName);
+  RNS_LOG_INFO("RSkComponentRNSVGGroup holding child :" << newChildComponent->getComponentData().componentName);
 
-if(RSKSVGComponentViewClassWithName(newChildComponent->getComponentData().componentName)) {
-  RNS_LOG_INFO("@@@@@@@@@@ON iT IS A svg coMPONENT" );
-   auto ref = RSkSVGNode::getRSkSVGNodeForComponnetWIthName(newChildComponent->getComponentData().componentName,newChildComponent);
+  appendChild(newChildComponent);
 
- if( ref) {
-   selfNode->appendChild(ref);
-  }
-}
-  RNS_LOG_INFO("total defs :: "<<fIDMapper.size());
- RNS_LOG_INFO("\n Group : childrenContainer.count() "<<childrenContainer.count());
+  RNS_LOG_INFO("Defs in RSkComponentRNSVGGroup Container:: "<<IDMapper.count());
+  RNS_LOG_INFO("\n Childs in  RSkComponentRNSVGGroup Container :: "<<childrenContainer.count());
 }
 
 } // namespace react

@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 1994-present OpenTV, Inc. and Nagravision S.A.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 #include "experimental/svg/model/SkSVGRenderContext.h"
 #include "RSkSVGShape.h"
 #include "include/core/SkCanvas.h"
@@ -30,7 +37,7 @@ void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
 
 }
 
-void RSkSVGShape::appendChild(sk_sp<RSkSVGNode>) {
+void RSkSVGShape::appendChild(std::shared_ptr<RSkComponent> childComponent) {
     printf("cannot append child nodes to an SVG shape.\n");
 }
 

@@ -6,20 +6,19 @@
  */
 #pragma once
 
+#include "ReactSkia/components/RSkComponent.h"
 #include "RSkSVGNode.h"
 #include "include/private/SkTArray.h"
 
 namespace facebook {
 namespace react {
 
-using RSkSVGIDMapper = better::map<std::string, sk_sp<RSkSVGNode>>;
-
 class RSkSVGContainer : public RSkSVGNode {
   public:
     ~RSkSVGContainer() override = default;
 
-    void appendChild(sk_sp<RSkSVGNode>) override;
-    sk_sp<RSkSVGNode> findNodeById(const char* id) override;
+    void appendChild(std::shared_ptr<RSkComponent> childComponent) override;
+
   protected:
     explicit RSkSVGContainer(SkSVGTag);
 
@@ -29,9 +28,10 @@ class RSkSVGContainer : public RSkSVGNode {
 
     bool hasChildren() const final;
    
-     RSkSVGIDMapper    fIDMapper;
+     SkSVGIDMapper    IDMapper;
     SkSTArray<1, sk_sp<RSkSVGNode>, true> childrenContainer;
-     void mergeWithParentMap(RSkSVGIDMapper &ParentMap);
+     void mergeWithParentMap(SkSVGIDMapper &ParentMap);
+     void printContainiersNodeInfo();
   private:
     typedef RSkSVGNode INHERITED;
     

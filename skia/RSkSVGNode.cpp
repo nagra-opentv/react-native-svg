@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1994-present OpenTV, Inc. and Nagravision S.A.
+ * Copyright (C) 1994-2022 OpenTV, Inc. and Nagravision S.A.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -19,220 +19,210 @@ namespace facebook {
 namespace react {
 
 RSkSVGNode::RSkSVGNode(SkSVGTag tag) : INHERITED(tag) {};
- 
-bool RSkSVGNode::SetPaintAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                       const char* stringValue) {
+
+bool RSkSVGNode::setPaintAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkSVGPaint paint;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parsePaint(&paint)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGPaintValue(paint));
+    setAttribute(attr, SkSVGPaintValue(paint));
     return true;
 }
 
-bool RSkSVGNode::SetColorAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                       const char* stringValue) {
+bool RSkSVGNode::setColorAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkSVGColorType color;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parseColor(&color)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGColorValue(color));
+    setAttribute(attr, SkSVGColorValue(color));
     return true;
 }
 
-bool RSkSVGNode::SetIRIAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                      const char* stringValue) {
+bool RSkSVGNode::setIRIAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkSVGStringType iri;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parseIRI(&iri)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGStringValue(iri));
+    setAttribute(attr, SkSVGStringValue(iri));
     return true;
 }
 
-bool RSkSVGNode::SetClipPathAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                          const char* stringValue) {
+bool RSkSVGNode::setClipPathAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkSVGClip clip;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parseClipPath(&clip)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGClipValue(clip));
+    setAttribute(attr, SkSVGClipValue(clip));
     return true;
 }
 
 
-bool RSkSVGNode::SetPathDataAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                          const char* stringValue) {
+bool RSkSVGNode::setPathDataAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkPath path;
     if (!SkParsePath::FromSVGString(stringValue, &path)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGPathValue(path));
+    setAttribute(attr, SkSVGPathValue(path));
     return true;
 }
 
-bool RSkSVGNode::SetStringAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                           const char* stringValue) {
+bool RSkSVGNode::setStringAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkString str(stringValue, strlen(stringValue));
     SkSVGStringType strType = SkSVGStringType(str);
-    node->setAttribute(attr, SkSVGStringValue(strType));
+    setAttribute(attr, SkSVGStringValue(strType));
     return true;
 }
 
-bool RSkSVGNode::SetTransformAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                           const char* stringValue) {
-    SkSVGTransformType transform;
-    SkSVGAttributeParser parser(stringValue);
-    if (!parser.parseTransform(&transform)) {
-        return false;
-    }
-
-    node->setAttribute(attr, SkSVGTransformValue(transform));
-    return true;
-}
-
-bool RSkSVGNode::SetLengthAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                        const char* stringValue) {
+bool RSkSVGNode::setLengthAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkSVGLength length;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parseLength(&length)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGLengthValue(length));
+    setAttribute(attr, SkSVGLengthValue(length));
     return true;
 }
 
-bool RSkSVGNode::SetNumberAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                        const char* stringValue) {
+bool RSkSVGNode::setNumberAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkSVGNumberType number;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parseNumber(&number)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGNumberValue(number));
+    setAttribute(attr, SkSVGNumberValue(number));
     return true;
 }
 
-bool RSkSVGNode::SetViewBoxAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                         const char* stringValue) {
+bool RSkSVGNode::setViewBoxAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkSVGViewBoxType viewBox;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parseViewBox(&viewBox)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGViewBoxValue(viewBox));
+    setAttribute(attr, SkSVGViewBoxValue(viewBox));
     return true;
 }
 
-bool RSkSVGNode::SetLineCapAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                         const char* stringValue) {
+bool RSkSVGNode::setLineCapAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkSVGLineCap lineCap;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parseLineCap(&lineCap)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGLineCapValue(lineCap));
+    setAttribute(attr, SkSVGLineCapValue(lineCap));
     return true;
 }
 
-bool RSkSVGNode::SetLineJoinAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                          const char* stringValue) {
+bool RSkSVGNode::setLineJoinAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkSVGLineJoin lineJoin;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parseLineJoin(&lineJoin)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGLineJoinValue(lineJoin));
+    setAttribute(attr, SkSVGLineJoinValue(lineJoin));
     return true;
 }
 
-bool RSkSVGNode::SetSpreadMethodAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                             const char* stringValue) {
+bool RSkSVGNode::setSpreadMethodAttribute(SkSVGAttribute attr,  const char* stringValue) {
     SkSVGSpreadMethod spread;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parseSpreadMethod(&spread)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGSpreadMethodValue(spread));
+    setAttribute(attr, SkSVGSpreadMethodValue(spread));
     return true;
 }
 
-bool RSkSVGNode::SetStopColorAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                           const char* stringValue) {
+bool RSkSVGNode::setStopColorAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkSVGStopColor stopColor;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parseStopColor(&stopColor)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGStopColorValue(stopColor));
+    setAttribute(attr, SkSVGStopColorValue(stopColor));
     return true;
 }
 
-bool RSkSVGNode::SetPointsAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                        const char* stringValue) {
+bool RSkSVGNode::setPointsAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkSVGPointsType points;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parsePoints(&points)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGPointsValue(points));
+    setAttribute(attr, SkSVGPointsValue(points));
     return true;
 }
 
-bool RSkSVGNode::SetFillRuleAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                          const char* stringValue) {
+bool RSkSVGNode::setFillRuleAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkSVGFillRule fillRule;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parseFillRule(&fillRule)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGFillRuleValue(fillRule));
+    setAttribute(attr, SkSVGFillRuleValue(fillRule));
     return true;
 }
 
-bool RSkSVGNode::SetVisibilityAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                            const char* stringValue) {
+bool RSkSVGNode::setVisibilityAttribute(SkSVGAttribute attr, const char* stringValue) {
     SkSVGVisibility visibility;
     SkSVGAttributeParser parser(stringValue);
     if (!parser.parseVisibility(&visibility)) {
         return false;
     }
-
-    node->setAttribute(attr, SkSVGVisibilityValue(visibility));
+    setAttribute(attr, SkSVGVisibilityValue(visibility));
     return true;
 }
 
-bool RSkSVGNode::SetDashArrayAttribute(const sk_sp<RSkSVGNode>& node, SkSVGAttribute attr,
-                           const char* stringValue) {
-    SkSVGDashArray dashArray;
-    SkSVGAttributeParser parser(stringValue);
-    if (!parser.parseDashArray(&dashArray)) {
-        return false;
+bool RSkSVGNode::setDashArrayAttribute(SkSVGAttribute attr, const std::vector<std::string> dashArrayAttribute) {
+
+    if(dashArrayAttribute.empty()) return false;
+
+    std::string dashArray;
+    for(auto value : dashArrayAttribute) {
+        RNS_LOG_INFO("has strokeDasharray value: "<<value.c_str());
+        dashArray.append(value);
+        dashArray.append(" ");
     }
 
-    node->setAttribute(attr, SkSVGDashArrayValue(dashArray));
+    SkSVGDashArray parsedDashArray;
+    SkSVGAttributeParser parser(dashArray.c_str());
+    if (!parser.parseDashArray(&parsedDashArray)) {
+        return false;
+    }
+    setAttribute(attr, SkSVGDashArrayValue(parsedDashArray));
     return true;
 }
 
-sk_sp<RSkSVGNode> RSkSVGNode::getRSkSVGNodeForComponnetWIthName(std::string componentName,std::shared_ptr<RSkComponent> component) { 
+bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Float> matrix) {
+
+    if(matrix.size() == 6) {
+        RNS_LOG_INFO(" Matrix 0 : "<<matrix[0]);
+        RNS_LOG_INFO(" Matrix 1 : "<<matrix[1]);
+        RNS_LOG_INFO(" Matrix 2 : "<<matrix[2]);
+        RNS_LOG_INFO(" Matrix 3 : "<<matrix[3]);
+        RNS_LOG_INFO(" Matrix 4 : "<<matrix[4]);
+        RNS_LOG_INFO(" Matrix 5 : "<<matrix[5]);
+
+        SkMatrix svgTransforMatrix=SkMatrix::Translate(matrix[4],matrix[5]);
+        svgTransforMatrix.preConcat(SkMatrix::Scale(matrix[0],matrix[3]));
+        setAttribute(attr,SkSVGTransformValue(svgTransforMatrix));
+
+        RNS_LOG_INFO("getScaleX :"<<svgTransforMatrix.getScaleX());
+        RNS_LOG_INFO("getScaleY :"<<svgTransforMatrix.getScaleY());
+        RNS_LOG_INFO("getTranslateX :"<<svgTransforMatrix.getTranslateX());
+        RNS_LOG_INFO("getTranslateY :"<<svgTransforMatrix.getTranslateY());
+        RNS_LOG_INFO("getSkewX :"<<svgTransforMatrix.getSkewX());
+        RNS_LOG_INFO("getSkewY :"<<svgTransforMatrix.getSkewY());
+        return true;
+    }
+    return false;
+}
+
+sk_sp<RSkSVGNode> RSkSVGNode::getRSkSVGNodeForComponetWithName(std::shared_ptr<RSkComponent> component) { 
 
   enum componentName {
  	RNSVGCircle,
@@ -243,8 +233,8 @@ sk_sp<RSkSVGNode> RSkSVGNode::getRSkSVGNodeForComponnetWIthName(std::string comp
     RNSVGUse,
     RNSVGGroup,
     RNSVGView
- };
- static std::map<std::string, enum componentName> s_mapStringValues ={
+  };
+  static std::map<std::string, enum componentName> s_mapStringValues ={
  	{ "RNSVGCircle", RNSVGCircle},
  	{ "RNSVGRect",RNSVGRect},
     { "RNSVGEllipse",RNSVGEllipse},
@@ -253,47 +243,50 @@ sk_sp<RSkSVGNode> RSkSVGNode::getRSkSVGNodeForComponnetWIthName(std::string comp
     { "RNSVGUse",RNSVGUse},
     { "RNSVGGroup",RNSVGGroup},
     { "RNSVGView",RNSVGView}
- };
- int index =-1;
- auto it=s_mapStringValues.find(componentName.c_str()); 
- if(it != s_mapStringValues.end()) {
+  };
+  
+  std::string componentName=component->getComponentData().componentName;
+
+  int index =-1;
+  if(s_mapStringValues.find(componentName.c_str()) != s_mapStringValues.end()) {
  	index = s_mapStringValues[componentName.c_str()];
- }
- switch(index) {
+  } 
+  
+  switch(index) {
  	case RNSVGCircle:
- 	  RNS_LOG_INFO("\n getRRSkSVGNodeForComponnetWIthName :RNSVGCircle \n");
+ 	  RNS_LOG_INFO("\n SVG COMPONENT :" <<componentName.c_str());
       return static_cast<RSkComponentRNSVGCircle *>(component.get())->getComponentNode();
  	break;
  	case RNSVGRect:
- 	RNS_LOG_INFO("\n getRRSkSVGNodeForComponnetWIthName :RNSVGRect Class \n");
+ 	  RNS_LOG_INFO("\n SVG COMPONENT :" <<componentName.c_str());
       return static_cast<RSkComponentRNSVGRect *>(component.get())->getComponentNode();
  	break;
  	case RNSVGEllipse:
- 	RNS_LOG_INFO("\n getRRSkSVGNodeForComponnetWIthName :RNSVGEllipse Class \n");
+ 	  RNS_LOG_INFO("\n SVG COMPONENT :" <<componentName.c_str());
       return static_cast<RSkComponentRNSVGEllipse *>(component.get())->getComponentNode();
  	break;
  	case RNSVGPath:
- 	RNS_LOG_INFO("\n getRRSkSVGNodeForComponnetWIthName :RNSVGPath Class \n");
+ 	  RNS_LOG_INFO("\n SVG COMPONENT :" <<componentName.c_str());
       return static_cast<RSkComponentRNSVGPath *>(component.get())->getComponentNode();
  	break;
  	case RNSVGDefs:
- 	RNS_LOG_INFO("\n getRRSkSVGNodeForComponnetWIthName :RNSVGDefs Class \n");
+ 	  RNS_LOG_INFO("\n SVG COMPONENT :" <<componentName.c_str());
       return static_cast<RSkComponentRNSVGDefs *>(component.get())->getComponentNode();
  	break;
  	case RNSVGUse:
- 	RNS_LOG_INFO("\n getRRSkSVGNodeForComponnetWIthName :RNSVGUse Class \n");
+ 	  RNS_LOG_INFO("\n SVG COMPONENT :" <<componentName.c_str());
       return static_cast<RSkComponentRNSVGUse *>(component.get())->getComponentNode();
  	break;
  	case RNSVGGroup:
- 	RNS_LOG_INFO("\n getRRSkSVGNodeForComponnetWIthName :RNSVGGroup Class \n");
+ 	  RNS_LOG_INFO("\n SVG COMPONENT :" <<componentName.c_str());
       return static_cast<RSkComponentRNSVGGroup *>(component.get())->getComponentNode();
  	break;
  	case RNSVGView:
- 	RNS_LOG_INFO("\n getRRSkSVGNodeForComponnetWIthName :RNSVGView Class \n");
+ 	  RNS_LOG_INFO("\n SVG COMPONENT :" <<componentName.c_str());
       return static_cast<RSkComponentRNSVGView *>(component.get())->getComponentNode();
  	break;
  	default:
- 	RNS_LOG_INFO("\n getRRSkSVGNodeForComponnetWIthName :UNKNOWN Class \n");
+ 	  RNS_LOG_INFO("\n SVG COMPONENT :UNKNOWN Class \n");
       return nullptr;
  	break;
  }

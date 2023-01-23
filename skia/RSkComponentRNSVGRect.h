@@ -23,29 +23,25 @@ class RSkComponentRNSVGRect final : public RSkComponent,public RSkSVGShape{
 
     RnsShell::LayerInvalidateMask updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) override;
     void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override;
+
     sk_sp<RSkSVGNode> getComponentNode(){ return selfNode;}
 
   protected:
     void OnPaint(SkCanvas *canvas) override {};
 
-    void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,
-                SkPathFillType) const override;
+    void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const override;
     void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
 
   private:
-
     sk_sp<RSkSVGNode> selfNode;
+    SkSVGLength x_      = SkSVGLength(0);
+    SkSVGLength y_      = SkSVGLength(0);
+    SkSVGLength width_  = SkSVGLength(0);
+    SkSVGLength height_ = SkSVGLength(0);
+    SkSVGLength rx_     = SkSVGLength(0);
+    SkSVGLength ry_     = SkSVGLength(0);
 
-    SkSVGLength fX      = SkSVGLength(0);
-    SkSVGLength fY      = SkSVGLength(0);
-    SkSVGLength fWidth  = SkSVGLength(0);
-    SkSVGLength fHeight = SkSVGLength(0);
-    SkSVGLength fRx     = SkSVGLength(0);
-    SkSVGLength fRy     = SkSVGLength(0);
-
-    SkRRect resolve(const SkSVGLengthContext&) const;
-   
-    typedef RSkSVGShape INHERITED;
+   typedef RSkSVGShape INHERITED;
 };
 
 } // namespace react

@@ -10,47 +10,48 @@
 
 #include "react/renderer/components/rnsvg/RNSVGProps.h"
 
-#include "RSkComponentRNSVGCircle.h"
+#include "RSkComponentRNSVGLine.h"
 #include "RSkSVGPropsParserUtil.h"
 
 namespace facebook {
 namespace react {
 
-RSkComponentRNSVGCircle::RSkComponentRNSVGCircle(const ShadowView &shadowView)
+RSkComponentRNSVGLine::RSkComponentRNSVGLine(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-      INHERITED(SkSVGTag::kCircle) { 
+      INHERITED(SkSVGTag::kLine) { 
   selfNode=sk_sp<RSkSVGNode>(this);
 }
 
-void RSkComponentRNSVGCircle::mountChildComponent(
+void RSkComponentRNSVGLine::mountChildComponent(
     std::shared_ptr<RSkComponent> newChildComponent,
     const int index) {
   RNS_LOG_INFO("cannot append child nodes to an SVG shape.\n");
 }
 
-RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) {
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) {
 
   auto component = getComponentData();
 
-  auto const &newRNSVGCircleProps = *std::static_pointer_cast<RNSVGCircleProps const>(newShadowView.props);
+  auto const &newRNSVGLineProps = *std::static_pointer_cast<RNSVGLineProps const>(newShadowView.props);
  
   RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
-  RNS_LOG_INFO(" CX: "<<newRNSVGCircleProps.cx);
-  RNS_LOG_INFO(" CY: "<<newRNSVGCircleProps.cy);
-  RNS_LOG_INFO(" r: "<<newRNSVGCircleProps.r);
+  RNS_LOG_INFO(" X1: "<<newRNSVGLineProps.x1);
+  RNS_LOG_INFO(" Y1: "<<newRNSVGLineProps.y1);
+  RNS_LOG_INFO(" X2: "<<newRNSVGLineProps.x2);
+  RNS_LOG_INFO(" Y2: "<<newRNSVGLineProps.y2);
 
+  setLengthAttribute(SkSVGAttribute::kX1,newRNSVGLineProps.x1.c_str());
+  setLengthAttribute(SkSVGAttribute::kX2,newRNSVGLineProps.x2.c_str());
+  setLengthAttribute(SkSVGAttribute::kY1,newRNSVGLineProps.y1.c_str());
+  setLengthAttribute(SkSVGAttribute::kY2,newRNSVGLineProps.y2.c_str());
 
-  setLengthAttribute(SkSVGAttribute::kCx,newRNSVGCircleProps.cx.c_str());
-  setLengthAttribute(SkSVGAttribute::kCy,newRNSVGCircleProps.cy.c_str());
-  setLengthAttribute(SkSVGAttribute::kR,newRNSVGCircleProps.r.c_str());
-
-  updateCommonNodeProps(newRNSVGCircleProps,selfNode);
+  updateCommonNodeProps(newRNSVGLineProps,selfNode);
 
   return RnsShell::LayerInvalidateNone;
 }
 
 
-void RSkComponentRNSVGCircle::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
+void RSkComponentRNSVGLine::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
 
   switch (attr) {
     case SkSVGAttribute::kCx:
@@ -73,7 +74,7 @@ void RSkComponentRNSVGCircle::onSetAttribute(SkSVGAttribute attr, const SkSVGVal
     }
 }
 
-void RSkComponentRNSVGCircle::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,
+void RSkComponentRNSVGLine::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,
                          const SkPaint& paint, SkPathFillType) const {
 
   SkScalar cx = lctx.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
@@ -81,7 +82,7 @@ void RSkComponentRNSVGCircle::onDraw(SkCanvas* canvas, const SkSVGLengthContext&
   SkScalar  r = lctx.resolve(r_ , SkSVGLengthContext::LengthType::kOther);
 
   if (r > 0) {
-    canvas->drawCircle(cx, cy, r, paint);
+    canvas->drawLine(cx, cy, r, paint);
   }
  
 }

@@ -13,9 +13,9 @@ namespace react {
 
 RSkComponentRNSVGUse::RSkComponentRNSVGUse(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-    INHERITED(SkSVGTag::kUse) {
-      selfNode=sk_sp<RSkSVGNode>(this);
-}
+    INHERITED(SkSVGTag::kUse) {     
+    selfNode=sk_sp<RSkSVGNode>(this);
+ }
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGUse::updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) {
   auto component = getComponentData();
@@ -28,18 +28,14 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGUse::updateComponentProps(const 
   RNS_LOG_INFO(" Width: "<<newRNSVGUseProps.width);
   RNS_LOG_INFO(" Height: "<<newRNSVGUseProps.height);
 
-
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kX,newRNSVGUseProps.x.c_str());
-
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kY,newRNSVGUseProps.y.c_str());
-
-     selfNode->setAttribute(SkSVGAttribute::kHref,SkSVGStringValue(SkString(newRNSVGUseProps.href.c_str())));
+  setLengthAttribute(SkSVGAttribute::kX,newRNSVGUseProps.x.c_str());
+  setLengthAttribute(SkSVGAttribute::kY,newRNSVGUseProps.y.c_str());
+  setAttribute(SkSVGAttribute::kHref,SkSVGStringValue(SkString(newRNSVGUseProps.href.c_str())));
+  setLengthAttribute(SkSVGAttribute::kWidth,newRNSVGUseProps.width.c_str());
+  setLengthAttribute(SkSVGAttribute::kHeight,newRNSVGUseProps.height.c_str());
   
- 
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kWidth,newRNSVGUseProps.width.c_str());
+  updateCommonNodeProps(newRNSVGUseProps,selfNode);
 
-     selfNode->SetLengthAttribute(selfNode,SkSVGAttribute::kHeight,newRNSVGUseProps.height.c_str());
-updateCommonNodeProps(newRNSVGUseProps,selfNode);
    return RnsShell::LayerInvalidateNone;
 }
 
@@ -52,17 +48,17 @@ void RSkComponentRNSVGUse::onSetAttribute(SkSVGAttribute attr, const SkSVGValue&
     switch (attr) {
     case SkSVGAttribute::kHref:
         if (const auto* href = v.as<SkSVGStringValue>()) {
-            fHref = *href;
+            href_ = *href;
         }
         break;
     case SkSVGAttribute::kX:
         if (const auto* x = v.as<SkSVGLengthValue>()) {
-            fX = *x;
+            x_ = *x;
         }
         break;
     case SkSVGAttribute::kY:
         if (const auto* y = v.as<SkSVGLengthValue>()) {
-            fY = *y;
+            y_ = *y;
         }
         break;
     default:
@@ -72,40 +68,34 @@ void RSkComponentRNSVGUse::onSetAttribute(SkSVGAttribute attr, const SkSVGValue&
 
 bool RSkComponentRNSVGUse::onPrepareToRender(SkSVGRenderContext* ctx) const {
 
-    printf("\n RSkComponentRNSVGUse::onPrepareToRender \n");
+    RNS_LOG_INFO("---onPrepareToRender For Use Component--- : "<<href_.c_str());
 
-    if (fHref.isEmpty() || !INHERITED::onPrepareToRender(ctx)) {
+    if (href_.isEmpty() || !INHERITED::onPrepareToRender(ctx)) {
         return false;
     }
 
-    if (fX.value() || fY.value()) {
+    if (x_.value() || y_.value()) {
         // Restored when the local SkSVGRenderContext leaves scope.
         ctx->saveOnce();
-        ctx->canvas()->translate(fX.value(), fY.value());
+        ctx->canvas()->translate(x_.value(), y_.value());
     }
-
-    printf("\n RSkComponentRNSVGUse::onPrepareToRender returns true \n");
+    RNS_LOG_INFO("---onPrepareToRender For Use Component--- : "<<href_.c_str());
 
     return true;
 }
 
 void RSkComponentRNSVGUse::onRender(const SkSVGRenderContext& ctx) const {
 
-    printf("\n RSkComponentRNSVGUse::onRender [%s] \n",fHref.c_str());
-
-    const auto ref = parentNode->findNodeById(fHref.c_str());
+    const auto ref = ctx.findNodeById(href_);
     if (!ref) {
-            printf("\n !!! Id not Foumd !!!!\n");
-
-        return;
+      RNS_LOG_ERROR(" !!! Id not Found !!!!");
+      return;
     } 
-    printf("\n RSkComponentRNSVGUse::render for [%d]  \n",ref->tag());
-
     ref->render(ctx);
 }
 
 SkPath RSkComponentRNSVGUse::onAsPath(const SkSVGRenderContext& ctx) const {
-    const auto ref = parentNode->findNodeById(fHref.c_str());
+    const auto ref =  ctx.findNodeById(href_);
     if (!ref) {
         return SkPath();
     }
@@ -113,7 +103,7 @@ SkPath RSkComponentRNSVGUse::onAsPath(const SkSVGRenderContext& ctx) const {
     return ref->asPath(ctx);
 }
 
-void RSkComponentRNSVGUse::appendChild(sk_sp<RSkSVGNode>) {
+void RSkComponentRNSVGUse::appendChild(std::shared_ptr<RSkComponent> newChildComponent) {
     RNS_LOG_INFO("cannot append child nodes to an SVG shape.\n");
 }
 

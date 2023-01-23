@@ -36,14 +36,14 @@ class RSkComponentRNSVGView final : public RSkComponent,public RSkSVGContainer  
  private:
 
     sk_sp<RSkSVGNode> selfNode;
-
+    
     SkSize           svgContainerSize;
 
-    SkSVGLength fX      = SkSVGLength(0);
-    SkSVGLength fY      = SkSVGLength(0);
-    SkSVGLength fWidth  = SkSVGLength(100, SkSVGLength::Unit::kPercentage);
-    SkSVGLength fHeight = SkSVGLength(100, SkSVGLength::Unit::kPercentage);
-    SkTLazy<SkSVGViewBoxType> fViewBox;
+    SkSVGLength x_      = SkSVGLength(0);
+    SkSVGLength y_      = SkSVGLength(0);
+    SkSVGLength width_  = SkSVGLength(100, SkSVGLength::Unit::kPercentage);
+    SkSVGLength height_ = SkSVGLength(100, SkSVGLength::Unit::kPercentage);
+    SkRect viewBox_;
 
     typedef RSkSVGContainer INHERITED;
 };
