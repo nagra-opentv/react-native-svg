@@ -28,11 +28,11 @@ void RSkComponentRNSVGLine::mountChildComponent(
   RNS_LOG_INFO("cannot append child nodes to an SVG shape.\n");
 }
 
-RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) {
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
   auto component = getComponentData();
 
-  auto const &newRNSVGLineProps = *std::static_pointer_cast<RNSVGLineProps const>(newShadowView.props);
+  auto const &newRNSVGLineProps = *std::static_pointer_cast<RNSVGLineProps const>(newViewProps);
  
   RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
   RNS_LOG_INFO(" X1: "<<newRNSVGLineProps.x1);

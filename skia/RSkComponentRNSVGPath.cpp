@@ -30,11 +30,11 @@ void RSkComponentRNSVGPath::mountChildComponent(
 }
 
 RnsShell::LayerInvalidateMask RSkComponentRNSVGPath::updateComponentProps(
-    const ShadowView &newShadowView,
+    SharedProps newViewProps,
     bool forceUpdate) {
   RnsShell::LayerInvalidateMask invalidateMask = RnsShell::LayerInvalidateNone;
 
-  auto const &newRNSVGPathProps = *std::static_pointer_cast<RNSVGPathProps const>(newShadowView.props);
+  auto const &newRNSVGPathProps = *std::static_pointer_cast<RNSVGPathProps const>(newViewProps);
 
   setPathDataAttribute(SkSVGAttribute::kD,newRNSVGPathProps.d.c_str());
 

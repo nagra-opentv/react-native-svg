@@ -28,17 +28,13 @@ void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
     }
 
     SkMatrix matrix=ctx.canvas()->getTotalMatrix();
-	printf("\n getScaleX [%f]\n",matrix.getScaleX());
-	printf("\n getScaleY [%f]\n",matrix.getScaleY());
-	printf("\n getTranslateX [%f]\n",matrix.getTranslateX());
-	printf("\n getTranslateY [%f]\n",matrix.getTranslateY());
-	printf("\n getSkewX [%f]\n",matrix.getSkewX());
-	printf("\n getSkewY [%f]\n",matrix.getSkewY());
+	RNS_LOG_INFO(" getScaleX "<<matrix.getScaleX());
+	RNS_LOG_INFO(" getScaleY "<<matrix.getScaleY());
+	RNS_LOG_INFO(" getTranslateX "<<matrix.getTranslateX());
+	RNS_LOG_INFO(" getTranslateY "<<matrix.getTranslateY());
+	RNS_LOG_INFO(" getSkewX "<<matrix.getSkewX());
+	RNS_LOG_INFO(" getSkewY "<<matrix.getSkewY());
 
-}
-
-void RSkSVGShape::appendChild(std::shared_ptr<RSkComponent> childComponent) {
-    printf("cannot append child nodes to an SVG shape.\n");
 }
 
 } // namespace react

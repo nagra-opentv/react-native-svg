@@ -29,12 +29,12 @@ RSkComponentRNSVGGroup::RSkComponentRNSVGGroup(const ShadowView &shadowView)
      selfNode=sk_sp<RSkSVGNode>(this);
 }
 
-RnsShell::LayerInvalidateMask  RSkComponentRNSVGGroup::updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) {
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGGroup::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
   RnsShell::LayerInvalidateMask invalidateMask = RnsShell::LayerInvalidateNone;
 
   auto component = getComponentData();
 
-  auto const &newRNSVGGroupPropsProps = *std::static_pointer_cast<RNSVGGroupProps const>(newShadowView.props);
+  auto const &newRNSVGGroupPropsProps = *std::static_pointer_cast<RNSVGGroupProps const>(newViewProps);
 
   RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
   updateCommonNodeProps(newRNSVGGroupPropsProps,selfNode);
@@ -47,10 +47,7 @@ void RSkComponentRNSVGGroup::mountChildComponent(
     const int index) {
   RNS_LOG_INFO("RSkComponentRNSVGGroup holding child :" << newChildComponent->getComponentData().componentName);
 
-  appendChild(newChildComponent);
-
-  RNS_LOG_INFO("Defs in RSkComponentRNSVGGroup Container:: "<<IDMapper.count());
-  RNS_LOG_INFO("\n Childs in  RSkComponentRNSVGGroup Container :: "<<childrenContainer.count());
+  addComponentToSVGContainer(newChildComponent);
 }
 
 } // namespace react

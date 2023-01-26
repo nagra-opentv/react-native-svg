@@ -33,8 +33,6 @@ class RSkSVGNode : public SkSVGTransformableNode{
   public:
     ~RSkSVGNode() = default;
     
-    virtual void appendChild(std::shared_ptr<RSkComponent> childComponent) = 0;
-   
     static sk_sp<RSkSVGNode> getRSkSVGNodeForComponetWithName(std::shared_ptr<RSkComponent> newChildComponent);
 
     bool setNumberAttribute( SkSVGAttribute attr,const char* stringValue);
@@ -60,7 +58,6 @@ class RSkSVGNode : public SkSVGTransformableNode{
     
   protected:
     RSkSVGNode(SkSVGTag tag); 
-    sk_sp<RSkSVGNode> parentNode;
 
     SkPath onAsPath(const SkSVGRenderContext&)  const override { SkPath path;return path; };
     void appendChild(sk_sp<SkSVGNode>)  override {};

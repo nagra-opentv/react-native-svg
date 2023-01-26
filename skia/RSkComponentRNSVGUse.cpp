@@ -17,10 +17,10 @@ RSkComponentRNSVGUse::RSkComponentRNSVGUse(const ShadowView &shadowView)
     selfNode=sk_sp<RSkSVGNode>(this);
  }
 
-RnsShell::LayerInvalidateMask  RSkComponentRNSVGUse::updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) {
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGUse::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
   auto component = getComponentData();
 
-  auto const &newRNSVGUseProps = *std::static_pointer_cast<RNSVGUseProps const>(newShadowView.props);
+  auto const &newRNSVGUseProps = *std::static_pointer_cast<RNSVGUseProps const>(newViewProps);
   
   RNS_LOG_INFO(" X: "<<newRNSVGUseProps.x);
   RNS_LOG_INFO(" Y: "<<newRNSVGUseProps.y);
@@ -101,10 +101,6 @@ SkPath RSkComponentRNSVGUse::onAsPath(const SkSVGRenderContext& ctx) const {
     }
 
     return ref->asPath(ctx);
-}
-
-void RSkComponentRNSVGUse::appendChild(std::shared_ptr<RSkComponent> newChildComponent) {
-    RNS_LOG_INFO("cannot append child nodes to an SVG shape.\n");
 }
 
 } // namespace react

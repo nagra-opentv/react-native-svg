@@ -17,7 +17,7 @@ class RSkComponentRNSVGDefs: public RSkComponent,public RSkSVGHiddenContainer {
     RSkComponentRNSVGDefs(const ShadowView &shadowView);
     ~RSkComponentRNSVGDefs() = default;
   
-    RnsShell::LayerInvalidateMask updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) override;
+    RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
     void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index)override;
     sk_sp<RSkSVGNode> getComponentNode(){ return selfNode;}
 

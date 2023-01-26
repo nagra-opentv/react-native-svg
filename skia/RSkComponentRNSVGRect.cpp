@@ -22,12 +22,12 @@ RSkComponentRNSVGRect::RSkComponentRNSVGRect(const ShadowView &shadowView)
   selfNode=sk_sp<RSkSVGNode>(this);
 }
 
-RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) {
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
   RnsShell::LayerInvalidateMask invalidateMask = RnsShell::LayerInvalidateNone;
 
   auto component = getComponentData();
 
-  auto const &newRNSVGRectProps = *std::static_pointer_cast<RNSVGRectProps const>(newShadowView.props);
+  auto const &newRNSVGRectProps = *std::static_pointer_cast<RNSVGRectProps const>(newViewProps);
   
   RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
   RNS_LOG_INFO(" X: "<<newRNSVGRectProps.x);

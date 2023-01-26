@@ -98,6 +98,7 @@ rn_cxx_component("Rnsvg") {
   deps = [
     "//folly",
     "//skia",
+    "//third_party/libevent",
   ]
 
   with_exceptions = true

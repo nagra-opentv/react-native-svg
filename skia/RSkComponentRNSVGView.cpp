@@ -34,10 +34,10 @@ void RSkComponentRNSVGView::OnPaint(SkCanvas *canvas) {
     selfNode->render(SkSVGRenderContext(canvas, IDMapper, lctx, pctx));
 }
 
-RnsShell::LayerInvalidateMask  RSkComponentRNSVGView::updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) {
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGView::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
   auto component = getComponentData();
-  auto const &newRNSVGViewProps = *std::static_pointer_cast<RNSVGSvgViewProps const>(newShadowView.props);
+  auto const &newRNSVGViewProps = *std::static_pointer_cast<RNSVGSvgViewProps const>(newViewProps);
 
   RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
   RNS_LOG_INFO("RNSVGSvgViewProps : minX :"<<newRNSVGViewProps.minX);
@@ -70,9 +70,9 @@ void RSkComponentRNSVGView::mountChildComponent(
     std::shared_ptr<RSkComponent> newChildComponent,
     const int index) {
   RNS_LOG_INFO("RSkComponentRNSVGView holdinAg child :" << newChildComponent->getComponentData().componentName);
-  appendChild(newChildComponent);
-  RNS_LOG_INFO("Defs in RSkComponentRNSVGView Container:: "<<IDMapper.count());
-  RNS_LOG_INFO("\n Childs in  RSkComponentRNSVGView Container :: "<<childrenContainer.count());
+
+  addComponentToSVGContainer(newChildComponent);
+
 }
 
 bool RSkComponentRNSVGView::onPrepareToRender(SkSVGRenderContext* ctx) const {

@@ -29,11 +29,11 @@ void RSkComponentRNSVGEllipse::mountChildComponent(
   RNS_LOG_INFO("cannot append child nodes to an SVG shape.\n");
 }
 
-RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) {
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
   auto component = getComponentData();
 
-  auto const &newRNSVGEllipseProps = *std::static_pointer_cast<RNSVGEllipseProps const>(newShadowView.props);
+  auto const &newRNSVGEllipseProps = *std::static_pointer_cast<RNSVGEllipseProps const>(newViewProps);
 
   RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
   RNS_LOG_INFO(" CX: "<<newRNSVGEllipseProps.cx);

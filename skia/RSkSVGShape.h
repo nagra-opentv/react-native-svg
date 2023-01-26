@@ -21,13 +21,12 @@ class RSkSVGShape : public RSkSVGNode {
   public:
     ~RSkSVGShape() = default;
 
-    void appendChild(std::shared_ptr<RSkComponent> childComponent) override;
-
   protected:
-    RSkSVGShape(SkSVGTag);
+    explicit RSkSVGShape(SkSVGTag);
 
     void onRender(const SkSVGRenderContext&) const final;
     virtual void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const = 0;
+
   private:
     typedef RSkSVGNode INHERITED;
 };

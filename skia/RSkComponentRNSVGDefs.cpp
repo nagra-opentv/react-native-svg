@@ -9,7 +9,7 @@ RSkComponentRNSVGDefs::RSkComponentRNSVGDefs(const ShadowView &shadowView)
      selfNode=sk_sp<RSkSVGNode>(this);
 }
 
-RnsShell::LayerInvalidateMask  RSkComponentRNSVGDefs::updateComponentProps(const ShadowView &newShadowView,bool forceUpdate) {
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGDefs::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
    return RnsShell::LayerInvalidateNone;
 }
 
@@ -19,10 +19,8 @@ void RSkComponentRNSVGDefs::mountChildComponent(
 
   RNS_LOG_INFO(" RSkComponentRNSVGDefs holding child :" << newChildComponent->getComponentData().componentName);
   
-  appendChild(newChildComponent);
+  addComponentToSVGContainer(newChildComponent);
 
-  RNS_LOG_INFO("Defs in RSkComponentRNSVGDefs Container:: "<<IDMapper.count());
-  RNS_LOG_INFO("Childs in  RSkComponentRNSVGDefs Container :: "<<childrenContainer.count());
 }
 
 } // namespace react

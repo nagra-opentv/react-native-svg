@@ -17,8 +17,6 @@ class RSkSVGContainer : public RSkSVGNode {
   public:
     ~RSkSVGContainer() override = default;
 
-    void appendChild(std::shared_ptr<RSkComponent> childComponent) override;
-
   protected:
     explicit RSkSVGContainer(SkSVGTag);
 
@@ -26,12 +24,13 @@ class RSkSVGContainer : public RSkSVGNode {
 
     SkPath onAsPath(const SkSVGRenderContext&) const override;
 
+    void addComponentToSVGContainer(std::shared_ptr<RSkComponent> childComponent);
+
     bool hasChildren() const final;
    
-     SkSVGIDMapper    IDMapper;
-    SkSTArray<1, sk_sp<RSkSVGNode>, true> childrenContainer;
-     void mergeWithParentMap(SkSVGIDMapper &ParentMap);
-     void printContainiersNodeInfo();
+    SkSVGIDMapper    IDMapper;
+    SkSTArray<1, sk_sp<RSkSVGNode>, true> rskSVGChildNodeContainer;
+    void printContainiersNodeInfo();
   private:
     typedef RSkSVGNode INHERITED;
     
