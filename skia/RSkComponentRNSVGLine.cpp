@@ -18,9 +18,7 @@ namespace react {
 
 RSkComponentRNSVGLine::RSkComponentRNSVGLine(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-      INHERITED(SkSVGTag::kLine) { 
-  selfNode=sk_sp<RSkSVGNode>(this);
-}
+      INHERITED(SkSVGTag::kLine) {}
 
 void RSkComponentRNSVGLine::mountChildComponent(
     std::shared_ptr<RSkComponent> newChildComponent,
@@ -45,7 +43,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::updateComponentProps(Share
   setLengthAttribute(SkSVGAttribute::kY1,newRNSVGLineProps.y1.c_str());
   setLengthAttribute(SkSVGAttribute::kY2,newRNSVGLineProps.y2.c_str());
 
-  updateCommonNodeProps(newRNSVGLineProps,selfNode);
+  updateCommonNodeProps(newRNSVGLineProps,this);
 
   return RnsShell::LayerInvalidateNone;
 }

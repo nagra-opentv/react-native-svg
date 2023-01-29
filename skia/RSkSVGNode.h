@@ -31,9 +31,9 @@ namespace react {
 
 class RSkSVGNode : public SkSVGTransformableNode{
   public:
-    ~RSkSVGNode() = default;
+    ~RSkSVGNode()override = default;
     
-    static sk_sp<RSkSVGNode> getRSkSVGNodeForComponetWithName(std::shared_ptr<RSkComponent> newChildComponent);
+    static RSkSVGNode* getRSkSVGNodeForComponetWithName(std::shared_ptr<RSkComponent> newChildComponent);
 
     bool setNumberAttribute( SkSVGAttribute attr,const char* stringValue);
     bool setStringAttribute( SkSVGAttribute attr,const char* stringValue);

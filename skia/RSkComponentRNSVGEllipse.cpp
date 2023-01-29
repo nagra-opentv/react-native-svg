@@ -19,9 +19,7 @@ namespace react {
 
 RSkComponentRNSVGEllipse::RSkComponentRNSVGEllipse(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-    INHERITED(SkSVGTag::kEllipse) {
-  selfNode=sk_sp<RSkSVGNode>(this);
-}
+    INHERITED(SkSVGTag::kEllipse) {}
 
 void RSkComponentRNSVGEllipse::mountChildComponent(
     std::shared_ptr<RSkComponent> newChildComponent,
@@ -46,7 +44,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::updateComponentProps(Sh
   setLengthAttribute(SkSVGAttribute::kRx,newRNSVGEllipseProps.rx.c_str());
   setLengthAttribute(SkSVGAttribute::kRy,newRNSVGEllipseProps.ry.c_str());
 
-  updateCommonNodeProps(newRNSVGEllipseProps,selfNode);
+  updateCommonNodeProps(newRNSVGEllipseProps,this);
 
   return RnsShell::LayerInvalidateNone;
 }

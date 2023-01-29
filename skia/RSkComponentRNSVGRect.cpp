@@ -18,9 +18,7 @@ namespace react {
 
 RSkComponentRNSVGRect::RSkComponentRNSVGRect(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-    INHERITED(SkSVGTag::kRect) {
-  selfNode=sk_sp<RSkSVGNode>(this);
-}
+    INHERITED(SkSVGTag::kRect) {}
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
   RnsShell::LayerInvalidateMask invalidateMask = RnsShell::LayerInvalidateNone;
@@ -44,7 +42,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(Share
   setLengthAttribute(SkSVGAttribute::kWidth,newRNSVGRectProps.width.c_str());
   setLengthAttribute(SkSVGAttribute::kHeight,newRNSVGRectProps.height.c_str());
 
-  updateCommonNodeProps(newRNSVGRectProps,selfNode);
+  updateCommonNodeProps(newRNSVGRectProps,this);
 
   return invalidateMask;
 }

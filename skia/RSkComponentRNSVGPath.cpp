@@ -19,9 +19,7 @@ namespace react {
 
 RSkComponentRNSVGPath::RSkComponentRNSVGPath(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-      INHERITED(SkSVGTag::kPath)  {
-  selfNode=sk_sp<RSkSVGNode>(this);
-}
+      INHERITED(SkSVGTag::kPath)  {}
 
 void RSkComponentRNSVGPath::mountChildComponent(
     std::shared_ptr<RSkComponent> newChildComponent,
@@ -38,7 +36,7 @@ RnsShell::LayerInvalidateMask RSkComponentRNSVGPath::updateComponentProps(
 
   setPathDataAttribute(SkSVGAttribute::kD,newRNSVGPathProps.d.c_str());
 
-  updateCommonNodeProps(newRNSVGPathProps,selfNode);
+  updateCommonNodeProps(newRNSVGPathProps,this);
 
   return invalidateMask;
 }

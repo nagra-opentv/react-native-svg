@@ -20,18 +20,16 @@ namespace react {
 
 RSkComponentRNSVGView::RSkComponentRNSVGView(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-     INHERITED(SkSVGTag::kSvg) {
-  selfNode=sk_sp<RSkSVGNode>(this);
-}
+     INHERITED(SkSVGTag::kSvg) {}
 
 void RSkComponentRNSVGView::OnPaint(SkCanvas *canvas) {
     SkSVGLengthContext       lctx(svgContainerSize);
     SkSVGPresentationContext pctx;
     
-    printContainiersNodeInfo();
+    printChildList();
     RNS_LOG_INFO("---Start render from Root SVG Node---");
     // Start render from Root SVG Node
-    selfNode->render(SkSVGRenderContext(canvas, IDMapper, lctx, pctx));
+    INHERITED::render(SkSVGRenderContext(canvas, IDMapper, lctx, pctx));
 }
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGView::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
@@ -71,8 +69,15 @@ void RSkComponentRNSVGView::mountChildComponent(
     const int index) {
   RNS_LOG_INFO("RSkComponentRNSVGView holdinAg child :" << newChildComponent->getComponentData().componentName);
 
-  addComponentToSVGContainer(newChildComponent);
+  addChildAtIndex(newChildComponent,index);
 
+}
+
+void RSkComponentRNSVGView::unmountChildComponent(
+    std::shared_ptr<RSkComponent> oldChildComponent,
+    const int index) {
+  RNS_LOG_INFO("RSkComponentRNSVGView recieved unmount for child :" << oldChildComponent->getComponentData().componentName);
+  removeChildAtIndex(oldChildComponent,index);
 }
 
 bool RSkComponentRNSVGView::onPrepareToRender(SkSVGRenderContext* ctx) const {

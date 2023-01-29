@@ -7,12 +7,16 @@
 #include "experimental/svg/model/SkSVGAttribute.h"
 #include "RSkSVGNode.h"
 
+namespace facebook {
+
+namespace react {
+
 template <typename T>
-void updateCommonNodeProps(T props ,sk_sp<facebook::react::RSkSVGNode> Node){
+void updateCommonNodeProps(T props ,RSkSVGNode* Node){
 
   if(!Node ) return;
 
-    Node->nodeName=props.name.c_str();
+  Node->nodeName=props.name.c_str();
   
   RNS_LOG_INFO("Property Info");
   RNS_LOG_INFO("---------------");
@@ -57,7 +61,7 @@ void updateCommonNodeProps(T props ,sk_sp<facebook::react::RSkSVGNode> Node){
 
 template <typename T>
 void updateColorFromColorStruct(T colorStruct,SkSVGAttribute attr,
-                                sk_sp<facebook::react::RSkSVGNode> Node){
+                                RSkSVGNode * Node){
 
   if((colorStruct.type == 0) && colorStruct.payload) {
 
@@ -77,5 +81,8 @@ void updateColorFromColorStruct(T colorStruct,SkSVGAttribute attr,
    RNS_LOG_TODO(" Support for color as brush Ref , color struct type : " <<colorStruct.type);
  }
 }
+
+}//react
+}//facebook
 
 

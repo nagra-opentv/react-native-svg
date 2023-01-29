@@ -18,9 +18,7 @@ namespace react {
 
 RSkComponentRNSVGCircle::RSkComponentRNSVGCircle(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-      INHERITED(SkSVGTag::kCircle) { 
-  selfNode=sk_sp<RSkSVGNode>(this);
-}
+      INHERITED(SkSVGTag::kCircle) {}
 
 void RSkComponentRNSVGCircle::mountChildComponent(
     std::shared_ptr<RSkComponent> newChildComponent,
@@ -44,7 +42,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::updateComponentProps(Sha
   setLengthAttribute(SkSVGAttribute::kCy,newRNSVGCircleProps.cy.c_str());
   setLengthAttribute(SkSVGAttribute::kR,newRNSVGCircleProps.r.c_str());
 
-  updateCommonNodeProps(newRNSVGCircleProps,selfNode);
+  updateCommonNodeProps(newRNSVGCircleProps,this);
 
   return RnsShell::LayerInvalidateNone;
 }
