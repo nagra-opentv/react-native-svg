@@ -133,8 +133,8 @@ public:
   RNSVGCommonNodeProps( const RNSVGCommonNodeProps &sourceProps, const RawProps &rawProps);
 
 #pragma mark - Props
-// Retaining Opacity As Native Props to avoid error "referenceing it from multiple base class" [Viewprops & here]  
   std::string name{};
+  Float opacity{1.0};
   std::vector<Float> matrix{};
   std::string mask{};
   std::string markerStart{};
@@ -183,8 +183,6 @@ class RNSVGCircleProps final : public ViewProps , public RNSVGCommonNodeProps, p
   RNSVGCircleProps() = default;
   RNSVGCircleProps( const RNSVGCircleProps &sourceProps, const RawProps &rawProps);
 
-  Float opacity{1.0};
-  
   #pragma mark - Native Props
 
   std::string cx{};
@@ -200,26 +198,19 @@ class RNSVGClipPathProps final : public ViewProps ,
   RNSVGClipPathProps() = default;
   RNSVGClipPathProps( const RNSVGClipPathProps &sourceProps, const RawProps &rawProps);
 
-  Float opacity{1.0};
-
 };
 
 class RNSVGDefsProps final : public ViewProps, public RNSVGCommonNodeProps {
  public:
   RNSVGDefsProps() = default;
   RNSVGDefsProps( const RNSVGDefsProps &sourceProps, const RawProps &rawProps);
-
-#pragma mark - Props
-
-  Float opacity{1.0};
+ 
 };
 
 class RNSVGEllipseProps final : public ViewProps, public RNSVGCommonNodeProps , public RNSVGCommonRenderableProps{
  public:
   RNSVGEllipseProps() = default;
   RNSVGEllipseProps( const RNSVGEllipseProps &sourceProps, const RawProps &rawProps);
-
-  Float opacity{1.0};
 
 #pragma mark - Native Props
 
@@ -237,10 +228,6 @@ class RNSVGForeignObjectProps final : public ViewProps,
   RNSVGForeignObjectProps() = default;
   RNSVGForeignObjectProps( const RNSVGForeignObjectProps &sourceProps, const RawProps &rawProps);
 
-#pragma mark - Props
-
-  Float opacity{1.0};
-
 #pragma mark - Native Props
 
   std::string x{};
@@ -257,20 +244,12 @@ class RNSVGGroupProps final : public ViewProps,
   RNSVGGroupProps() = default;
   RNSVGGroupProps( const RNSVGGroupProps &sourceProps, const RawProps &rawProps);
 
-#pragma mark - Props
-
-  Float opacity{1.0};
-
 };
 
 class RNSVGImageProps final : public ViewProps, public RNSVGCommonNodeProps, public RNSVGCommonRenderableProps {
  public:
   RNSVGImageProps() = default;
   RNSVGImageProps( const RNSVGImageProps &sourceProps, const RawProps &rawProps);
-
-#pragma mark - Props
-
-  Float opacity{1.0};
 
 #pragma mark - Native Props
 
@@ -288,10 +267,6 @@ class RNSVGLinearGradientProps final : public ViewProps, public RNSVGCommonNodeP
   RNSVGLinearGradientProps() = default;
   RNSVGLinearGradientProps( const RNSVGLinearGradientProps &sourceProps, const RawProps &rawProps);
 
-#pragma mark - Props
-
-  Float opacity{1.0};
-
 #pragma mark - Native Props
 
   std::string x1{};
@@ -308,10 +283,6 @@ class RNSVGLineProps final : public ViewProps , public RNSVGCommonNodeProps, pub
   RNSVGLineProps() = default;
   RNSVGLineProps( const RNSVGLineProps &sourceProps, const RawProps &rawProps);
 
-#pragma mark - Props
-
-  Float opacity{1.0};
-
 #pragma mark - Native Props
 
   std::string x1{};
@@ -327,10 +298,6 @@ class RNSVGMarkerProps final : public ViewProps,
  public:
   RNSVGMarkerProps() = default;
   RNSVGMarkerProps( const RNSVGMarkerProps &sourceProps, const RawProps &rawProps);
-
-#pragma mark - Props
-
-  Float opacity{1.0};
 
 #pragma mark - Native Props
 
@@ -356,10 +323,6 @@ class RNSVGMaskProps final : public ViewProps,
   RNSVGMaskProps() = default;
   RNSVGMaskProps( const RNSVGMaskProps &sourceProps, const RawProps &rawProps);
 
-#pragma mark - Props
-
-  Float opacity{1.0};
-
 #pragma mark - Native Props
 
   std::string x{};
@@ -376,10 +339,6 @@ class RNSVGPathProps final : public ViewProps, public RNSVGCommonNodeProps , pub
   RNSVGPathProps() = default;
   RNSVGPathProps( const RNSVGPathProps &sourceProps, const RawProps &rawProps);
 
-#pragma mark - Props
-
-  Float opacity{1.0};
-
 #pragma mark - Native Props
 
   std::string d{};
@@ -392,10 +351,6 @@ class RNSVGPatternProps final : public ViewProps,
  public:
   RNSVGPatternProps() = default;
   RNSVGPatternProps( const RNSVGPatternProps &sourceProps, const RawProps &rawProps);
-
-#pragma mark -  Props
-
-  Float opacity{1.0};
 
 #pragma mark - Native Props
 
@@ -419,10 +374,6 @@ class RNSVGRadialGradientProps final : public ViewProps, public RNSVGCommonNodeP
   RNSVGRadialGradientProps() = default;
   RNSVGRadialGradientProps( const RNSVGRadialGradientProps &sourceProps, const RawProps &rawProps);
 
-#pragma mark - Props
-
-  Float opacity{1.0};
-
 #pragma mark - Native Props
 
   std::string fx{};
@@ -440,10 +391,6 @@ class RNSVGRectProps final : public ViewProps, public RNSVGCommonNodeProps , pub
  public:
   RNSVGRectProps() = default;
   RNSVGRectProps( const RNSVGRectProps &sourceProps, const RawProps &rawProps);
-
-#pragma mark -  Props
-
-  Float opacity{1.0};
 
 #pragma mark - Native Props
 
@@ -485,10 +432,6 @@ class RNSVGSymbolProps final : public ViewProps ,
 
 #pragma mark - Native Props
 
-  Float opacity{1.0};
-
-#pragma mark - Native Props
-
   Float minX{0.0};
   Float minY{0.0};
   Float vbWidth{0.0};
@@ -504,10 +447,6 @@ class RNSVGTextProps final : public ViewProps ,
  public:
   RNSVGTextProps() = default;
   RNSVGTextProps( const RNSVGTextProps &sourceProps, const RawProps &rawProps);
-
-#pragma mark - Props
-
-  Float opacity{1.0};
 
 #pragma mark - Native Props
 
@@ -531,10 +470,6 @@ class RNSVGTextPathProps final : public ViewProps,
  public:
   RNSVGTextPathProps() = default;
   RNSVGTextPathProps( const RNSVGTextPathProps &sourceProps, const RawProps &rawProps);
-
-#pragma mark - Native Props
-
-  Float opacity{1.0};
 
 #pragma mark - Native Props
 
@@ -567,10 +502,6 @@ class RNSVGTSpanProps final : public ViewProps ,
 
 #pragma mark - Native Props
 
-  Float opacity{1.0};
-
-#pragma mark - Native Props
-
   std::vector<std::string> dx{};
   std::vector<std::string> dy{};
   std::vector<std::string> x{};
@@ -589,10 +520,6 @@ class RNSVGUseProps final : public ViewProps, public RNSVGCommonNodeProps, publi
  public:
   RNSVGUseProps() = default;
   RNSVGUseProps( const RNSVGUseProps &sourceProps, const RawProps &rawProps);
-
-#pragma mark - Props
-
-  Float opacity{1.0};
 
 #pragma mark - Native Props
 

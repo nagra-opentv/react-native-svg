@@ -22,6 +22,7 @@ RNSVGCommonNodeProps::RNSVGCommonNodeProps(
     const RawProps &rawProps): 
 
     name(convertRawProp( rawProps, "name", sourceProps.name, {})),
+    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
     matrix(convertRawProp( rawProps, "matrix", sourceProps.matrix, {})),
     mask(convertRawProp( rawProps, "mask", sourceProps.mask, {})),
     markerStart(convertRawProp( rawProps, "markerStart", sourceProps.markerStart, {})),
@@ -71,28 +72,26 @@ RNSVGCircleProps::RNSVGCircleProps(
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
 
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
     cx(convertRawProp( rawProps, "cx", sourceProps.cx, {})),
     cy(convertRawProp( rawProps, "cy", sourceProps.cy, {})),
     r(convertRawProp( rawProps, "r", sourceProps.r, {}))
       {}
+
 RNSVGClipPathProps::RNSVGClipPathProps(
     
     const RNSVGClipPathProps &sourceProps,
     const RawProps &rawProps): ViewProps( sourceProps, rawProps), 
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
-                               RNSVGGroupCommonrops(sourceProps, rawProps),
-
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0}))
+                               RNSVGGroupCommonrops(sourceProps, rawProps)
       {}
+
 RNSVGDefsProps::RNSVGDefsProps(
     
     const RNSVGDefsProps &sourceProps,
-    const RawProps &rawProps): ViewProps( sourceProps, rawProps),RNSVGCommonNodeProps(sourceProps, rawProps),
-
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0}))
+    const RawProps &rawProps): ViewProps( sourceProps, rawProps),RNSVGCommonNodeProps(sourceProps, rawProps)
       {}
+
 RNSVGEllipseProps::RNSVGEllipseProps(
     
     const RNSVGEllipseProps &sourceProps,
@@ -100,12 +99,12 @@ RNSVGEllipseProps::RNSVGEllipseProps(
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
 
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
     cx(convertRawProp( rawProps, "cx", sourceProps.cx, {})),
     cy(convertRawProp( rawProps, "cy", sourceProps.cy, {})),
     rx(convertRawProp( rawProps, "rx", sourceProps.rx, {})),
     ry(convertRawProp( rawProps, "ry", sourceProps.ry, {}))
       {}
+
 RNSVGForeignObjectProps::RNSVGForeignObjectProps(
     
     const RNSVGForeignObjectProps &sourceProps,
@@ -114,22 +113,21 @@ RNSVGForeignObjectProps::RNSVGForeignObjectProps(
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
                                RNSVGGroupCommonrops(sourceProps, rawProps),
 
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
     x(convertRawProp( rawProps, "x", sourceProps.x, {})),
     y(convertRawProp( rawProps, "y", sourceProps.y, {})),
     height(convertRawProp( rawProps, "height", sourceProps.height, {})),
     width(convertRawProp( rawProps, "width", sourceProps.width, {}))
       {}
+
 RNSVGGroupProps::RNSVGGroupProps(
     
     const RNSVGGroupProps &sourceProps,
     const RawProps &rawProps): ViewProps( sourceProps, rawProps), 
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
-                               RNSVGGroupCommonrops(sourceProps, rawProps),
-
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0}))
+                               RNSVGGroupCommonrops(sourceProps, rawProps)
       {}
+
 RNSVGImageProps::RNSVGImageProps(
     
     const RNSVGImageProps &sourceProps,
@@ -137,7 +135,6 @@ RNSVGImageProps::RNSVGImageProps(
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
 
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
     x(convertRawProp( rawProps, "x", sourceProps.x, {})),
     y(convertRawProp( rawProps, "y", sourceProps.y, {})),
     width(convertRawProp( rawProps, "width", sourceProps.width, {})),
@@ -146,12 +143,12 @@ RNSVGImageProps::RNSVGImageProps(
     align(convertRawProp( rawProps, "align", sourceProps.align, {})),
     meetOrSlice(convertRawProp( rawProps, "meetOrSlice", sourceProps.meetOrSlice, {0}))
       {}
+
 RNSVGLinearGradientProps::RNSVGLinearGradientProps(
     
     const RNSVGLinearGradientProps &sourceProps,
     const RawProps &rawProps): ViewProps( sourceProps, rawProps),RNSVGCommonNodeProps(sourceProps, rawProps),
 
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
     x1(convertRawProp( rawProps, "x1", sourceProps.x1, {})),
     y1(convertRawProp( rawProps, "y1", sourceProps.y1, {})),
     x2(convertRawProp( rawProps, "x2", sourceProps.x2, {})),
@@ -160,6 +157,7 @@ RNSVGLinearGradientProps::RNSVGLinearGradientProps(
     gradientUnits(convertRawProp( rawProps, "gradientUnits", sourceProps.gradientUnits, {0})),
     gradientTransform(convertRawProp( rawProps, "gradientTransform", sourceProps.gradientTransform, {}))
       {}
+
 RNSVGLineProps::RNSVGLineProps(
     
     const RNSVGLineProps &sourceProps,
@@ -167,12 +165,12 @@ RNSVGLineProps::RNSVGLineProps(
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
 
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
     x1(convertRawProp( rawProps, "x1", sourceProps.x1, {})),
     y1(convertRawProp( rawProps, "y1", sourceProps.y1, {})),
     x2(convertRawProp( rawProps, "x2", sourceProps.x2, {})),
     y2(convertRawProp( rawProps, "y2", sourceProps.y2, {}))
       {}
+
 RNSVGMarkerProps::RNSVGMarkerProps(
     
     const RNSVGMarkerProps &sourceProps,
@@ -181,7 +179,6 @@ RNSVGMarkerProps::RNSVGMarkerProps(
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
                                RNSVGGroupCommonrops(sourceProps, rawProps),
 
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
     refX(convertRawProp( rawProps, "refX", sourceProps.refX, {})),
     refY(convertRawProp( rawProps, "refY", sourceProps.refY, {})),
     markerHeight(convertRawProp( rawProps, "markerHeight", sourceProps.markerHeight, {})),
@@ -195,6 +192,7 @@ RNSVGMarkerProps::RNSVGMarkerProps(
     align(convertRawProp( rawProps, "align", sourceProps.align, {})),
     meetOrSlice(convertRawProp( rawProps, "meetOrSlice", sourceProps.meetOrSlice, {0}))
       {}
+
 RNSVGMaskProps::RNSVGMaskProps(
     
     const RNSVGMaskProps &sourceProps,
@@ -202,8 +200,7 @@ RNSVGMaskProps::RNSVGMaskProps(
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
                                RNSVGGroupCommonrops(sourceProps, rawProps),
-
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
+    
     x(convertRawProp( rawProps, "x", sourceProps.x, {})),
     y(convertRawProp( rawProps, "y", sourceProps.y, {})),
     height(convertRawProp( rawProps, "height", sourceProps.height, {})),
@@ -212,16 +209,17 @@ RNSVGMaskProps::RNSVGMaskProps(
     maskContentUnits(convertRawProp( rawProps, "maskContentUnits", sourceProps.maskContentUnits, {0})),
     maskTransform(convertRawProp( rawProps, "maskTransform", sourceProps.maskTransform, {}))
       {}
+
 RNSVGPathProps::RNSVGPathProps(
     
     const RNSVGPathProps &sourceProps,
     const RawProps &rawProps): ViewProps( sourceProps, rawProps), 
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
-
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
+    
     d(convertRawProp( rawProps, "d", sourceProps.d, {}))
       {}
+
 RNSVGPatternProps::RNSVGPatternProps(
     
     const RNSVGPatternProps &sourceProps,
@@ -229,8 +227,7 @@ RNSVGPatternProps::RNSVGPatternProps(
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
                                RNSVGGroupCommonrops(sourceProps, rawProps),
-
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
+  
     x(convertRawProp( rawProps, "x", sourceProps.x, {})),
     y(convertRawProp( rawProps, "y", sourceProps.y, {})),
     height(convertRawProp( rawProps, "height", sourceProps.height, {})),
@@ -245,12 +242,12 @@ RNSVGPatternProps::RNSVGPatternProps(
     align(convertRawProp( rawProps, "align", sourceProps.align, {})),
     meetOrSlice(convertRawProp( rawProps, "meetOrSlice", sourceProps.meetOrSlice, {0}))
       {}
+
 RNSVGRadialGradientProps::RNSVGRadialGradientProps(
     
     const RNSVGRadialGradientProps &sourceProps,
     const RawProps &rawProps): ViewProps( sourceProps, rawProps),RNSVGCommonNodeProps(sourceProps, rawProps),
-
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
+  
     fx(convertRawProp( rawProps, "fx", sourceProps.fx, {})),
     fy(convertRawProp( rawProps, "fy", sourceProps.fy, {})),
     cx(convertRawProp( rawProps, "cx", sourceProps.cx, {})),
@@ -261,14 +258,14 @@ RNSVGRadialGradientProps::RNSVGRadialGradientProps(
     gradientUnits(convertRawProp( rawProps, "gradientUnits", sourceProps.gradientUnits, {0})),
     gradientTransform(convertRawProp( rawProps, "gradientTransform", sourceProps.gradientTransform, {}))
       {}
+
 RNSVGRectProps::RNSVGRectProps(
     
     const RNSVGRectProps &sourceProps,
     const RawProps &rawProps): ViewProps( sourceProps, rawProps), 
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
-
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
+    
     x(convertRawProp( rawProps, "x", sourceProps.x, {})),
     y(convertRawProp( rawProps, "y", sourceProps.y, {})),
     height(convertRawProp( rawProps, "height", sourceProps.height, {})),
@@ -276,6 +273,7 @@ RNSVGRectProps::RNSVGRectProps(
     rx(convertRawProp( rawProps, "rx", sourceProps.rx, {})),
     ry(convertRawProp( rawProps, "ry", sourceProps.ry, {}))
       {}
+
 RNSVGSvgViewProps::RNSVGSvgViewProps(
     
     const RNSVGSvgViewProps &sourceProps,
@@ -293,6 +291,7 @@ RNSVGSvgViewProps::RNSVGSvgViewProps(
     color(convertRawProp( rawProps, "color", sourceProps.color, {})),
     pointerEvents(convertRawProp( rawProps, "pointerEvents", sourceProps.pointerEvents, {}))
       {}
+
 RNSVGSymbolProps::RNSVGSymbolProps(
     
     const RNSVGSymbolProps &sourceProps,
@@ -300,8 +299,7 @@ RNSVGSymbolProps::RNSVGSymbolProps(
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
                                RNSVGGroupCommonrops(sourceProps, rawProps),
-
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
+    
     minX(convertRawProp( rawProps, "minX", sourceProps.minX, {0.0})),
     minY(convertRawProp( rawProps, "minY", sourceProps.minY, {0.0})),
     vbWidth(convertRawProp( rawProps, "vbWidth", sourceProps.vbWidth, {0.0})),
@@ -309,6 +307,7 @@ RNSVGSymbolProps::RNSVGSymbolProps(
     align(convertRawProp( rawProps, "align", sourceProps.align, {})),
     meetOrSlice(convertRawProp( rawProps, "meetOrSlice", sourceProps.meetOrSlice, {0}))
       {}
+
 RNSVGTextProps::RNSVGTextProps(
     
     const RNSVGTextProps &sourceProps,
@@ -316,8 +315,7 @@ RNSVGTextProps::RNSVGTextProps(
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
                                RNSVGGroupCommonrops(sourceProps, rawProps),
-
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
+    
     dx(convertRawProp( rawProps, "dx", sourceProps.dx, {})),
     dy(convertRawProp( rawProps, "dy", sourceProps.dy, {})),
     x(convertRawProp( rawProps, "x", sourceProps.x, {})),
@@ -330,6 +328,7 @@ RNSVGTextProps::RNSVGTextProps(
     alignmentBaseline(convertRawProp( rawProps, "alignmentBaseline", sourceProps.alignmentBaseline, {})),
     verticalAlign(convertRawProp( rawProps, "verticalAlign", sourceProps.verticalAlign, {}))
       {}
+
 RNSVGTextPathProps::RNSVGTextPathProps(
     
     const RNSVGTextPathProps &sourceProps,
@@ -337,8 +336,7 @@ RNSVGTextPathProps::RNSVGTextPathProps(
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
                                RNSVGGroupCommonrops(sourceProps, rawProps),
-
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
+    
     dx(convertRawProp( rawProps, "dx", sourceProps.dx, {})),
     dy(convertRawProp( rawProps, "dy", sourceProps.dy, {})),
     x(convertRawProp( rawProps, "x", sourceProps.x, {})),
@@ -357,6 +355,7 @@ RNSVGTextPathProps::RNSVGTextPathProps(
     spacing(convertRawProp( rawProps, "spacing", sourceProps.spacing, {})),
     startOffset(convertRawProp( rawProps, "startOffset", sourceProps.startOffset, {}))
       {}
+
 RNSVGTSpanProps::RNSVGTSpanProps(
     
     const RNSVGTSpanProps &sourceProps,
@@ -364,8 +363,7 @@ RNSVGTSpanProps::RNSVGTSpanProps(
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
                                RNSVGGroupCommonrops(sourceProps, rawProps),
-
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
+    
     dx(convertRawProp( rawProps, "dx", sourceProps.dx, {})),
     dy(convertRawProp( rawProps, "dy", sourceProps.dy, {})),
     x(convertRawProp( rawProps, "x", sourceProps.x, {})),
@@ -379,14 +377,14 @@ RNSVGTSpanProps::RNSVGTSpanProps(
     verticalAlign(convertRawProp( rawProps, "verticalAlign", sourceProps.verticalAlign, {})),
     content(convertRawProp( rawProps, "content", sourceProps.content, {}))
       {}
+
 RNSVGUseProps::RNSVGUseProps(
     
     const RNSVGUseProps &sourceProps,
     const RawProps &rawProps): ViewProps( sourceProps, rawProps), 
                                RNSVGCommonNodeProps(sourceProps, rawProps),
                                RNSVGCommonRenderableProps(sourceProps, rawProps),
-
-    opacity(convertRawProp( rawProps, "opacity", sourceProps.opacity, {1.0})),
+    
     href(convertRawProp( rawProps, "href", sourceProps.href, {})),
     x(convertRawProp( rawProps, "x", sourceProps.x, {})),
     y(convertRawProp( rawProps, "y", sourceProps.y, {})),

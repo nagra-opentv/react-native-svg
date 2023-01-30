@@ -6,13 +6,7 @@
  */
 
 
-#include "include/core/SkCanvas.h"
-#include "include/core/SkPaint.h"
-
-#include "react/renderer/components/rnsvg/RNSVGProps.h"
-
 #include "RSkComponentRNSVGEllipse.h"
-#include "RSkSVGPropsParserUtil.h"
 
 namespace facebook {
 namespace react {
@@ -35,22 +29,28 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::updateComponentProps(Sh
 
   auto const &newRNSVGEllipseProps = *std::static_pointer_cast<RNSVGEllipseProps const>(newViewProps);
 
-  RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
-  RNS_LOG_INFO(" CX: "<<newRNSVGEllipseProps.cx);
-  RNS_LOG_INFO(" CY: "<<newRNSVGEllipseProps.cy);
-  RNS_LOG_INFO(" RX: "<<newRNSVGEllipseProps.rx);
-  RNS_LOG_INFO(" RY: "<<newRNSVGEllipseProps.ry);
-
-  setLengthAttribute(SkSVGAttribute::kCx,newRNSVGEllipseProps.cx.c_str());
-  setLengthAttribute(SkSVGAttribute::kCy,newRNSVGEllipseProps.cy.c_str());
-  setLengthAttribute(SkSVGAttribute::kRx,newRNSVGEllipseProps.rx.c_str());
-  setLengthAttribute(SkSVGAttribute::kRy,newRNSVGEllipseProps.ry.c_str());
-
-  updateCommonNodeProps(newRNSVGEllipseProps,this);
+  RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
+  setNativeProps(newRNSVGEllipseProps);
+  setCommonRenderableProps(newRNSVGEllipseProps);
+  setCommonNodeProps(newRNSVGEllipseProps);
 
   return RnsShell::LayerInvalidateNone;
 }
 
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::setNativeProps(const RNSVGEllipseProps &nativeProps) {
+
+  RNS_LOG_INFO(" CX: "<<nativeProps.cx);
+  RNS_LOG_INFO(" CY: "<<nativeProps.cy);
+  RNS_LOG_INFO(" RX: "<<nativeProps.rx);
+  RNS_LOG_INFO(" RY: "<<nativeProps.ry);
+
+  setLengthAttribute(SkSVGAttribute::kCx,nativeProps.cx.c_str());
+  setLengthAttribute(SkSVGAttribute::kCy,nativeProps.cy.c_str());
+  setLengthAttribute(SkSVGAttribute::kRx,nativeProps.rx.c_str());
+  setLengthAttribute(SkSVGAttribute::kRy,nativeProps.ry.c_str());
+
+  return RnsShell::LayerInvalidateNone;
+}
 
 void RSkComponentRNSVGEllipse::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
     switch (attr) {

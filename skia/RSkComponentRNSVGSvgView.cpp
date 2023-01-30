@@ -6,14 +6,10 @@
  */
 
 
-#include "react/renderer/components/rnsvg/RNSVGProps.h"
-
-#include "RSkComponentRNSVGSvgView.h"
-
 #include "experimental/svg/model/SkSVGRenderContext.h"
 
-#include "RSkSVGPropsParserUtil.h"
-
+#include "RSkComponentRNSVGGroup.h"
+#include "RSkComponentRNSVGSvgView.h"
 
 namespace facebook {
 namespace react {
@@ -70,7 +66,14 @@ void RSkComponentRNSVGSvgView::mountChildComponent(
   RNS_LOG_INFO("RSkComponentRNSVGSvgView holdinAg child :" << newChildComponent->getComponentData().componentName);
 
   addChildAtIndex(newChildComponent,index);
-
+  
+  // Fix: Skia's default paint color is black , where it is transparent on reference platform.
+  //      To match with the reference platform, altering skia's default paint to transparent on the
+  //      outtermost container, which will the final inherit Node for childs. 
+  
+  if(!strcmp(newChildComponent->getComponentData().componentName , "RNSVGGroup")) {
+    (static_cast<RSkComponentRNSVGGroup *>(newChildComponent.get()))->alterSkiaDefaultPaint();
+  }
 }
 
 void RSkComponentRNSVGSvgView::unmountChildComponent(

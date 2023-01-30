@@ -5,13 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "include/core/SkCanvas.h"
-#include "include/core/SkPaint.h"
-
-#include "react/renderer/components/rnsvg/RNSVGProps.h"
-
 #include "RSkComponentRNSVGCircle.h"
-#include "RSkSVGPropsParserUtil.h"
 
 namespace facebook {
 namespace react {
@@ -20,10 +14,12 @@ RSkComponentRNSVGCircle::RSkComponentRNSVGCircle(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
       INHERITED(SkSVGTag::kCircle) {}
 
-void RSkComponentRNSVGCircle::mountChildComponent(
-    std::shared_ptr<RSkComponent> newChildComponent,
-    const int index) {
+void RSkComponentRNSVGCircle::mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index) {
   RNS_LOG_INFO("cannot append child nodes to an SVG shape.\n");
+}
+
+void RSkComponentRNSVGCircle::unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index) {
+  RNS_LOG_INFO(" SVG Element Circle can't have child ");
 }
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
@@ -31,22 +27,28 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::updateComponentProps(Sha
   auto component = getComponentData();
 
   auto const &newRNSVGCircleProps = *std::static_pointer_cast<RNSVGCircleProps const>(newViewProps);
- 
-  RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
-  RNS_LOG_INFO(" CX: "<<newRNSVGCircleProps.cx);
-  RNS_LOG_INFO(" CY: "<<newRNSVGCircleProps.cy);
-  RNS_LOG_INFO(" r: "<<newRNSVGCircleProps.r);
 
+  RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
 
-  setLengthAttribute(SkSVGAttribute::kCx,newRNSVGCircleProps.cx.c_str());
-  setLengthAttribute(SkSVGAttribute::kCy,newRNSVGCircleProps.cy.c_str());
-  setLengthAttribute(SkSVGAttribute::kR,newRNSVGCircleProps.r.c_str());
-
-  updateCommonNodeProps(newRNSVGCircleProps,this);
+  setNativeProps(newRNSVGCircleProps);
+  setCommonRenderableProps(newRNSVGCircleProps);
+  setCommonNodeProps(newRNSVGCircleProps);
 
   return RnsShell::LayerInvalidateNone;
 }
 
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::setNativeProps(const RNSVGCircleProps &nativeProps) {
+
+  RNS_LOG_INFO(" CX: "<<nativeProps.cx);
+  RNS_LOG_INFO(" CY: "<<nativeProps.cy);
+  RNS_LOG_INFO(" r: "<<nativeProps.r);
+  
+  setLengthAttribute(SkSVGAttribute::kCx,nativeProps.cx.c_str());
+  setLengthAttribute(SkSVGAttribute::kCy,nativeProps.cy.c_str());
+  setLengthAttribute(SkSVGAttribute::kR,nativeProps.r.c_str());
+
+  return RnsShell::LayerInvalidateNone;
+}
 
 void RSkComponentRNSVGCircle::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
 

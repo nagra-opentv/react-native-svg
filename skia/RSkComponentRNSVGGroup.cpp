@@ -5,20 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <vector>
-#include "include/core/SkPaint.h"
-
-
-#include "cxxreact/ModuleRegistry.h"
-
-#include "react/renderer/components/rnsvg/RNSVGProps.h"
-#include "rns_shell/compositor/layers/PictureLayer.h"
-
-
 #include "RSkComponentRNSVGGroup.h"
-#include "RSkSVGPropsParserUtil.h"
-
-std::vector<std::shared_ptr<RSkComponent>> groupChildContainer;
 
 namespace facebook {
 namespace react {
@@ -35,8 +22,9 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGGroup::updateComponentProps(Shar
   auto const &newRNSVGGroupPropsProps = *std::static_pointer_cast<RNSVGGroupProps const>(newViewProps);
 
   RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
-  updateCommonNodeProps(newRNSVGGroupPropsProps,this);
-
+  setCommonRenderableProps(newRNSVGGroupPropsProps);
+  setCommonNodeProps(newRNSVGGroupPropsProps);
+  setCommonGroupProps(newRNSVGGroupPropsProps);
   return invalidateMask;
 }
 
@@ -53,6 +41,23 @@ void RSkComponentRNSVGGroup::unmountChildComponent(
     const int index) {
   RNS_LOG_INFO("RSkComponentRNSVGGroup recieved unmount for child :" << oldChildComponent->getComponentData().componentName);
   removeChildAtIndex(oldChildComponent,index);
+}
+
+void RSkComponentRNSVGGroup::alterSkiaDefaultPaint() {
+ //Note: Skia's default paint is black. WhereIn on SVG REference platform it's transparent
+ //      To Match with Reference output, for the next immendiate child of SVGView,
+//        resetting color to transparent, if color not speciifed
+
+  auto component = getComponentData();
+  auto const &newRNSVGGroupPropsProps = *std::static_pointer_cast<RNSVGGroupProps const>(component.props);
+
+  // Reset Stroke & Fill Color if not specifed to transparent
+  if(std::find (newRNSVGGroupPropsProps.propList.begin(), newRNSVGGroupPropsProps.propList.end(), "fill") == newRNSVGGroupPropsProps.propList.end()) {
+    setPaintAttribute(SkSVGAttribute::kFill,"none");
+  }
+  if(std::find (newRNSVGGroupPropsProps.propList.begin(), newRNSVGGroupPropsProps.propList.end(), "stroke") == newRNSVGGroupPropsProps.propList.end()) {
+    setPaintAttribute(SkSVGAttribute::kStroke,"none");
+  }
 }
 
 } // namespace react

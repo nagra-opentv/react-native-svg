@@ -20,6 +20,116 @@ namespace react {
 
 RSkSVGNode::RSkSVGNode(SkSVGTag tag) : INHERITED(tag) {};
 
+void RSkSVGNode::setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps) {
+  RNS_LOG_INFO("Supported Properties count : "<<renderableProps.propList.size());
+  RNS_LOG_INFO("##################");
+  for (auto props : renderableProps.propList ) {
+    RNS_LOG_ERROR(props);
+  }
+  RNS_LOG_INFO("##################");
+  
+    //set Fill Properties if specified.Else set to inherit from parent's Props
+  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "fill") != renderableProps.propList.end()) {
+    setColorFromColorStruct(renderableProps.fill,SkSVGAttribute::kFill);
+  } else {
+    setPaintAttribute(SkSVGAttribute::kFill,"inherit");
+  }
+
+  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "fillOpacity") != renderableProps.propList.end()) {
+    setNumberAttribute( SkSVGAttribute::kFillOpacity,std::to_string(renderableProps.fillOpacity).c_str());
+  }
+
+  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "fillRule") != renderableProps.propList.end()) {
+    setFillRuleAttribute(SkSVGAttribute::kFillRule,(renderableProps.fillRule == 0 ) ? "evenodd" :"nonzero");
+  } else {
+     setFillRuleAttribute(SkSVGAttribute::kFillRule,"inherit");
+  }
+
+  //set Stroke Properties if specified.If NOt set to Inherit from Parent's Props.
+  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "stroke") != renderableProps.propList.end()) {
+    setColorFromColorStruct(renderableProps.stroke,SkSVGAttribute::kStroke);
+  } else {
+    setPaintAttribute(SkSVGAttribute::kStroke,"inherit");
+  }
+
+  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeOpacity") != renderableProps.propList.end()) {
+    setNumberAttribute( SkSVGAttribute::kStrokeOpacity,std::to_string(renderableProps.strokeOpacity).c_str());
+  }
+
+  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeWidth") != renderableProps.propList.end()) {
+    setLengthAttribute( SkSVGAttribute::kStrokeWidth,renderableProps.strokeWidth.c_str());
+  }
+
+  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeLinecap") != renderableProps.propList.end()) {
+    setLineCapAttribute(SkSVGAttribute::kStrokeLineCap,(renderableProps.strokeLinecap == 0 ) ? "butt" :
+                                                              ((renderableProps.strokeLinecap == 1 ) ? "round":"square"));
+  } else {
+    setLineCapAttribute(SkSVGAttribute::kStrokeLineCap,"inherit" );
+  }
+
+  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeLinejoin") != renderableProps.propList.end()) {
+    setLineJoinAttribute(SkSVGAttribute::kStrokeLineJoin,(renderableProps.strokeLinejoin == 0 ) ? "miter" :
+                                                              ((renderableProps.strokeLinejoin == 1 ) ? "round":"bevel"));
+  } else {
+    setLineJoinAttribute(SkSVGAttribute::kStrokeLineJoin,"inherit" );
+  }
+
+  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeDasharray") != renderableProps.propList.end()) {
+    setDashArrayAttribute(SkSVGAttribute::kStrokeDashArray,renderableProps.strokeDasharray);
+  } 
+
+  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeDashoffset") != renderableProps.propList.end()) {
+    setLengthAttribute(SkSVGAttribute::kStrokeDashOffset,std::to_string(renderableProps.strokeDashoffset).c_str());
+  }
+
+  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeMiterlimit") != renderableProps.propList.end()) {
+    setNumberAttribute( SkSVGAttribute::kStrokeMiterLimit,std::to_string(renderableProps.strokeMiterlimit).c_str());
+  }
+
+  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "vectorEffect") != renderableProps.propList.end()) {
+  //TODO : Vector EFFECT
+  }
+}
+
+void RSkSVGNode::setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps){
+
+  nodeName=nodeProps.name.c_str();
+  //set Opacity
+   setNumberAttribute(SkSVGAttribute::kOpacity,std::to_string(nodeProps.opacity).c_str());
+  //set Transform
+  setTransformAttribute(SkSVGAttribute::kTransform,nodeProps.matrix);
+  //set clip properties :: TODO -- check the inheritence behavour for clip Props
+  setFillRuleAttribute(SkSVGAttribute::kClipRule,(nodeProps.clipRule == 0 ) ? "evenodd" :"nonzero");
+  setClipPathAttribute(SkSVGAttribute::kClipPath,nodeProps.clipPath.c_str());
+}
+
+void RSkSVGNode::setCommonGroupProps(const RNSVGGroupProps &groupProps) {
+  RNS_LOG_TODO("To Be Handled");
+}
+
+void RSkSVGNode::setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr){
+
+  if(colorStruct.type == 0)  {
+    if(colorStruct.payload) {
+      auto colorValue = colorComponentsFromColor(colorStruct.payload);
+      SkColor color= SkColorSetARGB(colorValue.alpha * 255.99,colorValue.red * 255.99,colorValue.green * 255.99,colorValue.blue * 255.99);
+      SkSVGPaint paint(color);
+      setAttribute(attr,SkSVGPaintValue(paint));
+    } else {
+      // Color specified as none
+        setPaintAttribute(attr,"none");
+    } 
+ } else if(colorStruct.type ==  2) { // currentColor
+   setPaintAttribute(attr,"currentColor");
+ } else if(colorStruct.type == 3) { // context-fill
+   RNS_LOG_TODO(" Support for color : context-fill , color struct type : " <<colorStruct.type);
+ }else if(colorStruct.type == 4) { // context-stroke
+   RNS_LOG_TODO(" Support for color : context-stroke , color struct type : " <<colorStruct.type);
+ }else if(colorStruct.type == 1) { // brush ref
+   RNS_LOG_TODO(" Support for color as brush Ref , color struct type : " <<colorStruct.type);
+ }
+}
+
 bool RSkSVGNode::setPaintAttribute(SkSVGAttribute attr, const char* stringValue) {
   SkSVGPaint paint;
   SkSVGAttributeParser parser(stringValue);

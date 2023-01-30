@@ -5,13 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "include/core/SkCanvas.h"
-#include "include/core/SkPaint.h"
-
-#include "react/renderer/components/rnsvg/RNSVGProps.h"
-
 #include "RSkComponentRNSVGRect.h"
-#include "RSkSVGPropsParserUtil.h"
 
 namespace facebook {
 namespace react {
@@ -27,24 +21,32 @@ RSkComponentRNSVGRect::RSkComponentRNSVGRect(const ShadowView &shadowView)
 
   auto const &newRNSVGRectProps = *std::static_pointer_cast<RNSVGRectProps const>(newViewProps);
   
-  RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
-  RNS_LOG_INFO(" X: "<<newRNSVGRectProps.x);
-  RNS_LOG_INFO(" Y: "<<newRNSVGRectProps.y);
-  RNS_LOG_INFO(" Rx: "<<newRNSVGRectProps.rx);
-  RNS_LOG_INFO(" Ry: "<<newRNSVGRectProps.ry);
-  RNS_LOG_INFO(" Width: "<<newRNSVGRectProps.width);
-  RNS_LOG_INFO(" Height: "<<newRNSVGRectProps.height);
+  RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
 
-  setLengthAttribute(SkSVGAttribute::kX,newRNSVGRectProps.x.c_str());
-  setLengthAttribute(SkSVGAttribute::kY,newRNSVGRectProps.y.c_str());
-  setLengthAttribute(SkSVGAttribute::kRx,newRNSVGRectProps.rx.c_str());
-  setLengthAttribute(SkSVGAttribute::kRy,newRNSVGRectProps.ry.c_str());
-  setLengthAttribute(SkSVGAttribute::kWidth,newRNSVGRectProps.width.c_str());
-  setLengthAttribute(SkSVGAttribute::kHeight,newRNSVGRectProps.height.c_str());
-
-  updateCommonNodeProps(newRNSVGRectProps,this);
+  setNativeProps(newRNSVGRectProps);
+  setCommonRenderableProps(newRNSVGRectProps);
+  setCommonNodeProps(newRNSVGRectProps);
 
   return invalidateMask;
+}
+
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::setNativeProps(const RNSVGRectProps &nativeProps) {
+
+  RNS_LOG_INFO(" X: "<<nativeProps.x);
+  RNS_LOG_INFO(" Y: "<<nativeProps.y);
+  RNS_LOG_INFO(" Rx: "<<nativeProps.rx);
+  RNS_LOG_INFO(" Ry: "<<nativeProps.ry);
+  RNS_LOG_INFO(" Width: "<<nativeProps.width);
+  RNS_LOG_INFO(" Height: "<<nativeProps.height);
+
+  setLengthAttribute(SkSVGAttribute::kX,nativeProps.x.c_str());
+  setLengthAttribute(SkSVGAttribute::kY,nativeProps.y.c_str());
+  setLengthAttribute(SkSVGAttribute::kRx,nativeProps.rx.c_str());
+  setLengthAttribute(SkSVGAttribute::kRy,nativeProps.ry.c_str());
+  setLengthAttribute(SkSVGAttribute::kWidth,nativeProps.width.c_str());
+  setLengthAttribute(SkSVGAttribute::kHeight,nativeProps.height.c_str());
+
+  return RnsShell::LayerInvalidateNone;
 }
 
 void RSkComponentRNSVGRect::mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index) {

@@ -22,9 +22,21 @@ void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
   const auto fillType = ctx.presentationContext().fInherited.fFillRule->asFillType();
 
   if (const SkPaint* fillPaint = ctx.fillPaint()) {
+    SkColor color=fillPaint->getColor();
+    RNS_LOG_DEBUG("FillColor : "<<color);
+    RNS_LOG_DEBUG("A : "<<SkColorGetA(color));
+    RNS_LOG_DEBUG("R : "<<SkColorGetR(color));
+    RNS_LOG_DEBUG("G : "<<SkColorGetG(color));
+    RNS_LOG_DEBUG("B : "<<SkColorGetB(color));
     this->onDraw(ctx.canvas(), ctx.lengthContext(), *fillPaint, fillType);
   }
   if (const SkPaint* strokePaint = ctx.strokePaint()) {
+    SkColor color=strokePaint->getColor();
+    RNS_LOG_DEBUG("StrokeColor : "<<color);
+    RNS_LOG_DEBUG("A : "<<SkColorGetA(color));
+    RNS_LOG_DEBUG("R : "<<SkColorGetR(color));
+    RNS_LOG_DEBUG("G : "<<SkColorGetG(color));
+    RNS_LOG_DEBUG("B : "<<SkColorGetB(color));
     this->onDraw(ctx.canvas(), ctx.lengthContext(), *strokePaint, fillType);
   }
 
@@ -35,7 +47,6 @@ void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
   RNS_LOG_INFO(" getTranslateY "<<matrix.getTranslateY());
   RNS_LOG_INFO(" getSkewX "<<matrix.getSkewX());
   RNS_LOG_INFO(" getSkewY "<<matrix.getSkewY());
-
 }
 
 } // namespace react

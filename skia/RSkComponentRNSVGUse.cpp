@@ -5,15 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "experimental/svg/model/SkSVGRenderContext.h"
-#include "experimental/svg/model/SkSVGValue.h"
-#include "include/core/SkCanvas.h"
-
-#include "react/renderer/components/rnsvg/RNSVGProps.h"
-
 #include "RSkComponentRNSVGUse.h"
-#include "RSkSVGContainer.h"
-#include "RSkSVGPropsParserUtil.h"
 
 namespace facebook {
 namespace react {
@@ -27,19 +19,27 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGUse::updateComponentProps(Shared
 
   auto const &newRNSVGUseProps = *std::static_pointer_cast<RNSVGUseProps const>(newViewProps);
   
-  RNS_LOG_INFO(" X: "<<newRNSVGUseProps.x);
-  RNS_LOG_INFO(" Y: "<<newRNSVGUseProps.y);
-  RNS_LOG_INFO(" Href: "<<newRNSVGUseProps.href.c_str());
-  RNS_LOG_INFO(" Width: "<<newRNSVGUseProps.width);
-  RNS_LOG_INFO(" Height: "<<newRNSVGUseProps.height);
+  RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
+  setNativeProps(newRNSVGUseProps);
+  setCommonRenderableProps(newRNSVGUseProps);
+  setCommonNodeProps(newRNSVGUseProps);
+ 
+  return RnsShell::LayerInvalidateNone;
+}
 
-  setLengthAttribute(SkSVGAttribute::kX,newRNSVGUseProps.x.c_str());
-  setLengthAttribute(SkSVGAttribute::kY,newRNSVGUseProps.y.c_str());
-  setAttribute(SkSVGAttribute::kHref,SkSVGStringValue(SkString(newRNSVGUseProps.href.c_str())));
-  setLengthAttribute(SkSVGAttribute::kWidth,newRNSVGUseProps.width.c_str());
-  setLengthAttribute(SkSVGAttribute::kHeight,newRNSVGUseProps.height.c_str());
-  
-  updateCommonNodeProps(newRNSVGUseProps,this);
+inline RnsShell::LayerInvalidateMask  RSkComponentRNSVGUse::setNativeProps(const RNSVGUseProps &nativeProps) {
+
+  RNS_LOG_INFO(" X: "<<nativeProps.x);
+  RNS_LOG_INFO(" Y: "<<nativeProps.y);
+  RNS_LOG_INFO(" Href: "<<nativeProps.href.c_str());
+  RNS_LOG_INFO(" Width: "<<nativeProps.width);
+  RNS_LOG_INFO(" Height: "<<nativeProps.height);
+
+  setLengthAttribute(SkSVGAttribute::kX,nativeProps.x.c_str());
+  setLengthAttribute(SkSVGAttribute::kY,nativeProps.y.c_str());
+  setAttribute(SkSVGAttribute::kHref,SkSVGStringValue(SkString(nativeProps.href.c_str())));
+  setLengthAttribute(SkSVGAttribute::kWidth,nativeProps.width.c_str());
+  setLengthAttribute(SkSVGAttribute::kHeight,nativeProps.height.c_str());
 
   return RnsShell::LayerInvalidateNone;
 }

@@ -5,13 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "include/core/SkCanvas.h"
-#include "include/core/SkPaint.h"
-
-#include "react/renderer/components/rnsvg/RNSVGProps.h"
-
 #include "RSkComponentRNSVGLine.h"
-#include "RSkSVGPropsParserUtil.h"
 
 namespace facebook {
 namespace react {
@@ -34,22 +28,29 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::updateComponentProps(Share
 
   auto const &newRNSVGLineProps = *std::static_pointer_cast<RNSVGLineProps const>(newViewProps);
  
-  RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
-  RNS_LOG_INFO(" X1: "<<newRNSVGLineProps.x1);
-  RNS_LOG_INFO(" Y1: "<<newRNSVGLineProps.y1);
-  RNS_LOG_INFO(" X2: "<<newRNSVGLineProps.x2);
-  RNS_LOG_INFO(" Y2: "<<newRNSVGLineProps.y2);
+  RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
 
-  setLengthAttribute(SkSVGAttribute::kX1,newRNSVGLineProps.x1.c_str());
-  setLengthAttribute(SkSVGAttribute::kX2,newRNSVGLineProps.x2.c_str());
-  setLengthAttribute(SkSVGAttribute::kY1,newRNSVGLineProps.y1.c_str());
-  setLengthAttribute(SkSVGAttribute::kY2,newRNSVGLineProps.y2.c_str());
-
-  updateCommonNodeProps(newRNSVGLineProps,this);
+  setNativeProps(newRNSVGEllipseProps);
+  setCommonRenderableProps(newRNSVGEllipseProps);
+  setCommonNodeProps(newRNSVGEllipseProps);
 
   return RnsShell::LayerInvalidateNone;
 }
 
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::setNativeProps(const RNSVGLineProps &nativeProps) {
+
+  RNS_LOG_INFO(" X1: "<<nativeProps.x1);
+  RNS_LOG_INFO(" Y1: "<<nativeProps.y1);
+  RNS_LOG_INFO(" X2: "<<nativeProps.x2);
+  RNS_LOG_INFO(" Y2: "<<nativeProps.y2);
+
+  setLengthAttribute(SkSVGAttribute::kX1,nativeProps.x1.c_str());
+  setLengthAttribute(SkSVGAttribute::kX2,nativeProps.x2.c_str());
+  setLengthAttribute(SkSVGAttribute::kY1,nativeProps.y1.c_str());
+  setLengthAttribute(SkSVGAttribute::kY2,nativeProps.y2.c_str());
+
+  return RnsShell::LayerInvalidateNone;
+}
 
 void RSkComponentRNSVGLine::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
 

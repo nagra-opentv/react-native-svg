@@ -27,6 +27,8 @@ class RSkComponentRNSVGGroup final : public RSkComponent,public RSkSVGContainer{
   void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index)override;
   void unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index)override;
 
+  void alterSkiaDefaultPaint();
+
  protected:
 
  // Overrides for Base class : RSkComponent

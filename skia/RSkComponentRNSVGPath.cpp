@@ -5,14 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-
-#include "include/core/SkCanvas.h"
-#include "include/core/SkPaint.h"
-
-#include "react/renderer/components/rnsvg/RNSVGProps.h"
-
 #include "RSkComponentRNSVGPath.h"
-#include "RSkSVGPropsParserUtil.h"
 
 namespace facebook {
 namespace react {
@@ -35,12 +28,13 @@ RnsShell::LayerInvalidateMask RSkComponentRNSVGPath::updateComponentProps(Shared
 
   auto const &newRNSVGPathProps = *std::static_pointer_cast<RNSVGPathProps const>(newViewProps);
 
-  setPathDataAttribute(SkSVGAttribute::kD,newRNSVGPathProps.d.c_str());
-
-  updateCommonNodeProps(newRNSVGPathProps,this);
+  setPathDataAttribute(SkSVGAttribute::kD,newRNSVGPathProps.d.c_str());// Native Prop
+  setCommonRenderableProps(newRNSVGPathProps);
+  setCommonNodeProps(newRNSVGPathProps);
 
   return invalidateMask;
 }
+
 void RSkComponentRNSVGPath::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
   switch (attr) {
   case SkSVGAttribute::kD:

@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include "include/core/SkCanvas.h"
+#include "include/core/SkPaint.h"
+
 #include "RSkSVGNode.h"
 
 using namespace std;

@@ -42,7 +42,6 @@ rn_cxx_component("Rnsvg") {
     "RSkSVGHiddenContainer.h",
     "RSkSVGShape.cpp",
     "RSkSVGShape.h",
-    "RSkSVGPropsParserUtil.h",
     "RSkComponentProviderRNSVGSvgView.cpp",
     "RSkComponentProviderRNSVGSvgView.h",
     "RSkComponentRNSVGSvgView.cpp",

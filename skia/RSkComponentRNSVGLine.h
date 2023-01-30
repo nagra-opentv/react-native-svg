@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1994-2022 OpenTV, Inc. and Nagravision S.A.
+ * Copyright (C) 1994-2023 OpenTV, Inc. and Nagravision S.A.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -42,6 +42,8 @@ class RSkComponentRNSVGLine final : public RSkComponent,public RSkSVGShape{
     SkSVGLength y1 = SkSVGLength(0);
     SkSVGLength x2 = SkSVGLength(0);
     SkSVGLength y2 = SkSVGLength(0);
+
+    RnsShell::LayerInvalidateMask  setNativeProps(const RNSVGLineProps &nativeProps);
 
     typedef RSkSVGShape INHERITED;
 

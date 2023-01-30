@@ -17,6 +17,8 @@
 #include "include/core/SkColor.h"
 #include "include/utils/SkParsePath.h"
 
+#include "react/renderer/components/rnsvg/RNSVGProps.h"
+
 #include "ReactSkia/components/RSkComponent.h"
 #include "ReactSkia/utils/RnsUtils.h"
 
@@ -33,6 +35,20 @@ class RSkSVGNode : public SkSVGTransformableNode{
     
     static RSkSVGNode* getRSkSVGNodeForComponetWithName(std::shared_ptr<RSkComponent> newChildComponent);
 
+    std::string nodeName;
+  
+  protected:
+
+    RSkSVGNode(SkSVGTag tag); 
+
+    SkPath onAsPath(const SkSVGRenderContext&)  const override;
+    void appendChild(sk_sp<SkSVGNode>)  override;
+
+    void setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps);
+    void setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps);
+    void setCommonGroupProps(const RNSVGGroupProps &groupProps);
+
+    void setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr);
     bool setNumberAttribute( SkSVGAttribute attr,const char* stringValue);
     bool setStringAttribute( SkSVGAttribute attr,const char* stringValue);
     bool setPaintAttribute( SkSVGAttribute attr,const char* stringValue);
@@ -50,16 +66,7 @@ class RSkSVGNode : public SkSVGTransformableNode{
     bool setVisibilityAttribute( SkSVGAttribute attr,const char* stringValue);
     bool setClipPathAttribute( SkSVGAttribute attr,const char* stringValue);
     bool setTransformAttribute(SkSVGAttribute attr,const std::vector<Float> matrix);
-    bool setDashArrayAttribute( SkSVGAttribute attr,const std::vector<std::string> dashArray);    
-
-    std::string nodeName;
-    
-  protected:
-
-    RSkSVGNode(SkSVGTag tag); 
-
-    SkPath onAsPath(const SkSVGRenderContext&)  const override;
-    void appendChild(sk_sp<SkSVGNode>)  override;
+    bool setDashArrayAttribute( SkSVGAttribute attr,const std::vector<std::string> dashArray); 
 
   private :
 
