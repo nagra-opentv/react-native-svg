@@ -1,10 +1,16 @@
+/*
+ * Copyright (C) 1994-2023 OpenTV, Inc. and Nagravision S.A.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 #pragma once
 
-#include <map>
 #include <string>
 
-
 #include "experimental/svg/model/SkSVGAttribute.h"
+
 #include "RSkSVGNode.h"
 
 namespace facebook {
@@ -60,8 +66,7 @@ void updateCommonNodeProps(T props ,RSkSVGNode* Node){
 }
 
 template <typename T>
-void updateColorFromColorStruct(T colorStruct,SkSVGAttribute attr,
-                                RSkSVGNode * Node){
+void updateColorFromColorStruct(T colorStruct,SkSVGAttribute attr,RSkSVGNode * Node){
 
   if((colorStruct.type == 0) && colorStruct.payload) {
 

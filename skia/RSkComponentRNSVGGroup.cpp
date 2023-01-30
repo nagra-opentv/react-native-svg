@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1994-2022 OpenTV, Inc. and Nagravision S.A.
+ * Copyright (C) 1994-2023 OpenTV, Inc. and Nagravision S.A.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -15,7 +15,7 @@
 #include "rns_shell/compositor/layers/PictureLayer.h"
 
 
-#include "RSkComponentRNSVGG.h"
+#include "RSkComponentRNSVGGroup.h"
 #include "RSkSVGPropsParserUtil.h"
 
 std::vector<std::shared_ptr<RSkComponent>> groupChildContainer;

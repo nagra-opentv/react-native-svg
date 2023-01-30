@@ -18,20 +18,26 @@ using namespace std;
 
 class RSkComponentRNSVGPath final : public RSkComponent,public RSkSVGShape{
   public:
+
     RSkComponentRNSVGPath(const ShadowView &shadowView);
     ~RSkComponentRNSVGPath() = default;
 
-    RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
-    void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override;
-   // sk_sp<RSkSVGNode> getComponentNode(){ return this;}
+// Overrides for Base class : RSkComponent
+  RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
+  void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index)override;
+  void unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index)override;
 
   protected:
+
+// Overrides for Base class : RSkComponent
     void OnPaint(SkCanvas *canvas) override {};
 
+// Overrides for Base class : RSkSVGShape
     void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
     void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const override;
 
   private:
+
     mutable SkPath path_; // mutated in onDraw(), to apply inherited fill types.
 
     typedef RSkSVGShape INHERITED;

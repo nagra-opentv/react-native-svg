@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1994-2022 OpenTV, Inc. and Nagravision S.A.
+ * Copyright (C) 1994-2023 OpenTV, Inc. and Nagravision S.A.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -20,10 +20,12 @@ RSkComponentRNSVGLine::RSkComponentRNSVGLine(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
       INHERITED(SkSVGTag::kLine) {}
 
-void RSkComponentRNSVGLine::mountChildComponent(
-    std::shared_ptr<RSkComponent> newChildComponent,
-    const int index) {
-  RNS_LOG_INFO("cannot append child nodes to an SVG shape.\n");
+void RSkComponentRNSVGLine::mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index) {
+  RNS_LOG_INFO("cannot append child nodes to an SVG Element Line.\n");
+}
+
+void RSkComponentRNSVGLine::unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index) {
+  RNS_LOG_INFO(" SVG Element Line can't have child ");
 }
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
@@ -53,22 +55,22 @@ void RSkComponentRNSVGLine::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
 
   switch (attr) {
     case SkSVGAttribute::kCx:
-        if (const auto* cx = v.as<SkSVGLengthValue>()) {
-          cx_ =*cx;
-        }
-        break;
+      if (const auto* cx = v.as<SkSVGLengthValue>()) {
+        cx_ =*cx;
+      }
+      break;
     case SkSVGAttribute::kCy:
-        if (const auto* cy = v.as<SkSVGLengthValue>()) {
-          cy_ =*cy;
-        }
-        break;
+      if (const auto* cy = v.as<SkSVGLengthValue>()) {
+        cy_ =*cy;
+      }
+      break;
     case SkSVGAttribute::kR:
-        if (const auto* r = v.as<SkSVGLengthValue>()) {
-          r_ =*r;
-        }
-        break;
+      if (const auto* r = v.as<SkSVGLengthValue>()) {
+        r_ =*r;
+      }
+      break;
     default:
-        this->INHERITED::onSetAttribute(attr, v);
+      this->INHERITED::onSetAttribute(attr, v);
     }
 }
 

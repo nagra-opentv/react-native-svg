@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1994-2022 OpenTV, Inc. and Nagravision S.A.
+ * Copyright (C) 1994-2023 OpenTV, Inc. and Nagravision S.A.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -13,9 +13,9 @@
 namespace facebook {
 namespace react {
 
-class RSkComponentProviderRNSVGView : public RSkComponentProvider {
+class RSkComponentProviderRNSVGSvgView : public RSkComponentProvider {
  public:
-  RSkComponentProviderRNSVGView();
+  RSkComponentProviderRNSVGSvgView();
 
  public:
   ComponentDescriptorProvider GetDescriptorProvider() override;
@@ -26,7 +26,7 @@ class RSkComponentProviderRNSVGView : public RSkComponentProvider {
 #ifdef __cplusplus
 extern "C" {
 #endif
-RNS_EXPORT_COMPONENT_PROVIDER(RNSVGView)
+RNS_EXPORT_COMPONENT_PROVIDER(RNSVGSvgView)
 #ifdef __cplusplus
 }
 #endif

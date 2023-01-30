@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1994-2022 OpenTV, Inc. and Nagravision S.A.
+ * Copyright (C) 1994-2023 OpenTV, Inc. and Nagravision S.A.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -52,22 +52,22 @@ void RSkComponentRNSVGCircle::onSetAttribute(SkSVGAttribute attr, const SkSVGVal
 
   switch (attr) {
     case SkSVGAttribute::kCx:
-        if (const auto* cx = v.as<SkSVGLengthValue>()) {
-          cx_ =*cx;
-        }
-        break;
+      if (const auto* cx = v.as<SkSVGLengthValue>()) {
+        cx_ =*cx;
+      }
+      break;
     case SkSVGAttribute::kCy:
-        if (const auto* cy = v.as<SkSVGLengthValue>()) {
-          cy_ =*cy;
-        }
-        break;
+      if (const auto* cy = v.as<SkSVGLengthValue>()) {
+        cy_ =*cy;
+      }
+      break;
     case SkSVGAttribute::kR:
-        if (const auto* r = v.as<SkSVGLengthValue>()) {
-          r_ =*r;
-        }
-        break;
+      if (const auto* r = v.as<SkSVGLengthValue>()) {
+        r_ =*r;
+      }
+      break;
     default:
-        this->INHERITED::onSetAttribute(attr, v);
+      this->INHERITED::onSetAttribute(attr, v);
     }
 }
 

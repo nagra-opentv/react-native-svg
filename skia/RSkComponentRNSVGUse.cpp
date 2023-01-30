@@ -1,19 +1,26 @@
-#include "RSkComponentRNSVGUse.h"
+/*
+ * Copyright (C) 1994-2023 OpenTV, Inc. and Nagravision S.A.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 #include "experimental/svg/model/SkSVGRenderContext.h"
 #include "experimental/svg/model/SkSVGValue.h"
 #include "include/core/SkCanvas.h"
 
 #include "react/renderer/components/rnsvg/RNSVGProps.h"
 
-#include "RSkSVGPropsParserUtil.h"
+#include "RSkComponentRNSVGUse.h"
 #include "RSkSVGContainer.h"
+#include "RSkSVGPropsParserUtil.h"
 
 namespace facebook {
 namespace react {
 
 RSkComponentRNSVGUse::RSkComponentRNSVGUse(const ShadowView &shadowView)
     : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-    INHERITED(SkSVGTag::kUse) {}
+      INHERITED(SkSVGTag::kUse) {}
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGUse::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
   auto component = getComponentData();
@@ -34,72 +41,69 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGUse::updateComponentProps(Shared
   
   updateCommonNodeProps(newRNSVGUseProps,this);
 
-   return RnsShell::LayerInvalidateNone;
+  return RnsShell::LayerInvalidateNone;
 }
 
 void RSkComponentRNSVGUse::mountChildComponent(
     std::shared_ptr<RSkComponent> newChildComponent,
     const int index) {
-  RNS_LOG_INFO("cannot append child nodes to an SVG shape.\n");
+  RNS_LOG_INFO("cannot append child nodes to an SVG Element Use.");
+}
+
+void RSkComponentRNSVGUse::unmountChildComponent(
+    std::shared_ptr<RSkComponent> oldChildComponent,
+    const int index) {
+  RNS_LOG_INFO(" SVG Element use can't have child ");
 }
 
 void RSkComponentRNSVGUse::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
-    switch (attr) {
-    case SkSVGAttribute::kHref:
-        if (const auto* href = v.as<SkSVGStringValue>()) {
-            href_ = *href;
-        }
-        break;
-    case SkSVGAttribute::kX:
-        if (const auto* x = v.as<SkSVGLengthValue>()) {
-            x_ = *x;
-        }
-        break;
-    case SkSVGAttribute::kY:
-        if (const auto* y = v.as<SkSVGLengthValue>()) {
-            y_ = *y;
-        }
-        break;
-    default:
-        this->INHERITED::onSetAttribute(attr, v);
+  switch (attr) {
+  case SkSVGAttribute::kHref:
+    if (const auto* href = v.as<SkSVGStringValue>()) {
+      href_ = *href;
     }
+    break;
+  case SkSVGAttribute::kX:
+    if (const auto* x = v.as<SkSVGLengthValue>()) {
+      x_ = *x;
+    }
+    break;
+  case SkSVGAttribute::kY:
+    if (const auto* y = v.as<SkSVGLengthValue>()) {
+      y_ = *y;
+    }
+    break;
+  default:
+    this->INHERITED::onSetAttribute(attr, v);
+  }
 }
 
 bool RSkComponentRNSVGUse::onPrepareToRender(SkSVGRenderContext* ctx) const {
 
-    RNS_LOG_INFO("---onPrepareToRender For Use Component--- : "<<href_.c_str());
+  RNS_LOG_INFO("---onPrepareToRender For Use Component--- : "<<href_.c_str());
 
-    if (href_.isEmpty() || !INHERITED::onPrepareToRender(ctx)) {
-        return false;
-    }
+  if (href_.isEmpty() || !INHERITED::onPrepareToRender(ctx)) {
+    return false;
+  }
 
-    if (x_.value() || y_.value()) {
-        // Restored when the local SkSVGRenderContext leaves scope.
-        ctx->saveOnce();
-        ctx->canvas()->translate(x_.value(), y_.value());
-    }
-    RNS_LOG_INFO("---onPrepareToRender For Use Component--- : "<<href_.c_str());
+  if (x_.value() || y_.value()) {
+    // Restored when the local SkSVGRenderContext leaves scope.
+    ctx->saveOnce();
+    ctx->canvas()->translate(x_.value(), y_.value());
+  }
+  RNS_LOG_INFO("---onPrepareToRender For Use Component--- : "<<href_.c_str());
 
-    return true;
+  return true;
 }
 
 void RSkComponentRNSVGUse::onRender(const SkSVGRenderContext& ctx) const {
 
-    const auto ref = ctx.findNodeById(href_);
-    if (!ref) {
-      RNS_LOG_ERROR(" !!! Id not Found !!!!");
-      return;
-    } 
-    ref->render(ctx);
-}
-
-SkPath RSkComponentRNSVGUse::onAsPath(const SkSVGRenderContext& ctx) const {
-    const auto ref =  ctx.findNodeById(href_);
-    if (!ref) {
-        return SkPath();
-    }
-
-    return ref->asPath(ctx);
+  const auto ref = ctx.findNodeById(href_);
+  if (!ref) {
+    RNS_LOG_ERROR(" !!! Id not Found !!!!");
+    return;
+  } 
+  ref->render(ctx);
 }
 
 } // namespace react

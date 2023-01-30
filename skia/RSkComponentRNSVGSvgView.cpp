@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1994-2022 OpenTV, Inc. and Nagravision S.A.
+ * Copyright (C) 1994-2023 OpenTV, Inc. and Nagravision S.A.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -8,7 +8,7 @@
 
 #include "react/renderer/components/rnsvg/RNSVGProps.h"
 
-#include "RSkComponentRNSVGView.h"
+#include "RSkComponentRNSVGSvgView.h"
 
 #include "experimental/svg/model/SkSVGRenderContext.h"
 
@@ -18,21 +18,21 @@
 namespace facebook {
 namespace react {
 
-RSkComponentRNSVGView::RSkComponentRNSVGView(const ShadowView &shadowView)
-    : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
+RSkComponentRNSVGSvgView::RSkComponentRNSVGSvgView(const ShadowView &shadowView)
+    : RSkComponent(shadowView),
      INHERITED(SkSVGTag::kSvg) {}
 
-void RSkComponentRNSVGView::OnPaint(SkCanvas *canvas) {
+void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
     SkSVGLengthContext       lctx(svgContainerSize);
     SkSVGPresentationContext pctx;
     
     printChildList();
     RNS_LOG_INFO("---Start render from Root SVG Node---");
     // Start render from Root SVG Node
-    INHERITED::render(SkSVGRenderContext(canvas, IDMapper, lctx, pctx));
+    INHERITED::render(SkSVGRenderContext(canvas, nodeIDMapper_, lctx, pctx));
 }
 
-RnsShell::LayerInvalidateMask  RSkComponentRNSVGView::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
   auto component = getComponentData();
   auto const &newRNSVGViewProps = *std::static_pointer_cast<RNSVGSvgViewProps const>(newViewProps);
@@ -64,23 +64,23 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGView::updateComponentProps(Share
   return RnsShell::LayerInvalidateNone;
 }
 
-void RSkComponentRNSVGView::mountChildComponent(
+void RSkComponentRNSVGSvgView::mountChildComponent(
     std::shared_ptr<RSkComponent> newChildComponent,
     const int index) {
-  RNS_LOG_INFO("RSkComponentRNSVGView holdinAg child :" << newChildComponent->getComponentData().componentName);
+  RNS_LOG_INFO("RSkComponentRNSVGSvgView holdinAg child :" << newChildComponent->getComponentData().componentName);
 
   addChildAtIndex(newChildComponent,index);
 
 }
 
-void RSkComponentRNSVGView::unmountChildComponent(
+void RSkComponentRNSVGSvgView::unmountChildComponent(
     std::shared_ptr<RSkComponent> oldChildComponent,
     const int index) {
-  RNS_LOG_INFO("RSkComponentRNSVGView recieved unmount for child :" << oldChildComponent->getComponentData().componentName);
+  RNS_LOG_INFO("RSkComponentRNSVGSvgView recieved unmount for child :" << oldChildComponent->getComponentData().componentName);
   removeChildAtIndex(oldChildComponent,index);
 }
 
-bool RSkComponentRNSVGView::onPrepareToRender(SkSVGRenderContext* ctx) const {
+bool RSkComponentRNSVGSvgView::onPrepareToRender(SkSVGRenderContext* ctx) const {
     auto viewPortRect  = ctx->lengthContext().resolveRect(x_,y_,width_,height_); 
     auto contentMatrix = SkMatrix::Translate(viewPortRect.x(), viewPortRect.y());
     auto viewPort      = SkSize::Make(viewPortRect.width(), viewPortRect.height());
@@ -106,7 +106,7 @@ bool RSkComponentRNSVGView::onPrepareToRender(SkSVGRenderContext* ctx) const {
 }
 
 
-void RSkComponentRNSVGView::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
+void RSkComponentRNSVGSvgView::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
     switch (attr) {
     case SkSVGAttribute::kX:
         if (const auto* x = v.as<SkSVGLengthValue>()) {
@@ -139,7 +139,7 @@ void RSkComponentRNSVGView::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
     }
 }
 
-SkSize RSkComponentRNSVGView::getContainerSize(const SkSVGLengthContext& lctx) const {
+SkSize RSkComponentRNSVGSvgView::getContainerSize(const SkSVGLengthContext& lctx) const {
     // Percentage values do not provide an intrinsic size.
     if (width_.unit() == SkSVGLength::Unit::kPercentage ||
         height_.unit() == SkSVGLength::Unit::kPercentage) {

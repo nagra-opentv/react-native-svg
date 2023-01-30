@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1994-present OpenTV, Inc. and Nagravision S.A.
+ * Copyright (C) 1994-2023 OpenTV, Inc. and Nagravision S.A.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -17,21 +17,26 @@ namespace react {
 
 using namespace std;
 
-class RSkComponentRNSVGView final : public RSkComponent,public RSkSVGContainer  {
+class RSkComponentRNSVGSvgView final : public RSkComponent,public RSkSVGContainer  {
  public:
-  RSkComponentRNSVGView(const ShadowView &shadowView);
-  ~RSkComponentRNSVGView() = default;
+
+  RSkComponentRNSVGSvgView(const ShadowView &shadowView);
+  ~RSkComponentRNSVGSvgView() = default;
   
+  //Overrides for Base Class :RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
   void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override;
   void unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index)override;
 
-//  sk_sp<RSkSVGNode> getComponentNode(){ return this;}
   SkSize getContainerSize(const SkSVGLengthContext&) const;
   
  protected:
+
+    //Overrides for Base Class :RSkComponent
     void OnPaint(SkCanvas *canvas) override;
+
     const SkSize containerSize() const {return svgContainerSize;}
+    //Overrides for Base Class :RSkSVGContainer
     bool onPrepareToRender(SkSVGRenderContext*) const override;
     void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
 
