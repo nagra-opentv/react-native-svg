@@ -23,7 +23,8 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
     SkSVGPresentationContext pctx;
     
     printChildList();
-    // Set Clip to SVG ontainer size, to restrict child draw within SVG container
+
+    //1. Set Clip to SVG ontainer size, to restrict child draw within SVG container
     // TODO: USe Bitmap as an alternate approach for the platform with less memory constraint
     SkAutoCanvasRestore save(canvas, true);
     canvas->clipRect(SkRect::MakeXYWH(lctx.resolve(x_, SkSVGLengthContext::LengthType::kHorizontal),
@@ -31,8 +32,19 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
                                       lctx.resolve(width_, SkSVGLengthContext::LengthType::kHorizontal),
                                       lctx.resolve(height_, SkSVGLengthContext::LengthType::kVertical))
                     );
+
+    //2. Apply Container Style Props BackGround & Border.
+    auto component = getComponentData();
+    auto const &viewProps = *std::static_pointer_cast<ViewProps const>(component.props);
+    auto borderMetrics=viewProps.resolveBorderMetrics(component.layoutMetrics);
+    Rect frame = component.layoutMetrics.frame;
+
+    auto layerRef=layer();
+    drawBackground(canvas,frame,borderMetrics,viewProps.backgroundColor);
+    drawBorder(canvas,frame,borderMetrics,viewProps.backgroundColor);
+
     RNS_LOG_INFO("---Start render from Root SVG Node---");
-    // Start render from Root SVG Node
+    //3. Start render from Root SVG Node
     INHERITED::render(SkSVGRenderContext(canvas, nodeIDMapper_, lctx, pctx));
 }
 
