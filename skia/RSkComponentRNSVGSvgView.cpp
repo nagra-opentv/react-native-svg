@@ -23,6 +23,14 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
     SkSVGPresentationContext pctx;
     
     printChildList();
+    // Set Clip to SVG ontainer size, to restrict child draw within SVG container
+    // TODO: USe Bitmap as an alternate approach for the platform with less memory constraint
+    SkAutoCanvasRestore save(canvas, true);
+    canvas->clipRect(SkRect::MakeXYWH(lctx.resolve(x_, SkSVGLengthContext::LengthType::kHorizontal),
+                                      lctx.resolve(y_, SkSVGLengthContext::LengthType::kVertical),
+                                      lctx.resolve(width_, SkSVGLengthContext::LengthType::kHorizontal),
+                                      lctx.resolve(height_, SkSVGLengthContext::LengthType::kVertical))
+                    );
     RNS_LOG_INFO("---Start render from Root SVG Node---");
     // Start render from Root SVG Node
     INHERITED::render(SkSVGRenderContext(canvas, nodeIDMapper_, lctx, pctx));
@@ -33,7 +41,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(Sh
   auto component = getComponentData();
   auto const &newRNSVGViewProps = *std::static_pointer_cast<RNSVGSvgViewProps const>(newViewProps);
 
-  RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
+  RNS_LOG_INFO( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
   RNS_LOG_INFO("RNSVGSvgViewProps : minX :"<<newRNSVGViewProps.minX);
   RNS_LOG_INFO("RNSVGSvgViewProps : minY :"<<newRNSVGViewProps.minY);
   RNS_LOG_INFO("RNSVGSvgViewProps : vbWidth :"<<newRNSVGViewProps.vbWidth);

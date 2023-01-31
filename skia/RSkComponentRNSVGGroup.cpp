@@ -21,7 +21,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGGroup::updateComponentProps(Shar
 
   auto const &newRNSVGGroupPropsProps = *std::static_pointer_cast<RNSVGGroupProps const>(newViewProps);
 
-  RNS_LOG_WARN( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
+  RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
   setCommonRenderableProps(newRNSVGGroupPropsProps);
   setCommonNodeProps(newRNSVGGroupPropsProps);
   setCommonGroupProps(newRNSVGGroupPropsProps);
