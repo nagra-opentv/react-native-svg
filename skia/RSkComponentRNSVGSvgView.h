@@ -7,9 +7,8 @@
 
 #pragma once
 
-#include "ReactSkia/components/RSkComponent.h"
 
-#include "RSkSVGContainer.h"
+#include "RSkSVGContainerComponent.h"
 #include "RSkSVGNode.h"
 
 namespace facebook {
@@ -17,16 +16,14 @@ namespace react {
 
 using namespace std;
 
-class RSkComponentRNSVGSvgView final : public RSkComponent,public RSkSVGContainer  {
+class RSkComponentRNSVGSvgView final : public RSkSVGContainerComponent  {
  public:
 
   RSkComponentRNSVGSvgView(const ShadowView &shadowView);
   ~RSkComponentRNSVGSvgView() = default;
   
-  //Overrides for Base Class :RSkComponent
+  //Override for Base Class :RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
-  void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override;
-  void unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index)override;
 
   SkSize getContainerSize(const SkSVGLengthContext&) const;
   
@@ -35,10 +32,11 @@ class RSkComponentRNSVGSvgView final : public RSkComponent,public RSkSVGContaine
     //Overrides for Base Class :RSkComponent
     void OnPaint(SkCanvas *canvas) override;
 
-    const SkSize containerSize() const {return svgContainerSize;}
     //Overrides for Base Class :RSkSVGContainer
     bool onPrepareToRender(SkSVGRenderContext*) const override;
     void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
+
+    const SkSize containerSize() const {return svgContainerSize;}
 
  private:
  
@@ -50,7 +48,7 @@ class RSkComponentRNSVGSvgView final : public RSkComponent,public RSkSVGContaine
     SkSVGLength height_ = SkSVGLength(100, SkSVGLength::Unit::kPercentage);
     SkRect viewBox_;
 
-    typedef RSkSVGContainer INHERITED;
+    typedef RSkSVGContainerComponent INHERITED;
 };
 
 } // namespace react

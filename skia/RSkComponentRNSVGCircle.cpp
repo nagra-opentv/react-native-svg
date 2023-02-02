@@ -11,16 +11,7 @@ namespace facebook {
 namespace react {
 
 RSkComponentRNSVGCircle::RSkComponentRNSVGCircle(const ShadowView &shadowView)
-    : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-      INHERITED(SkSVGTag::kCircle) {}
-
-void RSkComponentRNSVGCircle::mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index) {
-  RNS_LOG_INFO("cannot append child nodes to an SVG shape.\n");
-}
-
-void RSkComponentRNSVGCircle::unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index) {
-  RNS_LOG_INFO(" SVG Element Circle can't have child ");
-}
+    : INHERITED(shadowView,LAYER_TYPE_DEFAULT,SkSVGTag::kCircle) {}
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 

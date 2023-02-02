@@ -5,14 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "RSkComponentRNSVGCircle.h"
-#include "RSkComponentRNSVGDefs.h"
-#include "RSkComponentRNSVGEllipse.h"
-#include "RSkComponentRNSVGGroup.h"
-#include "RSkComponentRNSVGPath.h"
-#include "RSkComponentRNSVGRect.h"
-#include "RSkComponentRNSVGUse.h"
-#include "RSkComponentRNSVGSvgView.h"
+#include "ReactSkia/utils/RnsLog.h"
 #include "RSkSVGNode.h"
 
 namespace facebook {
@@ -21,7 +14,7 @@ namespace react {
 RSkSVGNode::RSkSVGNode(SkSVGTag tag) : INHERITED(tag) {};
 
 void RSkSVGNode::setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps) {
-  RNS_LOG_INFO("Supported Properties count : "<<renderableProps.propList.size());
+  RNS_LOG_INFO("Supported Properties count  :" << renderableProps.propList.size() << " : for SVG TAG: "<< (int)tag());
   RNS_LOG_INFO("##################");
   for (auto props : renderableProps.propList ) {
     RNS_LOG_ERROR(props);
@@ -329,77 +322,6 @@ bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Flo
     return true;
   }
   return false;
-}
-
-RSkSVGNode* RSkSVGNode::getRSkSVGNodeForComponetWithName(std::shared_ptr<RSkComponent> component) { 
-
-  enum componentName {
-    RNSVGCircle,
- 	RNSVGRect,
-    RNSVGEllipse,
-    RNSVGPath,
-    RNSVGDefs,
-    RNSVGUse,
-    RNSVGGroup,
-    RNSVGView
-  };
-  static std::map<std::string, enum componentName> s_mapStringValues ={
- 	{ "RNSVGCircle", RNSVGCircle},
- 	{ "RNSVGRect",RNSVGRect},
-    { "RNSVGEllipse",RNSVGEllipse},
-    { "RNSVGPath",RNSVGPath},
-    { "RNSVGDefs",RNSVGDefs},
-    { "RNSVGUse",RNSVGUse},
-    { "RNSVGGroup",RNSVGGroup},
-    { "RNSVGView",RNSVGView}
-  };
-  
-  std::string componentName=component->getComponentData().componentName;
-
-  int index =-1;
-  if(s_mapStringValues.find(componentName.c_str()) != s_mapStringValues.end()) {
- 	index = s_mapStringValues[componentName.c_str()];
-  } 
-  
-  switch(index) {
- 	case RNSVGCircle:
- 	  RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGCircle *>(component.get());
- 	break;
- 	case RNSVGRect:
- 	  RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGRect *>(component.get());
- 	break;
- 	case RNSVGEllipse:
- 	  RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGEllipse *>(component.get());
- 	break;
- 	case RNSVGPath:
- 	  RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGPath *>(component.get());
- 	break;
- 	case RNSVGDefs:
- 	  RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGDefs *>(component.get());
- 	break;
- 	case RNSVGUse:
- 	  RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGUse *>(component.get());
- 	break;
- 	case RNSVGGroup:
- 	  RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGGroup *>(component.get());
- 	break;
- 	case RNSVGView:
- 	  RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGSvgView *>(component.get());
- 	break;
- 	default:
- 	  RNS_LOG_INFO(" SVG COMPONENT :UNKNOWN Class ");
-    return nullptr;
- 	break;
- }
- 
 }
 
 SkPath RSkSVGNode::onAsPath(const SkSVGRenderContext&)  const  { 

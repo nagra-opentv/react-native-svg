@@ -19,9 +19,6 @@
 
 #include "react/renderer/components/rnsvg/RNSVGProps.h"
 
-#include "ReactSkia/components/RSkComponent.h"
-#include "ReactSkia/utils/RnsUtils.h"
-
 using namespace std;
 
 namespace facebook {
@@ -33,8 +30,6 @@ class RSkSVGNode : public SkSVGTransformableNode{
 
     ~RSkSVGNode()override = default;
     
-    static RSkSVGNode* getRSkSVGNodeForComponetWithName(std::shared_ptr<RSkComponent> newChildComponent);
-
     std::string nodeName;
   
   protected:

@@ -6,21 +6,23 @@
  */
 #pragma once
 
-#include "RSkSVGContainer.h"
+#include "RSkSVGContainerComponent.h"
 
 namespace facebook {
 namespace react {
 
-class RSkSVGHiddenContainer : public RSkSVGContainer {
+class RSkSVGHiddenContainerComponent : public RSkSVGContainerComponent {
   protected:
 
-    explicit RSkSVGHiddenContainer(SkSVGTag t) : INHERITED(t) {}
+    explicit RSkSVGHiddenContainerComponent(const ShadowView &shadowView,
+                                  RnsShell::LayerType layerType,
+                                  SkSVGTag t) :
+                       RSkSVGContainerComponent(shadowView,layerType,t) {}
 
     void onRender(const SkSVGRenderContext&) const final {}
 
   private:
 
-    typedef RSkSVGContainer INHERITED;
 };
 
 } // namespace react

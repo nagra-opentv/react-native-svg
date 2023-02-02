@@ -11,8 +11,9 @@ namespace facebook {
 namespace react {
 
 RSkComponentRNSVGGroup::RSkComponentRNSVGGroup(const ShadowView &shadowView)
-    : RSkComponent(shadowView,LAYER_TYPE_DEFAULT) ,
-     INHERITED(SkSVGTag::kG){}
+    : INHERITED(shadowView,LAYER_TYPE_DEFAULT,SkSVGTag::kG) {
+      RNS_LOG_ERROR("\n ######## CREATED SVG NODE WITH TAG : " <<(int)tag());
+    }
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGGroup::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
   RnsShell::LayerInvalidateMask invalidateMask = RnsShell::LayerInvalidateNone;
@@ -26,21 +27,6 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGGroup::updateComponentProps(Shar
   setCommonNodeProps(newRNSVGGroupPropsProps);
   setCommonGroupProps(newRNSVGGroupPropsProps);
   return invalidateMask;
-}
-
-void RSkComponentRNSVGGroup::mountChildComponent(
-    std::shared_ptr<RSkComponent> newChildComponent,
-    const int index) {
-  RNS_LOG_INFO("RSkComponentRNSVGGroup holding child :" << newChildComponent->getComponentData().componentName);
-
-  addChildAtIndex(newChildComponent,index);
-}
-
-void RSkComponentRNSVGGroup::unmountChildComponent(
-    std::shared_ptr<RSkComponent> oldChildComponent,
-    const int index) {
-  RNS_LOG_INFO("RSkComponentRNSVGGroup recieved unmount for child :" << oldChildComponent->getComponentData().componentName);
-  removeChildAtIndex(oldChildComponent,index);
 }
 
 void RSkComponentRNSVGGroup::alterSkiaDefaultPaint() {

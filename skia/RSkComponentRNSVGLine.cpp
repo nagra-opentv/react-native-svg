@@ -11,16 +11,7 @@ namespace facebook {
 namespace react {
 
 RSkComponentRNSVGLine::RSkComponentRNSVGLine(const ShadowView &shadowView)
-    : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-      INHERITED(SkSVGTag::kLine) {}
-
-void RSkComponentRNSVGLine::mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index) {
-  RNS_LOG_INFO("cannot append child nodes to an SVG Element Line.\n");
-}
-
-void RSkComponentRNSVGLine::unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index) {
-  RNS_LOG_INFO(" SVG Element Line can't have child ");
-}
+    : INHERITED(shadowView,LAYER_TYPE_DEFAULT,SkSVGTag::kLine){}
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 

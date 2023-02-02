@@ -11,8 +11,9 @@ namespace facebook {
 namespace react {
 
 RSkComponentRNSVGRect::RSkComponentRNSVGRect(const ShadowView &shadowView)
-    : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-      INHERITED(SkSVGTag::kRect) {}
+    : INHERITED(shadowView,LAYER_TYPE_DEFAULT,SkSVGTag::kRect){
+            RNS_LOG_ERROR("\n ######## CREATED SVG NODE WITH TAG : " <<(int)tag());
+}
 
   RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
   RnsShell::LayerInvalidateMask invalidateMask = RnsShell::LayerInvalidateNone;
@@ -47,14 +48,6 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::setNativeProps(const RNSVG
   setLengthAttribute(SkSVGAttribute::kHeight,nativeProps.height.c_str());
 
   return RnsShell::LayerInvalidateNone;
-}
-
-void RSkComponentRNSVGRect::mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index) {
-  RNS_LOG_INFO("cannot append child nodes to an SVG Element Rect.\n");
-}
-
-void RSkComponentRNSVGRect::unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index) {
-  RNS_LOG_INFO(" SVG Element Rect can't have child ");
 }
 
 void RSkComponentRNSVGRect::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {

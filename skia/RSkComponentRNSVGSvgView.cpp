@@ -15,8 +15,7 @@ namespace facebook {
 namespace react {
 
 RSkComponentRNSVGSvgView::RSkComponentRNSVGSvgView(const ShadowView &shadowView)
-    : RSkComponent(shadowView),
-     INHERITED(SkSVGTag::kSvg) {}
+    : INHERITED(shadowView,LAYER_TYPE_PICTURE,SkSVGTag::kSvg) {}
 
 void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
     SkSVGLengthContext       lctx(svgContainerSize);
@@ -33,19 +32,41 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
                                       lctx.resolve(height_, SkSVGLengthContext::LengthType::kVertical))
                     );
 
-    //2. Apply Container Style Props BackGround & Border.
+    //2. Apply Container Style Props.
     auto component = getComponentData();
     auto const &viewProps = *std::static_pointer_cast<ViewProps const>(component.props);
-    auto borderMetrics=viewProps.resolveBorderMetrics(component.layoutMetrics);
-    Rect frame = component.layoutMetrics.frame;
+  /* apply view style props */
+  auto borderMetrics=viewProps.resolveBorderMetrics(component.layoutMetrics);
+  Rect frame = component.layoutMetrics.frame;
 
-    auto layerRef=layer();
-    drawBackground(canvas,frame,borderMetrics,viewProps.backgroundColor);
-    drawBorder(canvas,frame,borderMetrics,viewProps.backgroundColor);
+  /*Draw Order : 1. Shadow 2. BackGround 3 Border*/
+  auto layerRef=layer();
+  if(layerRef->isShadowVisible) {
+    drawShadow(canvas,frame,borderMetrics,
+                    viewProps.backgroundColor,
+                    layerRef->shadowColor,layerRef->shadowOffset,layerRef->shadowOpacity,
+                    layerRef->opacity,
+                    layerRef->shadowImageFilter,layerRef->shadowMaskFilter
+                   );
+  }
+  drawBackground(canvas,frame,borderMetrics,viewProps.backgroundColor);
+  drawBorder(canvas,frame,borderMetrics,viewProps.backgroundColor);
+  RNS_LOG_INFO("---Start render from Root SVG Node---");
 
-    RNS_LOG_INFO("---Start render from Root SVG Node---");
-    //3. Start render from Root SVG Node
-    INHERITED::render(SkSVGRenderContext(canvas, nodeIDMapper_, lctx, pctx));
+  //3. Start render from Root SVG Node
+
+    // Fix: Skia's default paint color is black , where it is transparent on reference platform.
+    //      To match with the reference platform, altering skia's default paint to transparent on the
+    //      outtermost container, which will the final inherit Node for childs.
+
+  for (int i = 0; i < childRSkNodeList_.size(); ++i) {
+    RNS_LOG_INFO(" Child Tag : "<<(int)childRSkNodeList_[i]->tag());
+    if(childRSkNodeList_[i]->tag() == SkSVGTag::kG) {
+      (static_cast<RSkComponentRNSVGGroup *>(childRSkNodeList_[i].get()))->alterSkiaDefaultPaint();
+    }
+  }
+
+  INHERITED::render(SkSVGRenderContext(canvas, nodeIDMapper_, lctx, pctx));
 }
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
@@ -78,29 +99,6 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(Sh
   setLengthAttribute(SkSVGAttribute::kWidth,std::to_string(component.layoutMetrics.frame.size.width).c_str());
   setLengthAttribute(SkSVGAttribute::kHeight,std::to_string(component.layoutMetrics.frame.size.height).c_str());
   return RnsShell::LayerInvalidateNone;
-}
-
-void RSkComponentRNSVGSvgView::mountChildComponent(
-    std::shared_ptr<RSkComponent> newChildComponent,
-    const int index) {
-  RNS_LOG_INFO("RSkComponentRNSVGSvgView holdinAg child :" << newChildComponent->getComponentData().componentName);
-
-  addChildAtIndex(newChildComponent,index);
-  
-  // Fix: Skia's default paint color is black , where it is transparent on reference platform.
-  //      To match with the reference platform, altering skia's default paint to transparent on the
-  //      outtermost container, which will the final inherit Node for childs. 
-  
-  if(!strcmp(newChildComponent->getComponentData().componentName , "RNSVGGroup")) {
-    (static_cast<RSkComponentRNSVGGroup *>(newChildComponent.get()))->alterSkiaDefaultPaint();
-  }
-}
-
-void RSkComponentRNSVGSvgView::unmountChildComponent(
-    std::shared_ptr<RSkComponent> oldChildComponent,
-    const int index) {
-  RNS_LOG_INFO("RSkComponentRNSVGSvgView recieved unmount for child :" << oldChildComponent->getComponentData().componentName);
-  removeChildAtIndex(oldChildComponent,index);
 }
 
 bool RSkComponentRNSVGSvgView::onPrepareToRender(SkSVGRenderContext* ctx) const {

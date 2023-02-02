@@ -5,9 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "experimental/svg/model/SkSVGRenderContext.h"
-#include "experimental/svg/model/SkSVGValue.h"
-
 #include "ReactSkia/components/RSkComponent.h"
 #include "RSkSVGNode.h"
 
@@ -22,11 +19,12 @@ class RSkComponentRNSVGUse: public RSkComponent,public RSkSVGNode {
 
 // Overrides for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
-  void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index)override;
+  void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override;
   void unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index)override;
 
   protected:
-// Overrides for Base class : RSkComponent
+
+// Override for Base class : RSkComponent
     void OnPaint(SkCanvas *canvas) override{};
 
 // Overrides for Base class : RSkSVGNode

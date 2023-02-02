@@ -7,32 +7,25 @@
 
 #pragma once
 
-#include "ReactSkia/components/RSkComponent.h"
-
-#include "RSkSVGShape.h"
+#include "RSkSVGShapeComponent.h"
 
 namespace facebook {
 namespace react {
 
 using namespace std;
 
-class RSkComponentRNSVGRect final : public RSkComponent,public RSkSVGShape{
+class RSkComponentRNSVGRect final : public RSkSVGShapeComponent{
   public:
 
     RSkComponentRNSVGRect(const ShadowView &shadowView);
     ~RSkComponentRNSVGRect() = default;
 
-// Overrides for Base class : RSkComponent
+  // Override for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
-  void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index)override;
-  void unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index)override;
 
   protected:
 
-// Overrides for Base class : RSkComponent
-    void OnPaint(SkCanvas *canvas) override {};
-
-// Overrides for Base class : RSkSVGShape
+    // Overrides for Base class : RSkSVGShape
     void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const override;
     void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
 
@@ -47,7 +40,7 @@ class RSkComponentRNSVGRect final : public RSkComponent,public RSkSVGShape{
 
     RnsShell::LayerInvalidateMask  setNativeProps(const RNSVGRectProps &nativeProps);
 
-   typedef RSkSVGShape INHERITED;
+   typedef RSkSVGShapeComponent INHERITED;
 };
 
 } // namespace react

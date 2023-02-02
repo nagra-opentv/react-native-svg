@@ -7,28 +7,24 @@
 
 #pragma once
 
-#include "ReactSkia/components/RSkComponent.h"
-
-#include "RSkSVGShape.h"
+#include "RSkSVGShapeComponent.h"
 
 namespace facebook {
 namespace react {
 
 using namespace std;
 
-class RSkComponentRNSVGCircle final : public RSkComponent,public RSkSVGShape{
+class RSkComponentRNSVGCircle final : public RSkSVGShapeComponent{
  public:
 
   RSkComponentRNSVGCircle(const ShadowView &shadowView);
   ~RSkComponentRNSVGCircle() = default;
 
+  // Override for Base Class: RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
-  void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override;
-  void unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index)override;
 
  protected:
 
-  void OnPaint(SkCanvas *canvas) override{};
   void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const override;
   void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
 
@@ -40,7 +36,7 @@ class RSkComponentRNSVGCircle final : public RSkComponent,public RSkSVGShape{
 
     RnsShell::LayerInvalidateMask  setNativeProps(const RNSVGCircleProps &nativeProps);
 
-    typedef RSkSVGShape INHERITED;
+    typedef RSkSVGShapeComponent INHERITED;
 
 };
 

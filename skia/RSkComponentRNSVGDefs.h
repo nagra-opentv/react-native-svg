@@ -6,29 +6,25 @@
  */
 #pragma once
 
-#include "ReactSkia/components/RSkComponent.h"
-#include "RSkSVGHiddenContainer.h"
+#include "RSkSVGHiddenContainerComponent.h"
 
 namespace facebook {
 namespace react {
 
-class RSkComponentRNSVGDefs: public RSkComponent,public RSkSVGHiddenContainer {
+class RSkComponentRNSVGDefs: public RSkSVGHiddenContainerComponent {
   public:
 
-    RSkComponentRNSVGDefs(const ShadowView &shadowView);
+    RSkComponentRNSVGDefs(const ShadowView &shadowView) :
+                    RSkSVGHiddenContainerComponent(shadowView,LAYER_TYPE_DEFAULT,SkSVGTag::kDefs) {}
+
     ~RSkComponentRNSVGDefs() = default;
   
-    RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
-    void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index)override;
-    void unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index)override;
+    RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override {return RnsShell::LayerInvalidateNone;}
 
   protected:
 
-    void OnPaint(SkCanvas *canvas) override {};
-
   private:
 
-    typedef RSkSVGHiddenContainer INHERITED;
 };
 
 } // namespace react

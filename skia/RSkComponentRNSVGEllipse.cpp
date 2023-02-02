@@ -12,16 +12,7 @@ namespace facebook {
 namespace react {
 
 RSkComponentRNSVGEllipse::RSkComponentRNSVGEllipse(const ShadowView &shadowView)
-    : RSkComponent(shadowView,LAYER_TYPE_DEFAULT),
-    INHERITED(SkSVGTag::kEllipse) {}
-
-void RSkComponentRNSVGEllipse::mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent,const int index) {
-  RNS_LOG_INFO("cannot append child nodes to an SVG Element Ellipse.\n");
-}
-
-void RSkComponentRNSVGEllipse::unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index) {
-  RNS_LOG_INFO(" SVG Element Ellipse can't have child ");
-}
+    : INHERITED(shadowView,LAYER_TYPE_DEFAULT,SkSVGTag::kEllipse){}
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
