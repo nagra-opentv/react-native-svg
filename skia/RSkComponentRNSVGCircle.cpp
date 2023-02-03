@@ -15,11 +15,7 @@ RSkComponentRNSVGCircle::RSkComponentRNSVGCircle(const ShadowView &shadowView)
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
-  auto component = getComponentData();
-
   auto const &newRNSVGCircleProps = *std::static_pointer_cast<RNSVGCircleProps const>(newViewProps);
-
-  RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
 
   setNativeProps(newRNSVGCircleProps);
   setCommonRenderableProps(newRNSVGCircleProps);

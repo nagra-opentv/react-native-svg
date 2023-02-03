@@ -15,15 +15,11 @@ RSkComponentRNSVGLine::RSkComponentRNSVGLine(const ShadowView &shadowView)
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
-  auto component = getComponentData();
-
   auto const &newRNSVGLineProps = *std::static_pointer_cast<RNSVGLineProps const>(newViewProps);
  
-  RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
-
-  setNativeProps(newRNSVGEllipseProps);
-  setCommonRenderableProps(newRNSVGEllipseProps);
-  setCommonNodeProps(newRNSVGEllipseProps);
+  setNativeProps(newRNSVGLineProps);
+  setCommonRenderableProps(newRNSVGLineProps);
+  setCommonNodeProps(newRNSVGLineProps);
 
   return RnsShell::LayerInvalidateNone;
 }
@@ -46,19 +42,24 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::setNativeProps(const RNSVG
 void RSkComponentRNSVGLine::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
 
   switch (attr) {
-    case SkSVGAttribute::kCx:
-      if (const auto* cx = v.as<SkSVGLengthValue>()) {
-        cx_ =*cx;
+    case SkSVGAttribute::kX1:
+      if (const auto* x1 = v.as<SkSVGLengthValue>()) {
+        x1_ =*x1;
       }
       break;
-    case SkSVGAttribute::kCy:
-      if (const auto* cy = v.as<SkSVGLengthValue>()) {
-        cy_ =*cy;
+    case SkSVGAttribute::kY1:
+      if (const auto* y1 = v.as<SkSVGLengthValue>()) {
+        y1_ =*y1;
       }
       break;
-    case SkSVGAttribute::kR:
-      if (const auto* r = v.as<SkSVGLengthValue>()) {
-        r_ =*r;
+    case SkSVGAttribute::kX2:
+      if (const auto* x2 = v.as<SkSVGLengthValue>()) {
+        x2_ =*x2;
+      }
+      break;
+    case SkSVGAttribute::kY2:
+      if (const auto* y2 = v.as<SkSVGLengthValue>()) {
+        y2_ =*y2;
       }
       break;
     default:
@@ -69,13 +70,14 @@ void RSkComponentRNSVGLine::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
 void RSkComponentRNSVGLine::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,
                          const SkPaint& paint, SkPathFillType) const {
 
-  SkScalar cx = lctx.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
-  SkScalar cy = lctx.resolve(cy_, SkSVGLengthContext::LengthType::kVertical);
-  SkScalar  r = lctx.resolve(r_ , SkSVGLengthContext::LengthType::kOther);
+    SkPoint p0, p1;
+    p0=SkPoint::Make(lctx.resolve(x1_, SkSVGLengthContext::LengthType::kHorizontal),
+                     lctx.resolve(y1_, SkSVGLengthContext::LengthType::kVertical));
 
-  if (r > 0) {
-    canvas->drawLine(cx, cy, r, paint);
-  }
+    p1=SkPoint::Make(lctx.resolve(x2_, SkSVGLengthContext::LengthType::kHorizontal),
+                     lctx.resolve(y2_, SkSVGLengthContext::LengthType::kVertical));
+
+    canvas->drawLine(p0, p1, paint);
  
 }
 

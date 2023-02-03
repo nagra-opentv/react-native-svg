@@ -16,11 +16,8 @@ RSkComponentRNSVGEllipse::RSkComponentRNSVGEllipse(const ShadowView &shadowView)
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
-  auto component = getComponentData();
-
   auto const &newRNSVGEllipseProps = *std::static_pointer_cast<RNSVGEllipseProps const>(newViewProps);
 
-  RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
   setNativeProps(newRNSVGEllipseProps);
   setCommonRenderableProps(newRNSVGEllipseProps);
   setCommonNodeProps(newRNSVGEllipseProps);

@@ -31,10 +31,10 @@ class RSkComponentRNSVGLine final : public RSkSVGShapeComponent{
 
  private:
 
-    SkSVGLength x1 = SkSVGLength(0);
-    SkSVGLength y1 = SkSVGLength(0);
-    SkSVGLength x2 = SkSVGLength(0);
-    SkSVGLength y2 = SkSVGLength(0);
+    SkSVGLength x1_ = SkSVGLength(0);
+    SkSVGLength y1_ = SkSVGLength(0);
+    SkSVGLength x2_ = SkSVGLength(0);
+    SkSVGLength y2_ = SkSVGLength(0);
 
     RnsShell::LayerInvalidateMask  setNativeProps(const RNSVGLineProps &nativeProps);
 

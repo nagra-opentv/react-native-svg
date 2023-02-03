@@ -15,20 +15,15 @@ RSkComponentRNSVGRect::RSkComponentRNSVGRect(const ShadowView &shadowView)
             RNS_LOG_ERROR("\n ######## CREATED SVG NODE WITH TAG : " <<(int)tag());
 }
 
-  RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
-  RnsShell::LayerInvalidateMask invalidateMask = RnsShell::LayerInvalidateNone;
-
-  auto component = getComponentData();
+RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
   auto const &newRNSVGRectProps = *std::static_pointer_cast<RNSVGRectProps const>(newViewProps);
   
-  RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
-
   setNativeProps(newRNSVGRectProps);
   setCommonRenderableProps(newRNSVGRectProps);
   setCommonNodeProps(newRNSVGRectProps);
 
-  return invalidateMask;
+  return RnsShell::LayerInvalidateNone;
 }
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::setNativeProps(const RNSVGRectProps &nativeProps) {

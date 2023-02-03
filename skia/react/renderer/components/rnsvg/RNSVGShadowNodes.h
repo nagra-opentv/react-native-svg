@@ -16,6 +16,24 @@
 namespace facebook {
 namespace react {
 
+extern const char RNSVGSvgViewComponentName[];
+
+/*
+ * `ShadowNode` for <RNSVGSvgView> component.
+ */
+using RNSVGSvgViewShadowNode = ConcreteViewShadowNode<
+    RNSVGSvgViewComponentName,
+    RNSVGSvgViewProps>;
+
+extern const char RNSVGGroupComponentName[];
+
+/*
+ * `ShadowNode` for <RNSVGGroup> component.
+ */
+using RNSVGGroupShadowNode = ConcreteViewShadowNode<
+    RNSVGGroupComponentName,
+    RNSVGGroupProps>;
+
 extern const char RNSVGCircleComponentName[];
 
 /*
@@ -25,14 +43,6 @@ using RNSVGCircleShadowNode = ConcreteViewShadowNode<
     RNSVGCircleComponentName,
     RNSVGCircleProps>;
 
-extern const char RNSVGLinearGradientComponentName[];
-
-/*
- * `ShadowNode` for <RNSVGLinearGradient> component.
- */
-using RNSVGLinearGradientShadowNode = ConcreteViewShadowNode<
-    RNSVGLinearGradientComponentName,
-    RNSVGLinearGradientProps>;
 
 extern const char RNSVGPathComponentName[];
 
@@ -52,23 +62,6 @@ using RNSVGRectShadowNode = ConcreteViewShadowNode<
     RNSVGRectComponentName,
     RNSVGRectProps>;
 
-extern const char RNSVGGroupComponentName[];
-
-/*
- * `ShadowNode` for <RNSVGGroup> component.
- */
-using RNSVGGroupShadowNode = ConcreteViewShadowNode<
-    RNSVGGroupComponentName,
-    RNSVGGroupProps>;
-
-extern const char RNSVGSvgViewComponentName[];
-
-/*
- * `ShadowNode` for <RNSVGSvgView> component.
- */
-using RNSVGSvgViewShadowNode = ConcreteViewShadowNode<
-    RNSVGSvgViewComponentName,
-    RNSVGSvgViewProps>;
 
 extern const char RNSVGEllipseComponentName[];
 
@@ -78,6 +71,15 @@ extern const char RNSVGEllipseComponentName[];
 using RNSVGEllipseShadowNode = ConcreteViewShadowNode<
     RNSVGEllipseComponentName,
     RNSVGEllipseProps>;
+
+extern const char RNSVGLineComponentName[];
+
+/*
+ * `ShadowNode` for <RNSVGLine> component.
+ */
+using RNSVGLineShadowNode = ConcreteViewShadowNode<
+    RNSVGLineComponentName,
+    RNSVGLineProps>;
 
 extern const char RNSVGDefsComponentName[];
 
@@ -97,7 +99,16 @@ using RNSVGUseShadowNode = ConcreteViewShadowNode<
     RNSVGUseComponentName,
     RNSVGUseProps>;
     
-#if 0
+
+extern const char RNSVGLinearGradientComponentName[];
+
+/*
+ * `ShadowNode` for <RNSVGLinearGradient> component.
+ */
+using RNSVGLinearGradientShadowNode = ConcreteViewShadowNode<
+    RNSVGLinearGradientComponentName,
+    RNSVGLinearGradientProps>;
+
 extern const char RNSVGClipPathComponentName[];
 /*
  * `ShadowNode` for <RNSVGClipPath> component.
@@ -105,7 +116,6 @@ extern const char RNSVGClipPathComponentName[];
 using RNSVGClipPathShadowNode = ConcreteViewShadowNode<
     RNSVGClipPathComponentName,
     RNSVGClipPathProps>;
-
 
 
 extern const char RNSVGForeignObjectComponentName[];
@@ -127,15 +137,6 @@ using RNSVGImageShadowNode = ConcreteViewShadowNode<
     RNSVGImageComponentName,
     RNSVGImageProps>;
 
-
-extern const char RNSVGLineComponentName[];
-
-/*
- * `ShadowNode` for <RNSVGLine> component.
- */
-using RNSVGLineShadowNode = ConcreteViewShadowNode<
-    RNSVGLineComponentName,
-    RNSVGLineProps>;
 
 extern const char RNSVGMarkerComponentName[];
 
@@ -212,6 +213,5 @@ using RNSVGTSpanShadowNode = ConcreteViewShadowNode<
     RNSVGTSpanComponentName,
     RNSVGTSpanProps>;
 
-#endif
 } // namespace react
 } // namespace facebook

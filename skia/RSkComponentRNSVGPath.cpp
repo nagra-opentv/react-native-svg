@@ -15,15 +15,13 @@ RSkComponentRNSVGPath::RSkComponentRNSVGPath(const ShadowView &shadowView)
 
 RnsShell::LayerInvalidateMask RSkComponentRNSVGPath::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
-  RnsShell::LayerInvalidateMask invalidateMask = RnsShell::LayerInvalidateNone;
-
   auto const &newRNSVGPathProps = *std::static_pointer_cast<RNSVGPathProps const>(newViewProps);
 
   setPathDataAttribute(SkSVGAttribute::kD,newRNSVGPathProps.d.c_str());// Native Prop
   setCommonRenderableProps(newRNSVGPathProps);
   setCommonNodeProps(newRNSVGPathProps);
 
-  return invalidateMask;
+  return RnsShell::LayerInvalidateNone;
 }
 
 void RSkComponentRNSVGPath::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {

@@ -16,16 +16,15 @@
 namespace facebook {
 namespace react {
 
+using RNSVGViewComponentDescriptor  = ConcreteComponentDescriptor<RNSVGSvgViewShadowNode>;
+using RNSVGGroupComponentDescriptor = ConcreteComponentDescriptor<RNSVGGroupShadowNode>;
 using RNSVGCircleComponentDescriptor = ConcreteComponentDescriptor<RNSVGCircleShadowNode>;
 using RNSVGRectComponentDescriptor = ConcreteComponentDescriptor<RNSVGRectShadowNode>;
-using RNSVGLinearGradientComponentDescriptor = ConcreteComponentDescriptor<RNSVGLinearGradientShadowNode>;
 using RNSVGPathComponentDescriptor = ConcreteComponentDescriptor<RNSVGPathShadowNode>;
-using RNSVGGroupComponentDescriptor = ConcreteComponentDescriptor<RNSVGGroupShadowNode>;
-using RNSVGViewComponentDescriptor  = ConcreteComponentDescriptor<RNSVGSvgViewShadowNode>;
 using RNSVGEllipseComponentDescriptor  = ConcreteComponentDescriptor<RNSVGEllipseShadowNode>;
+using RNSVGLineComponentDescriptor  = ConcreteComponentDescriptor<RNSVGLineShadowNode>;
 using RNSVGDefsComponentDescriptor  = ConcreteComponentDescriptor<RNSVGDefsShadowNode>;
 using RNSVGUseComponentDescriptor  = ConcreteComponentDescriptor<RNSVGUseShadowNode>;
-
 
 } // namespace react
 } // namespace facebook

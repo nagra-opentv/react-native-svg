@@ -13,6 +13,7 @@
 #include "RSkComponentRNSVGDefs.h"
 #include "RSkComponentRNSVGEllipse.h"
 #include "RSkComponentRNSVGGroup.h"
+#include "RSkComponentRNSVGLine.h"
 #include "RSkComponentRNSVGPath.h"
 #include "RSkComponentRNSVGRect.h"
 #include "RSkComponentRNSVGUse.h"
@@ -26,24 +27,26 @@ namespace {
 RSkSVGNode* getRSkSVGNodeForComponetWithName(std::shared_ptr<RSkComponent> component) { 
 
   enum componentName {
+    RNSVGView,
+    RNSVGGroup,
     RNSVGCircle,
     RNSVGRect,
     RNSVGEllipse,
     RNSVGPath,
+    RNSVGLine,
     RNSVGDefs,
     RNSVGUse,
-    RNSVGGroup,
-    RNSVGView
   };
   static std::map<std::string, enum componentName> s_mapStringValues ={
+    { "RNSVGView",RNSVGView},
+    { "RNSVGGroup",RNSVGGroup},
     { "RNSVGCircle", RNSVGCircle},
     { "RNSVGRect",RNSVGRect},
     { "RNSVGEllipse",RNSVGEllipse},
     { "RNSVGPath",RNSVGPath},
+    { "RNSVGLine",RNSVGLine},
     { "RNSVGDefs",RNSVGDefs},
-    { "RNSVGUse",RNSVGUse},
-    { "RNSVGGroup",RNSVGGroup},
-    { "RNSVGView",RNSVGView}
+    { "RNSVGUse",RNSVGUse}
   };
 
   std::string componentName=component->getComponentData().componentName;
@@ -54,6 +57,14 @@ RSkSVGNode* getRSkSVGNodeForComponetWithName(std::shared_ptr<RSkComponent> compo
   } 
 
   switch(index) {
+  case RNSVGView:
+    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
+    return static_cast<RSkComponentRNSVGSvgView *>(component.get());
+  break;
+  case RNSVGGroup:
+    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
+    return static_cast<RSkComponentRNSVGGroup *>(component.get());
+  break;
   case RNSVGCircle:
     RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
     return static_cast<RSkComponentRNSVGCircle *>(component.get());
@@ -70,6 +81,10 @@ RSkSVGNode* getRSkSVGNodeForComponetWithName(std::shared_ptr<RSkComponent> compo
     RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
     return static_cast<RSkComponentRNSVGPath *>(component.get());
   break;
+  case RNSVGLine:
+    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
+    return static_cast<RSkComponentRNSVGLine *>(component.get());
+  break;
   case RNSVGDefs:
     RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
     return static_cast<RSkComponentRNSVGDefs *>(component.get());
@@ -77,14 +92,6 @@ RSkSVGNode* getRSkSVGNodeForComponetWithName(std::shared_ptr<RSkComponent> compo
   case RNSVGUse:
     RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
     return static_cast<RSkComponentRNSVGUse *>(component.get());
-  break;
-  case RNSVGGroup:
-    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGGroup *>(component.get());
-  break;
-  case RNSVGView:
-    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGSvgView *>(component.get());
   break;
   default:
     RNS_LOG_INFO(" SVG COMPONENT :UNKNOWN Class ");

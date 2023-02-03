@@ -16,17 +16,14 @@ RSkComponentRNSVGGroup::RSkComponentRNSVGGroup(const ShadowView &shadowView)
     }
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGGroup::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
-  RnsShell::LayerInvalidateMask invalidateMask = RnsShell::LayerInvalidateNone;
-
-  auto component = getComponentData();
 
   auto const &newRNSVGGroupPropsProps = *std::static_pointer_cast<RNSVGGroupProps const>(newViewProps);
 
-  RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
   setCommonRenderableProps(newRNSVGGroupPropsProps);
   setCommonNodeProps(newRNSVGGroupPropsProps);
   setCommonGroupProps(newRNSVGGroupPropsProps);
-  return invalidateMask;
+
+  return RnsShell::LayerInvalidateNone;
 }
 
 void RSkComponentRNSVGGroup::alterSkiaDefaultPaint() {
