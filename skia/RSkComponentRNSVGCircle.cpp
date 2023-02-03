@@ -11,7 +11,7 @@ namespace facebook {
 namespace react {
 
 RSkComponentRNSVGCircle::RSkComponentRNSVGCircle(const ShadowView &shadowView)
-    : INHERITED(shadowView,LAYER_TYPE_DEFAULT,SkSVGTag::kCircle) {}
+    : INHERITED(shadowView,LAYER_TYPE_VIRTUAL,SkSVGTag::kCircle) {}
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 

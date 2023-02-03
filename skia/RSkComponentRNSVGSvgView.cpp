@@ -53,19 +53,10 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
   drawBorder(canvas,frame,borderMetrics,viewProps.backgroundColor);
   RNS_LOG_INFO("---Start render from Root SVG Node---");
 
+  // Fix: Altering Skia's defult paint behaviour to match with reference platform.
+  alterSkiaDefaultPaint();
+
   //3. Start render from Root SVG Node
-
-    // Fix: Skia's default paint color is black , where it is transparent on reference platform.
-    //      To match with the reference platform, altering skia's default paint to transparent on the
-    //      outtermost container, which will the final inherit Node for childs.
-
-  for (int i = 0; i < childRSkNodeList_.size(); ++i) {
-    RNS_LOG_INFO(" Child Tag : "<<(int)childRSkNodeList_[i]->tag());
-    if(childRSkNodeList_[i]->tag() == SkSVGTag::kG) {
-      (static_cast<RSkComponentRNSVGGroup *>(childRSkNodeList_[i].get()))->alterSkiaDefaultPaint();
-    }
-  }
-
   INHERITED::render(SkSVGRenderContext(canvas, nodeIDMapper_, lctx, pctx));
 }
 
@@ -98,6 +89,10 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(Sh
   setLengthAttribute(SkSVGAttribute::kY,std::to_string(component.layoutMetrics.frame.origin.y).c_str());
   setLengthAttribute(SkSVGAttribute::kWidth,std::to_string(component.layoutMetrics.frame.size.width).c_str());
   setLengthAttribute(SkSVGAttribute::kHeight,std::to_string(component.layoutMetrics.frame.size.height).c_str());
+
+  RNS_LOG_TODO("TO BE CONFIRMED: When the SVG dimensions change, it is unclear whether a remove and insert mount instruction will be received \
+  or an update mount instruction will be received. If an update mount instruction is received,update props will not be called for layout metric changes.");
+
   return RnsShell::LayerInvalidateNone;
 }
 
@@ -169,6 +164,28 @@ SkSize RSkComponentRNSVGSvgView::getContainerSize(const SkSVGLengthContext& lctx
 
     return SkSize::Make(lctx.resolve(width_, SkSVGLengthContext::LengthType::kHorizontal),
                         lctx.resolve(height_, SkSVGLengthContext::LengthType::kVertical));
+}
+
+inline void RSkComponentRNSVGSvgView::alterSkiaDefaultPaint() {
+ //Note: Skia's default paint is black. WhereIn on SVG REference platform it's transparent
+ //      To Match with Reference output, for the next immendiate child of SVGView,
+ //       resetting color to transparent, if color not speciifed
+
+  for (auto item:childRSkNodeList_) {
+    RNS_LOG_INFO(" Child Tag : "<<(int)item->tag());
+    if(item->tag() == SkSVGTag::kG) {
+      auto component =static_cast<RSkComponentRNSVGGroup *>(item.get())->getComponentData();
+      auto const &newRNSVGGroupPropsProps = *std::static_pointer_cast<RNSVGGroupProps const>(component.props);
+      auto rskSVGNode =static_cast<RSkSVGNode *>(item.get());
+      // Reset Stroke & Fill Color if not specifed to transparent
+      if(std::find (newRNSVGGroupPropsProps.propList.begin(), newRNSVGGroupPropsProps.propList.end(), "fill") == newRNSVGGroupPropsProps.propList.end()) {
+        rskSVGNode->setPaintAttribute(SkSVGAttribute::kFill,"none");
+      }
+      if(std::find (newRNSVGGroupPropsProps.propList.begin(), newRNSVGGroupPropsProps.propList.end(), "stroke") == newRNSVGGroupPropsProps.propList.end()) {
+        rskSVGNode->setPaintAttribute(SkSVGAttribute::kStroke,"none");
+      }
+    }
+  }
 }
 
 } // namespace react

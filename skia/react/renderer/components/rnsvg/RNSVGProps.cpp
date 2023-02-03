@@ -287,7 +287,7 @@ RNSVGSvgViewProps::RNSVGSvgViewProps(
     vbHeight(convertRawProp( rawProps, "vbHeight", sourceProps.vbHeight, {0.0})),
     align(convertRawProp( rawProps, "align", sourceProps.align, {})),
     meetOrSlice(convertRawProp( rawProps, "meetOrSlice", sourceProps.meetOrSlice, {0})),
-   // tintColor(convertRawProp( rawProps, "tintColor", sourceProps.tintColor, {})),
+    tintColor(convertRawProp( rawProps, "tintColor", sourceProps.tintColor, {})),
     color(convertRawProp( rawProps, "color", sourceProps.color, {})),
     pointerEvents(convertRawProp( rawProps, "pointerEvents", sourceProps.pointerEvents, {}))
       {}

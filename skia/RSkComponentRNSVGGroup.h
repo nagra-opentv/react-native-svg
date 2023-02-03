@@ -24,8 +24,6 @@ class RSkComponentRNSVGGroup final : public RSkSVGContainerComponent{
  // Override for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
 
-  void alterSkiaDefaultPaint();
-
  protected:
 
  private:

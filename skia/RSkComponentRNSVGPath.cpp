@@ -11,7 +11,7 @@ namespace facebook {
 namespace react {
 
 RSkComponentRNSVGPath::RSkComponentRNSVGPath(const ShadowView &shadowView)
-    : INHERITED(shadowView,LAYER_TYPE_DEFAULT,SkSVGTag::kPath)  {}
+    : INHERITED(shadowView,LAYER_TYPE_VIRTUAL,SkSVGTag::kPath)  {}
 
 RnsShell::LayerInvalidateMask RSkComponentRNSVGPath::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 

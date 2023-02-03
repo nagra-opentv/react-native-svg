@@ -12,7 +12,7 @@ namespace facebook {
 namespace react {
 
 RSkComponentRNSVGEllipse::RSkComponentRNSVGEllipse(const ShadowView &shadowView)
-    : INHERITED(shadowView,LAYER_TYPE_DEFAULT,SkSVGTag::kEllipse){}
+    : INHERITED(shadowView,LAYER_TYPE_VIRTUAL,SkSVGTag::kEllipse){}
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 

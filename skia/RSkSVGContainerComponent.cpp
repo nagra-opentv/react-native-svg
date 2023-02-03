@@ -6,6 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#include <unordered_map>
+
 #include "include/core/SkPath.h"
 
 #include "ReactSkia/RSkThirdPartyFabricComponentsProvider.h"
@@ -23,86 +25,6 @@
 namespace facebook {
 namespace react {
 
-namespace {
-RSkSVGNode* getRSkSVGNodeForComponetWithName(std::shared_ptr<RSkComponent> component) { 
-
-  enum componentName {
-    RNSVGView,
-    RNSVGGroup,
-    RNSVGCircle,
-    RNSVGRect,
-    RNSVGEllipse,
-    RNSVGPath,
-    RNSVGLine,
-    RNSVGDefs,
-    RNSVGUse,
-  };
-  static std::map<std::string, enum componentName> s_mapStringValues ={
-    { "RNSVGView",RNSVGView},
-    { "RNSVGGroup",RNSVGGroup},
-    { "RNSVGCircle", RNSVGCircle},
-    { "RNSVGRect",RNSVGRect},
-    { "RNSVGEllipse",RNSVGEllipse},
-    { "RNSVGPath",RNSVGPath},
-    { "RNSVGLine",RNSVGLine},
-    { "RNSVGDefs",RNSVGDefs},
-    { "RNSVGUse",RNSVGUse}
-  };
-
-  std::string componentName=component->getComponentData().componentName;
-
-  int index =-1;
-  if(s_mapStringValues.find(componentName.c_str()) != s_mapStringValues.end()) {
-    index = s_mapStringValues[componentName.c_str()];
-  } 
-
-  switch(index) {
-  case RNSVGView:
-    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGSvgView *>(component.get());
-  break;
-  case RNSVGGroup:
-    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGGroup *>(component.get());
-  break;
-  case RNSVGCircle:
-    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGCircle *>(component.get());
-  break;
-  case RNSVGRect:
-    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGRect *>(component.get());
-  break;
-  case RNSVGEllipse:
-    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGEllipse *>(component.get());
-  break;
-  case RNSVGPath:
-    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGPath *>(component.get());
-  break;
-  case RNSVGLine:
-    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGLine *>(component.get());
-  break;
-  case RNSVGDefs:
-    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGDefs *>(component.get());
-  break;
-  case RNSVGUse:
-    RNS_LOG_INFO(" SVG COMPONENT :" <<componentName.c_str());
-    return static_cast<RSkComponentRNSVGUse *>(component.get());
-  break;
-  default:
-    RNS_LOG_INFO(" SVG COMPONENT :UNKNOWN Class ");
-    return nullptr;
-  break;
- }
-
-}
-
-} //namespace
-
 #define DOWN_CAST_TO_CLASS(object,class) dynamic_cast<class *>(object)
 
 RSkSVGContainerComponent::RSkSVGContainerComponent(const ShadowView &shadowView,
@@ -114,6 +36,29 @@ RSkSVGContainerComponent::RSkSVGContainerComponent(const ShadowView &shadowView,
 RSkSVGContainerComponent::~RSkSVGContainerComponent() {
   childRSkNodeList_.clear();
   nodeIDMapper_.reset();
+}
+
+RSkSVGNode* RSkSVGContainerComponent::getRSkSVGNodeForComponetWithName(std::shared_ptr<RSkComponent> component) {
+
+  static std::unordered_map<std::string, RSkSVGNode* (*)(std::shared_ptr<RSkComponent>)> s_mapStringValues={
+    { "RNSVGView",getRSKSVGNodeFor<RSkComponentRNSVGSvgView>},
+    { "RNSVGGroup",getRSKSVGNodeFor<RSkComponentRNSVGGroup>},
+    { "RNSVGCircle",getRSKSVGNodeFor<RSkComponentRNSVGCircle>},
+    { "RNSVGRect",getRSKSVGNodeFor<RSkComponentRNSVGRect>},
+    { "RNSVGEllipse",getRSKSVGNodeFor<RSkComponentRNSVGEllipse>},
+    { "RNSVGPath",getRSKSVGNodeFor<RSkComponentRNSVGPath>},
+    { "RNSVGLine",getRSKSVGNodeFor<RSkComponentRNSVGLine>},
+    { "RNSVGDefs",getRSKSVGNodeFor<RSkComponentRNSVGDefs>},
+    { "RNSVGUse",getRSKSVGNodeFor<RSkComponentRNSVGUse>}
+  };
+
+  std::string componentName=component->getComponentData().componentName;
+
+  if(s_mapStringValues.find(componentName.c_str()) != s_mapStringValues.end()) {
+    return s_mapStringValues[componentName.c_str()](component);
+  } else {
+    return nullptr;
+  }
 }
 
 void RSkSVGContainerComponent::mountChildComponent(

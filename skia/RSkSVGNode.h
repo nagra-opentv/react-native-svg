@@ -31,17 +31,6 @@ class RSkSVGNode : public SkSVGTransformableNode{
     ~RSkSVGNode()override = default;
     
     std::string nodeName;
-  
-  protected:
-
-    RSkSVGNode(SkSVGTag tag); 
-
-    SkPath onAsPath(const SkSVGRenderContext&)  const override;
-    void appendChild(sk_sp<SkSVGNode>)  override;
-
-    void setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps);
-    void setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps);
-    void setCommonGroupProps(const RNSVGGroupProps &groupProps);
 
     void setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr);
     bool setNumberAttribute( SkSVGAttribute attr,const char* stringValue);
@@ -62,6 +51,17 @@ class RSkSVGNode : public SkSVGTransformableNode{
     bool setClipPathAttribute( SkSVGAttribute attr,const char* stringValue);
     bool setTransformAttribute(SkSVGAttribute attr,const std::vector<Float> matrix);
     bool setDashArrayAttribute( SkSVGAttribute attr,const std::vector<std::string> dashArray); 
+
+  protected:
+
+    RSkSVGNode(SkSVGTag tag);
+
+    SkPath onAsPath(const SkSVGRenderContext&)  const override;
+    void appendChild(sk_sp<SkSVGNode>)  override;
+
+    void setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps);
+    void setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps);
+    void setCommonGroupProps(const RNSVGGroupProps &groupProps);
 
   private :
 

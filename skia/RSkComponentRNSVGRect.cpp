@@ -11,9 +11,7 @@ namespace facebook {
 namespace react {
 
 RSkComponentRNSVGRect::RSkComponentRNSVGRect(const ShadowView &shadowView)
-    : INHERITED(shadowView,LAYER_TYPE_DEFAULT,SkSVGTag::kRect){
-            RNS_LOG_ERROR("\n ######## CREATED SVG NODE WITH TAG : " <<(int)tag());
-}
+    : INHERITED(shadowView,LAYER_TYPE_VIRTUAL,SkSVGTag::kRect) {}
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 

@@ -15,7 +15,7 @@ class RSkComponentRNSVGDefs: public RSkSVGHiddenContainerComponent {
   public:
 
     RSkComponentRNSVGDefs(const ShadowView &shadowView) :
-                    RSkSVGHiddenContainerComponent(shadowView,LAYER_TYPE_DEFAULT,SkSVGTag::kDefs) {}
+                    RSkSVGHiddenContainerComponent(shadowView,LAYER_TYPE_VIRTUAL,SkSVGTag::kDefs) {}
 
     ~RSkComponentRNSVGDefs() = default;
   
