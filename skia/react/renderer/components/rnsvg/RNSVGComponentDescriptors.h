@@ -16,7 +16,7 @@
 namespace facebook {
 namespace react {
 
-using RNSVGViewComponentDescriptor  = ConcreteComponentDescriptor<RNSVGSvgViewShadowNode>;
+using RNSVGSvgViewComponentDescriptor  = ConcreteComponentDescriptor<RNSVGSvgViewShadowNode>;
 using RNSVGGroupComponentDescriptor = ConcreteComponentDescriptor<RNSVGGroupShadowNode>;
 using RNSVGCircleComponentDescriptor = ConcreteComponentDescriptor<RNSVGCircleShadowNode>;
 using RNSVGRectComponentDescriptor = ConcreteComponentDescriptor<RNSVGRectShadowNode>;

@@ -32,10 +32,10 @@ void  RSkComponentRNSVGEllipse::setNativeProps(const RNSVGEllipseProps &nativePr
   RNS_LOG_DEBUG(" RX: "<<nativeProps.rx);
   RNS_LOG_DEBUG(" RY: "<<nativeProps.ry);
 
-  setLengthAttribute(SkSVGAttribute::kCx,nativeProps.cx.c_str());
-  setLengthAttribute(SkSVGAttribute::kCy,nativeProps.cy.c_str());
-  setLengthAttribute(SkSVGAttribute::kRx,nativeProps.rx.c_str());
-  setLengthAttribute(SkSVGAttribute::kRy,nativeProps.ry.c_str());
+  setLengthAttribute(SkSVGAttribute::kCx,nativeProps.cx);
+  setLengthAttribute(SkSVGAttribute::kCy,nativeProps.cy);
+  setLengthAttribute(SkSVGAttribute::kRx,nativeProps.rx);
+  setLengthAttribute(SkSVGAttribute::kRy,nativeProps.ry);
 
 }
 
