@@ -6,6 +6,8 @@
  */
 
 #include "ReactSkia/utils/RnsLog.h"
+#include "ReactSkia/components/RSkComponent.h"
+#include "ReactSkia/views/common/RSkConversion.h"
 #include "RSkSVGContainer.h"
 #include "RSkSVGNode.h"
 
@@ -16,12 +18,14 @@ RSkSVGNode::RSkSVGNode(SkSVGTag tag) : INHERITED(tag) {};
 
 void RSkSVGNode::setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps) {
 
-  RNS_LOG_DEBUG("Supported Properties count  :" << renderableProps.propList.size() << " : for SVG TAG: "<< (int)tag());
-  RNS_LOG_DEBUG("##################");
+#ifdef DISPLAY_NODE_PROPERTY
+  RNS_LOG_INFO("Supported Properties count  :" << renderableProps.propList.size() << " : for SVG TAG: "<< (int)tag());
+  RNS_LOG_INFO("##################");
   for (auto props : renderableProps.propList ) {
-    RNS_LOG_DEBUG(props);
+    RNS_LOG_INFO(props);
   }
-  RNS_LOG_DEBUG("##################");
+  RNS_LOG_INFo("##################");
+#endif /*DISPLAY_NODE_PROPERTY*/
 
   for (auto &item : renderableProps.propList) {
     //Fill Props
@@ -77,13 +81,12 @@ void RSkSVGNode::setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVG
 
   if(colorStruct.type == 0)  {
     if(colorStruct.payload) {
-      auto colorValue = colorComponentsFromColor(colorStruct.payload);
-      SkColor color= SkColorSetARGB(colorValue.alpha * 255.99,colorValue.red * 255.99,colorValue.green * 255.99,colorValue.blue * 255.99);
+      SkColor color= RSkColorFromSharedColor(colorStruct.payload, SK_ColorTRANSPARENT);
       SkSVGPaint paint(color);
       setAttribute(attr,SkSVGPaintValue(paint));
     } else {
       // Color specified as none
-        setPaintAttribute(attr,"none");
+      setPaintAttribute(attr,"none");
     } 
  } else if(colorStruct.type ==  2) { // currentColor
    setPaintAttribute(attr,"currentColor");

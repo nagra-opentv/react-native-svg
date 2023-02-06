@@ -110,7 +110,6 @@ void RSkSVGContainer::unmountChildComponent(
   if(node && (!node->nodeName.empty())) {
     nodeIDMapper_.remove(SkString(node->nodeName));
   }
-  RNS_LOG_DEBUG("Remove Child at index : " << index );
   //TODO : (" Remove Child from Parent def Map As well");
   childRSkNodeList_.erase(childRSkNodeList_.begin() + index);
 }
@@ -124,7 +123,7 @@ bool RSkSVGContainer::hasChildren() const {
 }
 
 void RSkSVGContainer::onRender(const SkSVGRenderContext& ctx) const {
-   RNS_LOG_DEBUG("---Render Childern---");
+  RNS_LOG_DEBUG("---Render Childern---");
   for (int i = 0; i < childRSkNodeList_.size(); ++i) {
     RNS_LOG_DEBUG(" Child Tag : "<<(int)childRSkNodeList_[i]->tag());
     childRSkNodeList_[i]->render(ctx);

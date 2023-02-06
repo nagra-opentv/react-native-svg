@@ -38,7 +38,7 @@ class RSkComponentRNSVGRect final : public RSkSVGShape{
 
   void  setNativeProps(const RNSVGRectProps &nativeProps);
 
-   typedef RSkSVGShape INHERITED;
+  typedef RSkSVGShape INHERITED;
 };
 
 } // namespace react

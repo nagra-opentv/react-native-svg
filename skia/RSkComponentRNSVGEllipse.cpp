@@ -40,37 +40,37 @@ void  RSkComponentRNSVGEllipse::setNativeProps(const RNSVGEllipseProps &nativePr
 }
 
 void RSkComponentRNSVGEllipse::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
-    switch (attr) {
+  switch (attr) {
     case SkSVGAttribute::kCx:
       if (const auto* cx = v.as<SkSVGLengthValue>()) {
         cx_ =*cx;
       }
-      break;
+    break;
     case SkSVGAttribute::kCy:
       if (const auto* cy = v.as<SkSVGLengthValue>()) {
         cy_ =*cy;
       }
-      break;
+    break;
     case SkSVGAttribute::kRx:
       if (const auto* rx = v.as<SkSVGLengthValue>()) {
         rx_ =*rx;
       }
-      break;
+    break;
     case SkSVGAttribute::kRy:
       if (const auto* ry = v.as<SkSVGLengthValue>()) {
         ry_ =*ry;
       }
-      break;
+    break;
     default:
       this->INHERITED::onSetAttribute(attr, v);
-    }
+  }
 }
 
 void RSkComponentRNSVGEllipse::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,const SkPaint& paint, SkPathFillType) const {
-  const auto cx = lctx.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
-  const auto cy = lctx.resolve(cy_, SkSVGLengthContext::LengthType::kVertical);
-  const auto rx = lctx.resolve(rx_, SkSVGLengthContext::LengthType::kHorizontal);
-  const auto ry = lctx.resolve(ry_, SkSVGLengthContext::LengthType::kVertical);
+  SkScalar cx = lctx.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
+  SkScalar cy = lctx.resolve(cy_, SkSVGLengthContext::LengthType::kVertical);
+  SkScalar rx = lctx.resolve(rx_, SkSVGLengthContext::LengthType::kHorizontal);
+  SkScalar ry = lctx.resolve(ry_, SkSVGLengthContext::LengthType::kVertical);
     
   SkRect rect =(rx > 0 && ry > 0)
         ? SkRect::MakeXYWH(cx - rx, cy - ry, rx * 2, ry * 2)

@@ -12,16 +12,16 @@ namespace facebook {
 namespace react {
 
 class RSkSVGHiddenContainer : public RSkSVGContainer {
-  protected:
+ protected:
 
-    explicit RSkSVGHiddenContainer(const ShadowView &shadowView,
-                                  RnsShell::LayerType layerType,
-                                  SkSVGTag t) :
+  explicit RSkSVGHiddenContainer(const ShadowView &shadowView,
+                                 RnsShell::LayerType layerType,
+                                 SkSVGTag t) :
                        RSkSVGContainer(shadowView,layerType,t) {}
 
-    void onRender(const SkSVGRenderContext&) const final {}
+  void onRender(const SkSVGRenderContext&) const final {}
 
-  private:
+ private:
 
 };
 

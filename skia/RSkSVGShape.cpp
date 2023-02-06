@@ -5,11 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "include/core/SkCanvas.h"
-
 #include "RSkSVGShape.h"
-
-using namespace std;
 
 namespace facebook {
 namespace react {

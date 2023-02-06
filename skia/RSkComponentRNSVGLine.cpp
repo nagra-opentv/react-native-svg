@@ -45,25 +45,25 @@ void RSkComponentRNSVGLine::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
       if (const auto* x1 = v.as<SkSVGLengthValue>()) {
         x1_ =*x1;
       }
-      break;
+    break;
     case SkSVGAttribute::kY1:
       if (const auto* y1 = v.as<SkSVGLengthValue>()) {
         y1_ =*y1;
       }
-      break;
+    break;
     case SkSVGAttribute::kX2:
       if (const auto* x2 = v.as<SkSVGLengthValue>()) {
         x2_ =*x2;
       }
-      break;
+    break;
     case SkSVGAttribute::kY2:
       if (const auto* y2 = v.as<SkSVGLengthValue>()) {
         y2_ =*y2;
       }
-      break;
+    break;
     default:
       this->INHERITED::onSetAttribute(attr, v);
-    }
+  }
 }
 
 void RSkComponentRNSVGLine::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,

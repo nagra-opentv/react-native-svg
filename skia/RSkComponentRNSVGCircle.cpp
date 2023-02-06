@@ -56,7 +56,7 @@ void RSkComponentRNSVGCircle::onSetAttribute(SkSVGAttribute attr, const SkSVGVal
       break;
     default:
       this->INHERITED::onSetAttribute(attr, v);
-    }
+  }
 }
 
 void RSkComponentRNSVGCircle::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,

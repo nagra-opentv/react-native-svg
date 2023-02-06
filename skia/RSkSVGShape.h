@@ -13,22 +13,22 @@ namespace facebook {
 namespace react {
 
 class RSkSVGShape : public RSkSVGComponentNode {
-  public:
+ public:
 
-    ~RSkSVGShape() override { };
+  ~RSkSVGShape() override { };
 
-  protected:
+ protected:
 
-    explicit RSkSVGShape(const ShadowView &shadowView,
-                                  RnsShell::LayerType layerType,
-                                  SkSVGTag);
+  explicit RSkSVGShape(const ShadowView &shadowView,
+                       RnsShell::LayerType layerType,
+                       SkSVGTag);
 
-    void onRender(const SkSVGRenderContext&) const final;
-    virtual void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const = 0;
+  void onRender(const SkSVGRenderContext&) const final;
+  virtual void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const = 0;
 
-  private:
+ private:
 
-    typedef RSkSVGComponentNode INHERITED;
+  typedef RSkSVGComponentNode INHERITED;
 };
 
 } // namespace react

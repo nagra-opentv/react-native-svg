@@ -82,9 +82,9 @@ void RSkComponentRNSVGRect::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
 void RSkComponentRNSVGRect::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,
              const SkPaint& paint, SkPathFillType) const {
 
-  const SkRect rect = lctx.resolveRect(x_,y_,width_,height_);
-  const SkScalar rx = lctx.resolve(rx_, SkSVGLengthContext::LengthType::kHorizontal);
-  const SkScalar ry = lctx.resolve(ry_, SkSVGLengthContext::LengthType::kVertical);
+  SkRect rect = lctx.resolveRect(x_,y_,width_,height_);
+  SkScalar rx = lctx.resolve(rx_, SkSVGLengthContext::LengthType::kHorizontal);
+  SkScalar ry = lctx.resolve(ry_, SkSVGLengthContext::LengthType::kVertical);
 
   SkRRect rrect=SkRRect::MakeRectXY(rect, rx ,ry);
   canvas->drawRRect(rrect, paint);  

@@ -22,10 +22,6 @@ rn_cxx_component("Rnsvg") {
 
   # RNS Native module and its dependencies
   sources = [
-    "RNSVGRenderableModule.cpp",
-    "RNSVGRenderableModule.h",
-    "RNSVGSvgViewModule.cpp",
-    "RNSVGSvgViewModule.h"
   ]
 
   # RNS react common dependencies
