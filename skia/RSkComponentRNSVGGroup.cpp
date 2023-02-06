@@ -21,7 +21,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGGroup::updateComponentProps(Shar
   setCommonNodeProps(newRNSVGGroupPropsProps);
   setCommonGroupProps(newRNSVGGroupPropsProps);
 
-  return RnsShell::LayerInvalidateNone;
+  return RnsShell::LayerInvalidateAll;
 }
 
 } // namespace react

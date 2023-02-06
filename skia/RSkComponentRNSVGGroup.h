@@ -8,18 +8,16 @@
 #pragma once
 
 
-#include "RSkSVGContainerComponent.h"
+#include "RSkSVGContainer.h"
 
 namespace facebook {
 namespace react {
 
-using namespace std;
-
-class RSkComponentRNSVGGroup final : public RSkSVGContainerComponent{
+class RSkComponentRNSVGGroup final : public RSkSVGContainer{
  public:
 
   RSkComponentRNSVGGroup(const ShadowView &shadowView);
-  ~RSkComponentRNSVGGroup() = default;
+  ~RSkComponentRNSVGGroup() override {};
 
  // Override for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
@@ -28,7 +26,7 @@ class RSkComponentRNSVGGroup final : public RSkSVGContainerComponent{
 
  private:
 
-  typedef RSkSVGContainerComponent INHERITED;
+  typedef RSkSVGContainer INHERITED;
 };
 
 } // namespace react

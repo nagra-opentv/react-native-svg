@@ -21,20 +21,19 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::updateComponentProps(Sha
   setCommonRenderableProps(newRNSVGCircleProps);
   setCommonNodeProps(newRNSVGCircleProps);
 
-  return RnsShell::LayerInvalidateNone;
+  return RnsShell::LayerInvalidateAll;
 }
 
-RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::setNativeProps(const RNSVGCircleProps &nativeProps) {
+void RSkComponentRNSVGCircle::setNativeProps(const RNSVGCircleProps &nativeProps) {
 
-  RNS_LOG_INFO(" CX: "<<nativeProps.cx);
-  RNS_LOG_INFO(" CY: "<<nativeProps.cy);
-  RNS_LOG_INFO(" r: "<<nativeProps.r);
+  RNS_LOG_DEBUG(" CX: "<<nativeProps.cx);
+  RNS_LOG_DEBUG(" CY: "<<nativeProps.cy);
+  RNS_LOG_DEBUG(" r: "<<nativeProps.r);
   
-  setLengthAttribute(SkSVGAttribute::kCx,nativeProps.cx.c_str());
-  setLengthAttribute(SkSVGAttribute::kCy,nativeProps.cy.c_str());
-  setLengthAttribute(SkSVGAttribute::kR,nativeProps.r.c_str());
+  setLengthAttribute(SkSVGAttribute::kCx,nativeProps.cx);
+  setLengthAttribute(SkSVGAttribute::kCy,nativeProps.cy);
+  setLengthAttribute(SkSVGAttribute::kR,nativeProps.r);
 
-  return RnsShell::LayerInvalidateNone;
 }
 
 void RSkComponentRNSVGCircle::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {

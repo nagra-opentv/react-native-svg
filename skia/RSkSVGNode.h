@@ -19,53 +19,51 @@
 
 #include "react/renderer/components/rnsvg/RNSVGProps.h"
 
-using namespace std;
-
 namespace facebook {
 namespace react {
 
 
-class RSkSVGNode : public SkSVGTransformableNode{
-  public:
+class RSkSVGNode : public SkSVGTransformableNode {
 
-    ~RSkSVGNode()override = default;
-    
-    std::string nodeName;
+ public:
 
-    void setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr);
-    bool setNumberAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setStringAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setPaintAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setColorAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setLengthAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setPathDataAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setFillRuleAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setLineCapAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setLineJoinAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setViewBoxAttribute( SkSVGAttribute attr,const char* stringValue);   
-    bool setIRIAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setSpreadMethodAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setStopColorAttribute( SkSVGAttribute attr,const char* stringValue);  
-    bool setPointsAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setVisibilityAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setClipPathAttribute( SkSVGAttribute attr,const char* stringValue);
-    bool setTransformAttribute(SkSVGAttribute attr,const std::vector<Float> matrix);
-    bool setDashArrayAttribute( SkSVGAttribute attr,const std::vector<std::string> dashArray); 
+  ~RSkSVGNode() override {};
+  std::string nodeName;
 
-  protected:
+  void setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr);
+  bool setNumberAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setStringAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setPaintAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setColorAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setLengthAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setPathDataAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setFillRuleAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setLineCapAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setLineJoinAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setViewBoxAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setIRIAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setSpreadMethodAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setStopColorAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setPointsAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setVisibilityAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setClipPathAttribute( SkSVGAttribute attr,std::string stringValue);
+  bool setTransformAttribute(SkSVGAttribute attr,const std::vector<Float> matrix);
+  bool setDashArrayAttribute( SkSVGAttribute attr,const std::vector<std::string> dashArray);
 
-    RSkSVGNode(SkSVGTag tag);
+ protected:
 
-    SkPath onAsPath(const SkSVGRenderContext&)  const override;
-    void appendChild(sk_sp<SkSVGNode>)  override;
+  explicit RSkSVGNode(SkSVGTag tag);
 
-    void setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps);
-    void setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps);
-    void setCommonGroupProps(const RNSVGGroupProps &groupProps);
+  SkPath onAsPath(const SkSVGRenderContext&)  const override;
+  void appendChild(sk_sp<SkSVGNode>)  override;
 
-  private :
+  void setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps);
+  void setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps);
+  void setCommonGroupProps(const RNSVGGroupProps &groupProps);
 
-    typedef SkSVGTransformableNode INHERITED;
+ private :
+
+  typedef SkSVGTransformableNode INHERITED;
 
 };
 

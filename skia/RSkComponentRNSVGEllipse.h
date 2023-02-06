@@ -7,38 +7,36 @@
 
 #pragma once
 
-#include "RSkSVGShapeComponent.h"
+#include "RSkSVGShape.h"
 
 namespace facebook {
 namespace react {
 
-using namespace std;
+class RSkComponentRNSVGEllipse final : public RSkSVGShape{
+ public:
 
-class RSkComponentRNSVGEllipse final : public RSkSVGShapeComponent{
-  public:
+  RSkComponentRNSVGEllipse(const ShadowView &shadowView);
+  ~RSkComponentRNSVGEllipse() override {};
 
-    RSkComponentRNSVGEllipse(const ShadowView &shadowView);
-    ~RSkComponentRNSVGEllipse() = default;
+  // Overrides for Base class : RSkComponent
+  RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
 
-    // Overrides for Base class : RSkComponent
-    RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
+ protected:
 
-  protected:
+  // Overrides for Base class : RSkSVGShape
+  void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const override;
+  void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
 
-    // Overrides for Base class : RSkSVGShape
-    void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const override;
-    void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
+ private:
 
-  private:
+  SkSVGLength cx_ = SkSVGLength(0);
+  SkSVGLength cy_ = SkSVGLength(0);
+  SkSVGLength rx_ = SkSVGLength(0);
+  SkSVGLength ry_ = SkSVGLength(0);
 
-    SkSVGLength cx_ = SkSVGLength(0);
-    SkSVGLength cy_ = SkSVGLength(0);
-    SkSVGLength rx_ = SkSVGLength(0);
-    SkSVGLength ry_ = SkSVGLength(0);
+  void  setNativeProps(const RNSVGEllipseProps &nativeProps);
 
-    RnsShell::LayerInvalidateMask  setNativeProps(const RNSVGEllipseProps &nativeProps);
-
-    typedef RSkSVGShapeComponent INHERITED;
+  typedef RSkSVGShape INHERITED;
 };
 
 } // namespace react

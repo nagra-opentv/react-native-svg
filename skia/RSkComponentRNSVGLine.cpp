@@ -16,27 +16,26 @@ RSkComponentRNSVGLine::RSkComponentRNSVGLine(const ShadowView &shadowView)
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
   auto const &newRNSVGLineProps = *std::static_pointer_cast<RNSVGLineProps const>(newViewProps);
- 
+
   setNativeProps(newRNSVGLineProps);
   setCommonRenderableProps(newRNSVGLineProps);
   setCommonNodeProps(newRNSVGLineProps);
 
-  return RnsShell::LayerInvalidateNone;
+  return RnsShell::LayerInvalidateAll;
 }
 
-RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::setNativeProps(const RNSVGLineProps &nativeProps) {
+void  RSkComponentRNSVGLine::setNativeProps(const RNSVGLineProps &nativeProps) {
 
-  RNS_LOG_INFO(" X1: "<<nativeProps.x1);
-  RNS_LOG_INFO(" Y1: "<<nativeProps.y1);
-  RNS_LOG_INFO(" X2: "<<nativeProps.x2);
-  RNS_LOG_INFO(" Y2: "<<nativeProps.y2);
+  RNS_LOG_DEBUG(" X1: "<<nativeProps.x1);
+  RNS_LOG_DEBUG(" Y1: "<<nativeProps.y1);
+  RNS_LOG_DEBUG(" X2: "<<nativeProps.x2);
+  RNS_LOG_DEBUG(" Y2: "<<nativeProps.y2);
 
-  setLengthAttribute(SkSVGAttribute::kX1,nativeProps.x1.c_str());
-  setLengthAttribute(SkSVGAttribute::kX2,nativeProps.x2.c_str());
-  setLengthAttribute(SkSVGAttribute::kY1,nativeProps.y1.c_str());
-  setLengthAttribute(SkSVGAttribute::kY2,nativeProps.y2.c_str());
+  setLengthAttribute(SkSVGAttribute::kX1,nativeProps.x1);
+  setLengthAttribute(SkSVGAttribute::kX2,nativeProps.x2);
+  setLengthAttribute(SkSVGAttribute::kY1,nativeProps.y1);
+  setLengthAttribute(SkSVGAttribute::kY2,nativeProps.y2);
 
-  return RnsShell::LayerInvalidateNone;
 }
 
 void RSkComponentRNSVGLine::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
@@ -70,15 +69,14 @@ void RSkComponentRNSVGLine::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
 void RSkComponentRNSVGLine::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,
                          const SkPaint& paint, SkPathFillType) const {
 
-    SkPoint p0, p1;
-    p0=SkPoint::Make(lctx.resolve(x1_, SkSVGLengthContext::LengthType::kHorizontal),
-                     lctx.resolve(y1_, SkSVGLengthContext::LengthType::kVertical));
+  SkPoint p0, p1;
+  p0=SkPoint::Make(lctx.resolve(x1_, SkSVGLengthContext::LengthType::kHorizontal),
+                   lctx.resolve(y1_, SkSVGLengthContext::LengthType::kVertical));
 
-    p1=SkPoint::Make(lctx.resolve(x2_, SkSVGLengthContext::LengthType::kHorizontal),
-                     lctx.resolve(y2_, SkSVGLengthContext::LengthType::kVertical));
+  p1=SkPoint::Make(lctx.resolve(x2_, SkSVGLengthContext::LengthType::kHorizontal),
+                   lctx.resolve(y2_, SkSVGLengthContext::LengthType::kVertical));
 
-    canvas->drawLine(p0, p1, paint);
- 
+  canvas->drawLine(p0, p1, paint);
 }
 
 } // namespace react

@@ -6,18 +6,18 @@
  */
 #pragma once
 
-#include "RSkSVGContainerComponent.h"
+#include "RSkSVGContainer.h"
 
 namespace facebook {
 namespace react {
 
-class RSkSVGHiddenContainerComponent : public RSkSVGContainerComponent {
+class RSkSVGHiddenContainer : public RSkSVGContainer {
   protected:
 
-    explicit RSkSVGHiddenContainerComponent(const ShadowView &shadowView,
+    explicit RSkSVGHiddenContainer(const ShadowView &shadowView,
                                   RnsShell::LayerType layerType,
                                   SkSVGTag t) :
-                       RSkSVGContainerComponent(shadowView,layerType,t) {}
+                       RSkSVGContainer(shadowView,layerType,t) {}
 
     void onRender(const SkSVGRenderContext&) const final {}
 

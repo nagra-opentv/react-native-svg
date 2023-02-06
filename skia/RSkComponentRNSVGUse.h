@@ -6,41 +6,34 @@
  */
 
 #include "ReactSkia/components/RSkComponent.h"
-#include "RSkSVGNode.h"
+#include "RSkSVGComponentNode.h"
 
 namespace facebook {
 namespace react {
 
-class RSkComponentRNSVGUse: public RSkComponent,public RSkSVGNode {
-  public:
+class RSkComponentRNSVGUse: public RSkSVGComponentNode {
+ public:
 
-    RSkComponentRNSVGUse(const ShadowView &shadowView);
-    ~RSkComponentRNSVGUse() = default;
+  RSkComponentRNSVGUse(const ShadowView &shadowView);
+  ~RSkComponentRNSVGUse() override {};
 
-// Overrides for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
-  void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override;
-  void unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index)override;
 
-  protected:
+ protected:
 
-// Override for Base class : RSkComponent
-    void OnPaint(SkCanvas *canvas) override{};
+  void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
+  bool onPrepareToRender(SkSVGRenderContext*) const override;
+  void onRender(const SkSVGRenderContext&) const override;
 
-// Overrides for Base class : RSkSVGNode
-    void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
-    bool onPrepareToRender(SkSVGRenderContext*) const override;
-    void onRender(const SkSVGRenderContext&) const override;
+ private:
 
-private:
+  SkSVGStringType    href_;
+  SkSVGLength        x_ = SkSVGLength(0);
+  SkSVGLength        y_ = SkSVGLength(0);
 
-    SkSVGStringType    href_;
-    SkSVGLength        x_ = SkSVGLength(0);
-    SkSVGLength        y_ = SkSVGLength(0);
+  void  setNativeProps(const RNSVGUseProps &nativeProps);
 
-    RnsShell::LayerInvalidateMask  setNativeProps(const RNSVGUseProps &nativeProps);
-
-    typedef RSkSVGNode INHERITED;
+  typedef RSkSVGComponentNode INHERITED;
 };
 
 } // namespace react

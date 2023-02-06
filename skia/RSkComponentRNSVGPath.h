@@ -7,33 +7,31 @@
 
 #pragma once
 
-#include "RSkSVGShapeComponent.h"
+#include "RSkSVGShape.h"
 
 namespace facebook {
 namespace react {
 
-using namespace std;
+class RSkComponentRNSVGPath final : public RSkSVGShape{
+ public:
 
-class RSkComponentRNSVGPath final : public RSkSVGShapeComponent{
-  public:
-
-    RSkComponentRNSVGPath(const ShadowView &shadowView);
-    ~RSkComponentRNSVGPath() = default;
+  RSkComponentRNSVGPath(const ShadowView &shadowView);
+  ~RSkComponentRNSVGPath() override {};
 
   // Override for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
 
-  protected:
+ protected:
 
-    // Overrides for Base class : RSkSVGShape
-    void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
-    void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const override;
+  // Overrides for Base class : RSkSVGShape
+  void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
+  void onDraw(SkCanvas*, const SkSVGLengthContext&, const SkPaint&,SkPathFillType) const override;
 
-  private:
+ private:
 
-    mutable SkPath path_; // mutated in onDraw(), to apply inherited fill types.
+  mutable SkPath path_; // mutated in onDraw(), to apply inherited fill types.
 
-    typedef RSkSVGShapeComponent INHERITED;
+  typedef RSkSVGShape INHERITED;
 };
 
 } // namespace react

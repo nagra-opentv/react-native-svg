@@ -8,49 +8,42 @@
 #pragma once
 
 
-#include "RSkSVGContainerComponent.h"
+#include "RSkSVGContainer.h"
 #include "RSkSVGNode.h"
 
 namespace facebook {
 namespace react {
 
-using namespace std;
-
-class RSkComponentRNSVGSvgView final : public RSkSVGContainerComponent  {
+class RSkComponentRNSVGSvgView final : public RSkSVGContainer  {
  public:
 
   RSkComponentRNSVGSvgView(const ShadowView &shadowView);
-  ~RSkComponentRNSVGSvgView() = default;
-  
+  ~RSkComponentRNSVGSvgView() override {};
   //Override for Base Class :RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
 
-  SkSize getContainerSize(const SkSVGLengthContext&) const;
-  
  protected:
 
-    //Overrides for Base Class :RSkComponent
-    void OnPaint(SkCanvas *canvas) override;
+  //Overrides for Base Class :RSkComponent
+  void OnPaint(SkCanvas *canvas) override;
 
-    //Overrides for Base Class :RSkSVGContainer
-    bool onPrepareToRender(SkSVGRenderContext*) const override;
-    void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
-
-    const SkSize containerSize() const {return svgContainerSize;}
+  //Overrides for Base Class :RSkSVGContainer
+  bool onPrepareToRender(SkSVGRenderContext*) const override;
+  void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
 
  private:
- 
-    SkSize           svgContainerSize;
 
-    SkSVGLength x_      = SkSVGLength(0);
-    SkSVGLength y_      = SkSVGLength(0);
-    SkSVGLength width_  = SkSVGLength(100, SkSVGLength::Unit::kPercentage);
-    SkSVGLength height_ = SkSVGLength(100, SkSVGLength::Unit::kPercentage);
-    SkRect viewBox_;
+  SkSize       svgContainerSize_;
 
-    void alterSkiaDefaultPaint();
+  SkSVGLength x_    = SkSVGLength(0);
+  SkSVGLength y_    = SkSVGLength(0);
+  SkSVGLength width_  = SkSVGLength(100, SkSVGLength::Unit::kPercentage);
+  SkSVGLength height_ = SkSVGLength(100, SkSVGLength::Unit::kPercentage);
+  SkRect viewBox_;
 
-    typedef RSkSVGContainerComponent INHERITED;
+  void alterSkiaDefaultPaint();
+
+  typedef RSkSVGContainer INHERITED;
 };
 
 } // namespace react

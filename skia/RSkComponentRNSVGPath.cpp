@@ -21,18 +21,18 @@ RnsShell::LayerInvalidateMask RSkComponentRNSVGPath::updateComponentProps(Shared
   setCommonRenderableProps(newRNSVGPathProps);
   setCommonNodeProps(newRNSVGPathProps);
 
-  return RnsShell::LayerInvalidateNone;
+  return RnsShell::LayerInvalidateAll;
 }
 
 void RSkComponentRNSVGPath::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
   switch (attr) {
-  case SkSVGAttribute::kD:
-    if (const auto* path = v.as<SkSVGPathValue>()) {
-      path_=*path;
-    }
+    case SkSVGAttribute::kD:
+      if (const auto* path = v.as<SkSVGPathValue>()) {
+        path_=*path;
+      }
     break;
-  default:
-    this->INHERITED::onSetAttribute(attr, v);
+    default:
+      this->INHERITED::onSetAttribute(attr, v);
   }
 }
 

@@ -11,13 +11,10 @@ config("LibRnsvg_config") {
   ]
 
   include_dirs = [".",
-                  "//react-native/",
                   "//react-native/ReactCommon/",
                   "//react-native/ReactCommon/jsi/",
                   "//react-native/ReactCommon/react/renderer/graphics/platform/cxx",
                   "//react-native/ReactCommon/yoga/",
-                  "//rns_shell/",
-                  "//ReactSkia/",
                   ]
 }
 
@@ -31,54 +28,64 @@ rn_cxx_component("Rnsvg") {
     "RNSVGSvgViewModule.h"
   ]
 
-  # RNS Fabric Component and its dependencies
+  # RNS react common dependencies
   sources += [
     "react/renderer/components/rnsvg/RNSVGShadowNodes.cpp",
+    "react/renderer/components/rnsvg/RNSVGShadowNodes.h",
     "react/renderer/components/rnsvg/RNSVGProps.cpp",
-    "RSkSVGNode.cpp",
-    "RSkSVGNode.h",
-    "RSkSVGContainerComponent.cpp",
-    "RSkSVGContainerComponent.h",
-    "RSkSVGHiddenContainerComponent.h",
-    "RSkSVGShapeComponent.cpp",
-    "RSkSVGShapeComponent.h",
-    "RSkComponentProviderRNSVGSvgView.cpp",
-    "RSkComponentProviderRNSVGSvgView.h",
-    "RSkComponentRNSVGSvgView.cpp",
-    "RSkComponentRNSVGSvgView.h",
-    "RSkComponentProviderRNSVGGroup.cpp",
-    "RSkComponentProviderRNSVGGroup.h",
-    "RSkComponentRNSVGGroup.cpp",
-    "RSkComponentRNSVGGroup.h",
-    "RSkComponentProviderRNSVGCircle.cpp",
-    "RSkComponentProviderRNSVGCircle.h",
-    "RSkComponentRNSVGCircle.cpp",
-    "RSkComponentRNSVGCircle.h",
-    "RSkComponentProviderRNSVGEllipse.cpp",
-    "RSkComponentProviderRNSVGEllipse.h",
-    "RSkComponentRNSVGEllipse.cpp",
-    "RSkComponentRNSVGEllipse.h",
-    "RSkComponentProviderRNSVGPath.cpp",
-    "RSkComponentProviderRNSVGPath.h",
-    "RSkComponentRNSVGPath.cpp",
-    "RSkComponentRNSVGPath.h",
-    "RSkComponentProviderRNSVGRect.cpp",
-    "RSkComponentProviderRNSVGRect.h",
-    "RSkComponentRNSVGRect.cpp",
-    "RSkComponentRNSVGRect.h",
-    "RSkComponentProviderRNSVGLine.cpp",
-    "RSkComponentProviderRNSVGLine.h",
-    "RSkComponentRNSVGLine.cpp",
-    "RSkComponentRNSVGLine.h",
-    "RSkComponentProviderRNSVGDefs.cpp",
-    "RSkComponentProviderRNSVGDefs.h",
-    "RSkComponentRNSVGDefs.h",
-    "RSkComponentProviderRNSVGUse.cpp",
-    "RSkComponentProviderRNSVGUse.h",
-    "RSkComponentRNSVGUse.cpp",
-    "RSkComponentRNSVGUse.h"
+    "react/renderer/components/rnsvg/RNSVGProps.h",
+    "react/renderer/components/rnsvg/RNSVGComponentDescriptors.h"
   ]
 
+  # RNS Fabric Component and its dependencies
+  sources += [
+    "RSkComponentProviderRNSVGCircle.cpp",
+    "RSkComponentProviderRNSVGCircle.h",
+    "RSkComponentProviderRNSVGDefs.cpp",
+    "RSkComponentProviderRNSVGDefs.h",
+    "RSkComponentProviderRNSVGEllipse.cpp",
+    "RSkComponentProviderRNSVGEllipse.h",
+    "RSkComponentProviderRNSVGGroup.cpp",
+    "RSkComponentProviderRNSVGGroup.h",
+    "RSkComponentProviderRNSVGLine.cpp",
+    "RSkComponentProviderRNSVGLine.h",
+    "RSkComponentProviderRNSVGPath.cpp",
+    "RSkComponentProviderRNSVGPath.h",
+    "RSkComponentProviderRNSVGRect.cpp",
+    "RSkComponentProviderRNSVGRect.h",
+    "RSkComponentProviderRNSVGUse.cpp",
+    "RSkComponentProviderRNSVGUse.h",
+    "RSkComponentProviderRNSVGSvgView.cpp",
+    "RSkComponentProviderRNSVGSvgView.h",
+    "RSkComponentRNSVGCircle.cpp",
+    "RSkComponentRNSVGCircle.h",
+    "RSkComponentRNSVGEllipse.cpp",
+    "RSkComponentRNSVGEllipse.h",
+    "RSkComponentRNSVGDefs.h",
+    "RSkComponentRNSVGGroup.cpp",
+    "RSkComponentRNSVGGroup.h",
+    "RSkComponentRNSVGLine.cpp",
+    "RSkComponentRNSVGLine.h",
+    "RSkComponentRNSVGPath.cpp",
+    "RSkComponentRNSVGPath.h",
+    "RSkComponentRNSVGRect.cpp",
+    "RSkComponentRNSVGRect.h",
+    "RSkComponentRNSVGUse.cpp",
+    "RSkComponentRNSVGUse.h",
+    "RSkComponentRNSVGSvgView.cpp",
+    "RSkComponentRNSVGSvgView.h",
+    "RSkSVGComponentNode.h",
+    "RSkSVGContainer.cpp",
+    "RSkSVGContainer.h",
+    "RSkSVGHiddenContainer.h",
+    "RSkSVGNode.cpp",
+    "RSkSVGNode.h",
+    "RSkSVGShape.cpp",
+    "RSkSVGShape.h",
+  ]
+##########################################################################################################################
+#In the current version of Skia (m86), sksvg is in an experimental stage and doesn't have a build system for integration. #Therefore, the necessary files must be compiled as part of the Rnsvg module. When upgrading to the latest version of Skia, #sksvg can be enabled by enabling the feature "skia_enable_svg".
+##########################################################################################################################
   # SKSVG dependent skia cpp sources
   sources += [
     "//third_party/skia/experimental/svg/model/SkSVGAttribute.cpp",

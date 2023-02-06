@@ -22,22 +22,21 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::updateComponentProps(Sh
   setCommonRenderableProps(newRNSVGEllipseProps);
   setCommonNodeProps(newRNSVGEllipseProps);
 
-  return RnsShell::LayerInvalidateNone;
+  return RnsShell::LayerInvalidateAll;
 }
 
-RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::setNativeProps(const RNSVGEllipseProps &nativeProps) {
+void  RSkComponentRNSVGEllipse::setNativeProps(const RNSVGEllipseProps &nativeProps) {
 
-  RNS_LOG_INFO(" CX: "<<nativeProps.cx);
-  RNS_LOG_INFO(" CY: "<<nativeProps.cy);
-  RNS_LOG_INFO(" RX: "<<nativeProps.rx);
-  RNS_LOG_INFO(" RY: "<<nativeProps.ry);
+  RNS_LOG_DEBUG(" CX: "<<nativeProps.cx);
+  RNS_LOG_DEBUG(" CY: "<<nativeProps.cy);
+  RNS_LOG_DEBUG(" RX: "<<nativeProps.rx);
+  RNS_LOG_DEBUG(" RY: "<<nativeProps.ry);
 
   setLengthAttribute(SkSVGAttribute::kCx,nativeProps.cx.c_str());
   setLengthAttribute(SkSVGAttribute::kCy,nativeProps.cy.c_str());
   setLengthAttribute(SkSVGAttribute::kRx,nativeProps.rx.c_str());
   setLengthAttribute(SkSVGAttribute::kRy,nativeProps.ry.c_str());
 
-  return RnsShell::LayerInvalidateNone;
 }
 
 void RSkComponentRNSVGEllipse::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {

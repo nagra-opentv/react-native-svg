@@ -7,18 +7,16 @@
 
 #pragma once
 
-#include "RSkSVGShapeComponent.h"
+#include "RSkSVGShape.h"
 
 namespace facebook {
 namespace react {
 
-using namespace std;
-
-class RSkComponentRNSVGLine final : public RSkSVGShapeComponent{
+class RSkComponentRNSVGLine final : public RSkSVGShape{
  public:
 
   RSkComponentRNSVGLine(const ShadowView &shadowView);
-  ~RSkComponentRNSVGLine() = default;
+  ~RSkComponentRNSVGLine() override {};
 
   // Override for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
@@ -31,14 +29,14 @@ class RSkComponentRNSVGLine final : public RSkSVGShapeComponent{
 
  private:
 
-    SkSVGLength x1_ = SkSVGLength(0);
-    SkSVGLength y1_ = SkSVGLength(0);
-    SkSVGLength x2_ = SkSVGLength(0);
-    SkSVGLength y2_ = SkSVGLength(0);
+  SkSVGLength x1_ = SkSVGLength(0);
+  SkSVGLength y1_ = SkSVGLength(0);
+  SkSVGLength x2_ = SkSVGLength(0);
+  SkSVGLength y2_ = SkSVGLength(0);
 
-    RnsShell::LayerInvalidateMask  setNativeProps(const RNSVGLineProps &nativeProps);
+  void  setNativeProps(const RNSVGLineProps &nativeProps);
 
-    typedef RSkSVGShapeComponent INHERITED;
+  typedef RSkSVGShape INHERITED;
 
 };
 

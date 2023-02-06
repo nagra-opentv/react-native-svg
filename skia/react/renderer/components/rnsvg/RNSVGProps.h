@@ -417,7 +417,7 @@ class RNSVGSvgViewProps final : public ViewProps {
   Float vbHeight{0.0};
   std::string align{};
   int meetOrSlice{0};
-  SharedColor tintColor{};
+  std::string tintColor{};
   std::string color{};
   std::string pointerEvents{};
 };

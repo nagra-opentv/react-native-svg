@@ -6,24 +6,23 @@
  */
 #pragma once
 
-#include "RSkSVGHiddenContainerComponent.h"
+#include "RSkSVGHiddenContainer.h"
 
 namespace facebook {
 namespace react {
 
-class RSkComponentRNSVGDefs: public RSkSVGHiddenContainerComponent {
-  public:
+class RSkComponentRNSVGDefs: public RSkSVGHiddenContainer {
+ public:
 
-    RSkComponentRNSVGDefs(const ShadowView &shadowView) :
-                    RSkSVGHiddenContainerComponent(shadowView,LAYER_TYPE_VIRTUAL,SkSVGTag::kDefs) {}
+  RSkComponentRNSVGDefs(const ShadowView &shadowView) :
+          RSkSVGHiddenContainer(shadowView,LAYER_TYPE_VIRTUAL,SkSVGTag::kDefs) {}
 
-    ~RSkComponentRNSVGDefs() = default;
-  
-    RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override {return RnsShell::LayerInvalidateNone;}
+  ~RSkComponentRNSVGDefs() override {};
+  RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override {return RnsShell::LayerInvalidateNone;}
 
-  protected:
+ protected:
 
-  private:
+ private:
 
 };
 

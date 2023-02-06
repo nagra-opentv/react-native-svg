@@ -6,6 +6,7 @@
  */
 
 #include "ReactSkia/utils/RnsLog.h"
+#include "RSkSVGContainer.h"
 #include "RSkSVGNode.h"
 
 namespace facebook {
@@ -14,73 +15,45 @@ namespace react {
 RSkSVGNode::RSkSVGNode(SkSVGTag tag) : INHERITED(tag) {};
 
 void RSkSVGNode::setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps) {
-  RNS_LOG_INFO("Supported Properties count  :" << renderableProps.propList.size() << " : for SVG TAG: "<< (int)tag());
-  RNS_LOG_INFO("##################");
+
+  RNS_LOG_DEBUG("Supported Properties count  :" << renderableProps.propList.size() << " : for SVG TAG: "<< (int)tag());
+  RNS_LOG_DEBUG("##################");
   for (auto props : renderableProps.propList ) {
-    RNS_LOG_ERROR(props);
+    RNS_LOG_DEBUG(props);
   }
-  RNS_LOG_INFO("##################");
-  
-    //set Fill Properties if specified.Else set to inherit from parent's Props
-  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "fill") != renderableProps.propList.end()) {
-    setColorFromColorStruct(renderableProps.fill,SkSVGAttribute::kFill);
-  } else {
-    setPaintAttribute(SkSVGAttribute::kFill,"inherit");
-  }
+  RNS_LOG_DEBUG("##################");
 
-  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "fillOpacity") != renderableProps.propList.end()) {
-    setNumberAttribute( SkSVGAttribute::kFillOpacity,std::to_string(renderableProps.fillOpacity).c_str());
-  }
-
-  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "fillRule") != renderableProps.propList.end()) {
-    setFillRuleAttribute(SkSVGAttribute::kFillRule,(renderableProps.fillRule == 0 ) ? "evenodd" :"nonzero");
-  } else {
-     setFillRuleAttribute(SkSVGAttribute::kFillRule,"inherit");
-  }
-
-  //set Stroke Properties if specified.If NOt set to Inherit from Parent's Props.
-  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "stroke") != renderableProps.propList.end()) {
-    setColorFromColorStruct(renderableProps.stroke,SkSVGAttribute::kStroke);
-  } else {
-    setPaintAttribute(SkSVGAttribute::kStroke,"inherit");
-  }
-
-  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeOpacity") != renderableProps.propList.end()) {
-    setNumberAttribute( SkSVGAttribute::kStrokeOpacity,std::to_string(renderableProps.strokeOpacity).c_str());
-  }
-
-  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeWidth") != renderableProps.propList.end()) {
-    setLengthAttribute( SkSVGAttribute::kStrokeWidth,renderableProps.strokeWidth.c_str());
-  }
-
-  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeLinecap") != renderableProps.propList.end()) {
-    setLineCapAttribute(SkSVGAttribute::kStrokeLineCap,(renderableProps.strokeLinecap == 0 ) ? "butt" :
-                                                              ((renderableProps.strokeLinecap == 1 ) ? "round":"square"));
-  } else {
-    setLineCapAttribute(SkSVGAttribute::kStrokeLineCap,"inherit" );
-  }
-
-  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeLinejoin") != renderableProps.propList.end()) {
-    setLineJoinAttribute(SkSVGAttribute::kStrokeLineJoin,(renderableProps.strokeLinejoin == 0 ) ? "miter" :
-                                                              ((renderableProps.strokeLinejoin == 1 ) ? "round":"bevel"));
-  } else {
-    setLineJoinAttribute(SkSVGAttribute::kStrokeLineJoin,"inherit" );
-  }
-
-  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeDasharray") != renderableProps.propList.end()) {
-    setDashArrayAttribute(SkSVGAttribute::kStrokeDashArray,renderableProps.strokeDasharray);
-  } 
-
-  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeDashoffset") != renderableProps.propList.end()) {
-    setLengthAttribute(SkSVGAttribute::kStrokeDashOffset,std::to_string(renderableProps.strokeDashoffset).c_str());
-  }
-
-  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "strokeMiterlimit") != renderableProps.propList.end()) {
-    setNumberAttribute( SkSVGAttribute::kStrokeMiterLimit,std::to_string(renderableProps.strokeMiterlimit).c_str());
-  }
-
-  if(std::find (renderableProps.propList.begin(), renderableProps.propList.end(), "vectorEffect") != renderableProps.propList.end()) {
-  //TODO : Vector EFFECT
+  for (auto &item : renderableProps.propList) {
+    //Fill Props
+    if(!strcmp(item.c_str(),"fill")) {
+      setColorFromColorStruct(renderableProps.fill,SkSVGAttribute::kFill);
+    } else if(!strcmp(item.c_str(),"fillOpacity")) {
+      setNumberAttribute( SkSVGAttribute::kFillOpacity,std::to_string(renderableProps.fillOpacity));
+    } else if(!strcmp(item.c_str(),"fillRule")) {
+      setFillRuleAttribute(SkSVGAttribute::kFillRule,(renderableProps.fillRule == 0 ) ? "evenodd" :"nonzero");
+    } else if(!strcmp(item.c_str(),"stroke")) {
+      setColorFromColorStruct(renderableProps.stroke,SkSVGAttribute::kStroke);
+    } else if(!strcmp(item.c_str(),"strokeOpacity")) {
+      setNumberAttribute( SkSVGAttribute::kStrokeOpacity,std::to_string(renderableProps.strokeOpacity));
+    } else if(!strcmp(item.c_str(),"strokeWidth")) {
+      setLengthAttribute( SkSVGAttribute::kStrokeWidth,renderableProps.strokeWidth);
+    } else  if(!strcmp(item.c_str(),"strokeLinecap")) {
+      setLineCapAttribute(SkSVGAttribute::kStrokeLineCap,(renderableProps.strokeLinecap == 0 ) ? "butt" :
+                                                        ((renderableProps.strokeLinecap == 1 ) ? "round":"square"));
+    } else if(!strcmp(item.c_str(),"strokeLinejoin")) {
+      setLineJoinAttribute(SkSVGAttribute::kStrokeLineJoin,(renderableProps.strokeLinejoin == 0 ) ? "miter" :
+                                                          ((renderableProps.strokeLinejoin == 1 ) ? "round":"bevel")); 
+    } else if(!strcmp(item.c_str(),"strokeDasharray")) {
+      setDashArrayAttribute(SkSVGAttribute::kStrokeDashArray,renderableProps.strokeDasharray);
+    } else if(!strcmp(item.c_str(),"strokeDashoffset")) {
+      setLengthAttribute(SkSVGAttribute::kStrokeDashOffset,std::to_string(renderableProps.strokeDashoffset));
+    } else if(!strcmp(item.c_str(),"strokeMiterlimit")) {
+      setNumberAttribute( SkSVGAttribute::kStrokeMiterLimit,std::to_string(renderableProps.strokeMiterlimit));
+    } else if(!strcmp(item.c_str(),"vectorEffect")) {
+      //TODO : Vector EFFECT
+    } else {
+      RNS_LOG_WARN(" Unknown Property : "<<item);
+    }
   }
 }
 
@@ -88,7 +61,7 @@ void RSkSVGNode::setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps){
 
   nodeName=nodeProps.name.c_str();
   //set Opacity
-   setNumberAttribute(SkSVGAttribute::kOpacity,std::to_string(nodeProps.opacity).c_str());
+  setNumberAttribute(SkSVGAttribute::kOpacity,std::to_string(nodeProps.opacity).c_str());
   //set Transform
   setTransformAttribute(SkSVGAttribute::kTransform,nodeProps.matrix);
   //set clip properties :: TODO -- check the inheritence behavour for clip Props
@@ -97,7 +70,7 @@ void RSkSVGNode::setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps){
 }
 
 void RSkSVGNode::setCommonGroupProps(const RNSVGGroupProps &groupProps) {
-  RNS_LOG_TODO("To Be Handled");
+  RNS_LOG_TODO("setCommonGroupProps To Be Handled");
 }
 
 void RSkSVGNode::setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr){
@@ -123,9 +96,9 @@ void RSkSVGNode::setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVG
  }
 }
 
-bool RSkSVGNode::setPaintAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setPaintAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGPaint paint;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parsePaint(&paint)) {
     return false;
   }
@@ -133,9 +106,9 @@ bool RSkSVGNode::setPaintAttribute(SkSVGAttribute attr, const char* stringValue)
   return true;
 }
 
-bool RSkSVGNode::setColorAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setColorAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGColorType color;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parseColor(&color)) {
     return false;
   }
@@ -143,9 +116,9 @@ bool RSkSVGNode::setColorAttribute(SkSVGAttribute attr, const char* stringValue)
   return true;
 }
 
-bool RSkSVGNode::setIRIAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setIRIAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGStringType iri;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parseIRI(&iri)) {
     return false;
   }
@@ -153,9 +126,9 @@ bool RSkSVGNode::setIRIAttribute(SkSVGAttribute attr, const char* stringValue) {
   return true;
 }
 
-bool RSkSVGNode::setClipPathAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setClipPathAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGClip clip;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parseClipPath(&clip)) {
     return false;
   }
@@ -163,25 +136,25 @@ bool RSkSVGNode::setClipPathAttribute(SkSVGAttribute attr, const char* stringVal
   return true;
 }
 
-bool RSkSVGNode::setPathDataAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setPathDataAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkPath path;
-  if (!SkParsePath::FromSVGString(stringValue, &path)) {
+  if (!SkParsePath::FromSVGString(stringValue.c_str(), &path)) {
     return false;
   }
   setAttribute(attr, SkSVGPathValue(path));
   return true;
 }
 
-bool RSkSVGNode::setStringAttribute(SkSVGAttribute attr, const char* stringValue) {
-  SkString str(stringValue, strlen(stringValue));
+bool RSkSVGNode::setStringAttribute(SkSVGAttribute attr, std::string stringValue) {
+  SkString str(stringValue.c_str(), stringValue.length());
   SkSVGStringType strType = SkSVGStringType(str);
   setAttribute(attr, SkSVGStringValue(strType));
   return true;
 }
 
-bool RSkSVGNode::setLengthAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setLengthAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGLength length;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parseLength(&length)) {
     return false;
   }
@@ -189,9 +162,9 @@ bool RSkSVGNode::setLengthAttribute(SkSVGAttribute attr, const char* stringValue
   return true;
 }
 
-bool RSkSVGNode::setNumberAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setNumberAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGNumberType number;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parseNumber(&number)) {
     return false;
   }
@@ -199,9 +172,9 @@ bool RSkSVGNode::setNumberAttribute(SkSVGAttribute attr, const char* stringValue
   return true;
 }
 
-bool RSkSVGNode::setViewBoxAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setViewBoxAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGViewBoxType viewBox;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parseViewBox(&viewBox)) {
     return false;
   }
@@ -209,9 +182,9 @@ bool RSkSVGNode::setViewBoxAttribute(SkSVGAttribute attr, const char* stringValu
   return true;
 }
 
-bool RSkSVGNode::setLineCapAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setLineCapAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGLineCap lineCap;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parseLineCap(&lineCap)) {
     return false;
   }
@@ -219,9 +192,9 @@ bool RSkSVGNode::setLineCapAttribute(SkSVGAttribute attr, const char* stringValu
   return true;
 }
 
-bool RSkSVGNode::setLineJoinAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setLineJoinAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGLineJoin lineJoin;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parseLineJoin(&lineJoin)) {
     return false;
   }
@@ -229,9 +202,9 @@ bool RSkSVGNode::setLineJoinAttribute(SkSVGAttribute attr, const char* stringVal
   return true;
 }
 
-bool RSkSVGNode::setSpreadMethodAttribute(SkSVGAttribute attr,  const char* stringValue) {
+bool RSkSVGNode::setSpreadMethodAttribute(SkSVGAttribute attr,  std::string stringValue) {
   SkSVGSpreadMethod spread;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parseSpreadMethod(&spread)) {
     return false;
   }
@@ -239,9 +212,9 @@ bool RSkSVGNode::setSpreadMethodAttribute(SkSVGAttribute attr,  const char* stri
   return true;
 }
 
-bool RSkSVGNode::setStopColorAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setStopColorAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGStopColor stopColor;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parseStopColor(&stopColor)) {
     return false;
   }
@@ -249,9 +222,9 @@ bool RSkSVGNode::setStopColorAttribute(SkSVGAttribute attr, const char* stringVa
   return true;
 }
 
-bool RSkSVGNode::setPointsAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setPointsAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGPointsType points;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parsePoints(&points)) {
     return false;
   }
@@ -259,9 +232,9 @@ bool RSkSVGNode::setPointsAttribute(SkSVGAttribute attr, const char* stringValue
   return true;
 }
 
-bool RSkSVGNode::setFillRuleAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setFillRuleAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGFillRule fillRule;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parseFillRule(&fillRule)) {
     return false;
   }
@@ -269,9 +242,9 @@ bool RSkSVGNode::setFillRuleAttribute(SkSVGAttribute attr, const char* stringVal
   return true;
 }
 
-bool RSkSVGNode::setVisibilityAttribute(SkSVGAttribute attr, const char* stringValue) {
+bool RSkSVGNode::setVisibilityAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGVisibility visibility;
-  SkSVGAttributeParser parser(stringValue);
+  SkSVGAttributeParser parser(stringValue.c_str());
   if (!parser.parseVisibility(&visibility)) {
     return false;
   }
@@ -285,9 +258,8 @@ bool RSkSVGNode::setDashArrayAttribute(SkSVGAttribute attr, const std::vector<st
 
   std::string dashArray;
   for(auto value : dashArrayAttribute) {
-    RNS_LOG_INFO("has strokeDasharray value: "<<value.c_str());
-    dashArray.append(value);
-    dashArray.append(" ");
+    RNS_LOG_DEBUG("has strokeDasharray value: "<<value.c_str());
+    dashArray.append(value + " ");
   }
 
   SkSVGDashArray parsedDashArray;
@@ -302,23 +274,17 @@ bool RSkSVGNode::setDashArrayAttribute(SkSVGAttribute attr, const std::vector<st
 bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Float> matrix) {
 
   if(matrix.size() == 6) {
-    RNS_LOG_INFO(" Matrix 0 : "<<matrix[0]);
-    RNS_LOG_INFO(" Matrix 1 : "<<matrix[1]);
-    RNS_LOG_INFO(" Matrix 2 : "<<matrix[2]);
-    RNS_LOG_INFO(" Matrix 3 : "<<matrix[3]);
-    RNS_LOG_INFO(" Matrix 4 : "<<matrix[4]);
-    RNS_LOG_INFO(" Matrix 5 : "<<matrix[5]);
+    RNS_LOG_DEBUG(" Matrix 0 : "<<matrix[0]);
+    RNS_LOG_DEBUG(" Matrix 1 : "<<matrix[1]);
+    RNS_LOG_DEBUG(" Matrix 2 : "<<matrix[2]);
+    RNS_LOG_DEBUG(" Matrix 3 : "<<matrix[3]);
+    RNS_LOG_DEBUG(" Matrix 4 : "<<matrix[4]);
+    RNS_LOG_DEBUG(" Matrix 5 : "<<matrix[5]);
 
     SkMatrix svgTransforMatrix=SkMatrix::Translate(matrix[4],matrix[5]);
     svgTransforMatrix.preConcat(SkMatrix::Scale(matrix[0],matrix[3]));
     setAttribute(attr,SkSVGTransformValue(svgTransforMatrix));
 
-    RNS_LOG_INFO("getScaleX :"<<svgTransforMatrix.getScaleX());
-    RNS_LOG_INFO("getScaleY :"<<svgTransforMatrix.getScaleY());
-    RNS_LOG_INFO("getTranslateX :"<<svgTransforMatrix.getTranslateX());
-    RNS_LOG_INFO("getTranslateY :"<<svgTransforMatrix.getTranslateY());
-    RNS_LOG_INFO("getSkewX :"<<svgTransforMatrix.getSkewX());
-    RNS_LOG_INFO("getSkewY :"<<svgTransforMatrix.getSkewY());
     return true;
   }
   return false;
@@ -326,7 +292,7 @@ bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Flo
 
 SkPath RSkSVGNode::onAsPath(const SkSVGRenderContext&)  const  { 
   SkPath path;
-  RNS_LOG_TODO("TO BE IMPLEMENTED IN CONTAINER & EACH COMPONENT");
+  RNS_LOG_TODO("onAsPath : TO BE IMPLEMENTED IN CONTAINER & EACH SHAPE COMPONENT");
   return path;
 };
 

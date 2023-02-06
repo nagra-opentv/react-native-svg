@@ -21,62 +21,61 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(Share
   setCommonRenderableProps(newRNSVGRectProps);
   setCommonNodeProps(newRNSVGRectProps);
 
-  return RnsShell::LayerInvalidateNone;
+  return RnsShell::LayerInvalidateAll;
 }
 
-RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::setNativeProps(const RNSVGRectProps &nativeProps) {
+void  RSkComponentRNSVGRect::setNativeProps(const RNSVGRectProps &nativeProps) {
 
-  RNS_LOG_INFO(" X: "<<nativeProps.x);
-  RNS_LOG_INFO(" Y: "<<nativeProps.y);
-  RNS_LOG_INFO(" Rx: "<<nativeProps.rx);
-  RNS_LOG_INFO(" Ry: "<<nativeProps.ry);
-  RNS_LOG_INFO(" Width: "<<nativeProps.width);
-  RNS_LOG_INFO(" Height: "<<nativeProps.height);
+  RNS_LOG_DEBUG(" X: "<<nativeProps.x);
+  RNS_LOG_DEBUG(" Y: "<<nativeProps.y);
+  RNS_LOG_DEBUG(" Rx: "<<nativeProps.rx);
+  RNS_LOG_DEBUG(" Ry: "<<nativeProps.ry);
+  RNS_LOG_DEBUG(" Width: "<<nativeProps.width);
+  RNS_LOG_DEBUG(" Height: "<<nativeProps.height);
 
-  setLengthAttribute(SkSVGAttribute::kX,nativeProps.x.c_str());
-  setLengthAttribute(SkSVGAttribute::kY,nativeProps.y.c_str());
-  setLengthAttribute(SkSVGAttribute::kRx,nativeProps.rx.c_str());
-  setLengthAttribute(SkSVGAttribute::kRy,nativeProps.ry.c_str());
-  setLengthAttribute(SkSVGAttribute::kWidth,nativeProps.width.c_str());
-  setLengthAttribute(SkSVGAttribute::kHeight,nativeProps.height.c_str());
+  setLengthAttribute(SkSVGAttribute::kX,nativeProps.x);
+  setLengthAttribute(SkSVGAttribute::kY,nativeProps.y);
+  setLengthAttribute(SkSVGAttribute::kRx,nativeProps.rx);
+  setLengthAttribute(SkSVGAttribute::kRy,nativeProps.ry);
+  setLengthAttribute(SkSVGAttribute::kWidth,nativeProps.width);
+  setLengthAttribute(SkSVGAttribute::kHeight,nativeProps.height);
 
-  return RnsShell::LayerInvalidateNone;
 }
 
 void RSkComponentRNSVGRect::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
   switch (attr) {
-  case SkSVGAttribute::kX:
-    if (const auto* x = v.as<SkSVGLengthValue>()) {
-      x_ =*x;
-    }
+    case SkSVGAttribute::kX:
+      if (const auto* x = v.as<SkSVGLengthValue>()) {
+        x_ =*x;
+      }
     break;
-  case SkSVGAttribute::kY:
-    if (const auto* y = v.as<SkSVGLengthValue>()) {
-      y_ =*y;
-    }
+    case SkSVGAttribute::kY:
+      if (const auto* y = v.as<SkSVGLengthValue>()) {
+        y_ =*y;
+      }
     break;
-  case SkSVGAttribute::kWidth:
-    if (const auto* w = v.as<SkSVGLengthValue>()) {
-      width_=*w;
-    }
+    case SkSVGAttribute::kWidth:
+      if (const auto* w = v.as<SkSVGLengthValue>()) {
+        width_=*w;
+      }
     break;
-  case SkSVGAttribute::kHeight:
-    if (const auto* h = v.as<SkSVGLengthValue>()) {
-      height_=*h;
-    }
+    case SkSVGAttribute::kHeight:
+      if (const auto* h = v.as<SkSVGLengthValue>()) {
+        height_=*h;
+      }
     break;
-  case SkSVGAttribute::kRx:
-    if (const auto* rx = v.as<SkSVGLengthValue>()) {
-      rx_=*rx;
-    }
+    case SkSVGAttribute::kRx:
+      if (const auto* rx = v.as<SkSVGLengthValue>()) {
+        rx_=*rx;
+      }
     break;
-  case SkSVGAttribute::kRy:
-    if (const auto* ry = v.as<SkSVGLengthValue>()) {
-      ry_=*ry;
-    }
+    case SkSVGAttribute::kRy:
+      if (const auto* ry = v.as<SkSVGLengthValue>()) {
+        ry_=*ry;
+      }
     break;
-  default:
-    this->INHERITED::onSetAttribute(attr, v);
+    default:
+      this->INHERITED::onSetAttribute(attr, v);
   }
 }
 
@@ -86,7 +85,7 @@ void RSkComponentRNSVGRect::onDraw(SkCanvas* canvas, const SkSVGLengthContext& l
   const SkRect rect = lctx.resolveRect(x_,y_,width_,height_);
   const SkScalar rx = lctx.resolve(rx_, SkSVGLengthContext::LengthType::kHorizontal);
   const SkScalar ry = lctx.resolve(ry_, SkSVGLengthContext::LengthType::kVertical);
-  
+
   SkRRect rrect=SkRRect::MakeRectXY(rect, rx ,ry);
   canvas->drawRRect(rrect, paint);  
 }
