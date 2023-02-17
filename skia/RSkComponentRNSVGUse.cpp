@@ -28,11 +28,13 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGUse::updateComponentProps(Shared
 
 inline void  RSkComponentRNSVGUse::setNativeProps(const RNSVGUseProps &nativeProps) {
 
-  RNS_LOG_DEBUG(" X: "<<nativeProps.x);
-  RNS_LOG_DEBUG(" Y: "<<nativeProps.y);
-  RNS_LOG_DEBUG(" Href: "<<nativeProps.href.c_str());
-  RNS_LOG_DEBUG(" Width: "<<nativeProps.width);
-  RNS_LOG_DEBUG(" Height: "<<nativeProps.height);
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
+  RNS_LOG_INFO(" X  : "<<nativeProps.x <<
+               " Y  : "<<nativeProps.y <<
+               " Href : "<<nativeProps.href.c_str()<<
+               " Width : "<<nativeProps.width<<
+               " Height : "<<nativeProps.height);
+#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
 
   setLengthAttribute(SkSVGAttribute::kX,nativeProps.x);
   setLengthAttribute(SkSVGAttribute::kY,nativeProps.y);

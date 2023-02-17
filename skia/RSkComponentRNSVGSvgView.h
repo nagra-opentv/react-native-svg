@@ -21,6 +21,7 @@ class RSkComponentRNSVGSvgView final : public RSkSVGContainer  {
   ~RSkComponentRNSVGSvgView() override {};
   //Override for Base Class :RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
+  SkSize getContainerSize() const override { return svgContainerSize_;}
 
  protected:
 

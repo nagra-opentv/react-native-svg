@@ -27,11 +27,12 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::updateComponentProps(Sh
 
 void  RSkComponentRNSVGEllipse::setNativeProps(const RNSVGEllipseProps &nativeProps) {
 
-  RNS_LOG_DEBUG(" CX: "<<nativeProps.cx);
-  RNS_LOG_DEBUG(" CY: "<<nativeProps.cy);
-  RNS_LOG_DEBUG(" RX: "<<nativeProps.rx);
-  RNS_LOG_DEBUG(" RY: "<<nativeProps.ry);
-
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
+  RNS_LOG_INFO(" CX: "<<nativeProps.cx <<
+               " CY: "<<nativeProps.cy <<
+               " RX: "<<nativeProps.rx <<
+               " RY: "<<nativeProps.ry);
+#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
   setLengthAttribute(SkSVGAttribute::kCx,nativeProps.cx);
   setLengthAttribute(SkSVGAttribute::kCy,nativeProps.cy);
   setLengthAttribute(SkSVGAttribute::kRx,nativeProps.rx);
@@ -39,30 +40,30 @@ void  RSkComponentRNSVGEllipse::setNativeProps(const RNSVGEllipseProps &nativePr
 
 }
 
-void RSkComponentRNSVGEllipse::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
+void RSkComponentRNSVGEllipse::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) {
   switch (attr) {
     case SkSVGAttribute::kCx:
-      if (const auto* cx = v.as<SkSVGLengthValue>()) {
+      if (const auto* cx = attrValue.as<SkSVGLengthValue>()) {
         cx_ =*cx;
       }
     break;
     case SkSVGAttribute::kCy:
-      if (const auto* cy = v.as<SkSVGLengthValue>()) {
+      if (const auto* cy = attrValue.as<SkSVGLengthValue>()) {
         cy_ =*cy;
       }
     break;
     case SkSVGAttribute::kRx:
-      if (const auto* rx = v.as<SkSVGLengthValue>()) {
+      if (const auto* rx = attrValue.as<SkSVGLengthValue>()) {
         rx_ =*rx;
       }
     break;
     case SkSVGAttribute::kRy:
-      if (const auto* ry = v.as<SkSVGLengthValue>()) {
+      if (const auto* ry = attrValue.as<SkSVGLengthValue>()) {
         ry_ =*ry;
       }
     break;
     default:
-      this->INHERITED::onSetAttribute(attr, v);
+      this->INHERITED::onSetAttribute(attr, attrValue);
   }
 }
 

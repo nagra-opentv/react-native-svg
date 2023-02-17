@@ -5,9 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "ReactSkia/utils/RnsLog.h"
+#include <unordered_map>
+
 #include "ReactSkia/components/RSkComponent.h"
+#include "ReactSkia/utils/RnsLog.h"
 #include "ReactSkia/views/common/RSkConversion.h"
+#include "RSkComponentRNSVGSvgView.h"
 #include "RSkSVGContainer.h"
 #include "RSkSVGNode.h"
 
@@ -18,43 +21,73 @@ RSkSVGNode::RSkSVGNode(SkSVGTag tag) : INHERITED(tag) {};
 
 void RSkSVGNode::setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps) {
 
-#ifdef DISPLAY_NODE_PROPERTY
-  RNS_LOG_INFO("Supported Properties count  :" << renderableProps.propList.size() << " : for SVG TAG: "<< (int)tag());
-  RNS_LOG_INFO("##################");
+#ifdef ENABLE_RNSVG_COMMON_RENDERABLE_PROPS_DEBUG
+  RNS_LOG_INFO("========== Common Renderable Props ==========");
+  RNS_LOG_INFO("Supported Properties count  :" << renderableProps.propList.size() <<
+               " : for SVG TAG: "<< (int)tag());
   for (auto props : renderableProps.propList ) {
     RNS_LOG_INFO(props);
   }
-  RNS_LOG_INFo("##################");
-#endif /*DISPLAY_NODE_PROPERTY*/
+  RNS_LOG_INFO("=============================================");
+#endif /*ENABLE_RNSVG_COMMON_RENDERABLE_PROPS_DEBUG*/
+
+  #define APPLY_FILL_COLOUR         [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
+                                      {node->setColorFromColorStruct((renderableProps).fill,SkSVGAttribute::kFill);}
+
+  #define APPLY_STROKE_COLOUR       [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
+                                      {node->setColorFromColorStruct((renderableProps).stroke,SkSVGAttribute::kStroke);}
+
+  #define APPLY_FILL_RULE           [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
+                                      {node->setFillRuleAttribute(SkSVGAttribute::kFillRule,(renderableProps.fillRule == 0 ) ? "evenodd" :"nonzero");}
+
+  #define APPLY_FILL_OPACITY        [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
+                                      {node->setNumberAttribute( SkSVGAttribute::kFillOpacity,std::to_string(renderableProps.fillOpacity));}
+
+  #define APPLY_STROKE_OPACITY      [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
+                                      {node->setNumberAttribute( SkSVGAttribute::kStrokeOpacity,std::to_string(renderableProps.strokeOpacity));}
+
+  #define APPLY_STROKE_WIDTH        [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
+                                      {node->setLengthAttribute( SkSVGAttribute::kStrokeWidth,renderableProps.strokeWidth);}
+
+  #define APPLY_STROKE_LINECAP      [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
+                                      {node->setLineCapAttribute(SkSVGAttribute::kStrokeLineCap,(renderableProps.strokeLinecap == 0 ) ? "butt" : \
+                                          ((renderableProps.strokeLinecap == 1 ) ? "round":"square"));}
+
+  #define APPLY_STROKE_LINEJOIN     [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
+                                      {node->setLineJoinAttribute(SkSVGAttribute::kStrokeLineJoin,(renderableProps.strokeLinejoin == 0 ) ? "miter" : \
+                                          ((renderableProps.strokeLinejoin == 1 ) ? "round":"bevel"));}
+
+  #define APPLY_STROKE_DASHARRAY    [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
+                                      {node->setDashArrayAttribute(SkSVGAttribute::kStrokeDashArray,renderableProps.strokeDasharray);}
+
+  #define APPLY_STROKE_DASHOFFSET   [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
+                                      {node->setLengthAttribute(SkSVGAttribute::kStrokeDashOffset,std::to_string(renderableProps.strokeDashoffset));}
+
+  #define APPLY_STROKE_MITERLIMIT   [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
+                                      {node->setNumberAttribute( SkSVGAttribute::kStrokeMiterLimit,std::to_string(renderableProps.strokeMiterlimit));}
+
+  #define APPLY_VECTOR_EFFECT      [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
+                                     {/*TODO*/}
+
+  static std::unordered_map<std::string, std::function<void(RSkSVGNode *node,const RNSVGCommonRenderableProps)>> s_propUpdateFunctionMap={
+    {"fill",APPLY_FILL_COLOUR},
+    {"stroke",APPLY_STROKE_COLOUR},
+    {"fillOpacity",APPLY_FILL_OPACITY},
+    {"strokeOpacity",APPLY_STROKE_OPACITY},
+    {"fillRule",APPLY_FILL_RULE},
+    {"strokeWidth",APPLY_STROKE_WIDTH},
+    {"strokeLinecap",APPLY_STROKE_LINECAP},
+    {"strokeLinejoin",APPLY_STROKE_LINEJOIN},
+    {"strokeDasharray",APPLY_STROKE_DASHARRAY},
+    {"strokeDashoffset",APPLY_STROKE_DASHOFFSET},
+    {"strokeMiterlimit",APPLY_STROKE_MITERLIMIT},
+    {"vectorEffect",APPLY_VECTOR_EFFECT}
+  };
 
   for (auto &item : renderableProps.propList) {
     //Fill Props
-    if(!strcmp(item.c_str(),"fill")) {
-      setColorFromColorStruct(renderableProps.fill,SkSVGAttribute::kFill);
-    } else if(!strcmp(item.c_str(),"fillOpacity")) {
-      setNumberAttribute( SkSVGAttribute::kFillOpacity,std::to_string(renderableProps.fillOpacity));
-    } else if(!strcmp(item.c_str(),"fillRule")) {
-      setFillRuleAttribute(SkSVGAttribute::kFillRule,(renderableProps.fillRule == 0 ) ? "evenodd" :"nonzero");
-    } else if(!strcmp(item.c_str(),"stroke")) {
-      setColorFromColorStruct(renderableProps.stroke,SkSVGAttribute::kStroke);
-    } else if(!strcmp(item.c_str(),"strokeOpacity")) {
-      setNumberAttribute( SkSVGAttribute::kStrokeOpacity,std::to_string(renderableProps.strokeOpacity));
-    } else if(!strcmp(item.c_str(),"strokeWidth")) {
-      setLengthAttribute( SkSVGAttribute::kStrokeWidth,renderableProps.strokeWidth);
-    } else  if(!strcmp(item.c_str(),"strokeLinecap")) {
-      setLineCapAttribute(SkSVGAttribute::kStrokeLineCap,(renderableProps.strokeLinecap == 0 ) ? "butt" :
-                                                        ((renderableProps.strokeLinecap == 1 ) ? "round":"square"));
-    } else if(!strcmp(item.c_str(),"strokeLinejoin")) {
-      setLineJoinAttribute(SkSVGAttribute::kStrokeLineJoin,(renderableProps.strokeLinejoin == 0 ) ? "miter" :
-                                                          ((renderableProps.strokeLinejoin == 1 ) ? "round":"bevel")); 
-    } else if(!strcmp(item.c_str(),"strokeDasharray")) {
-      setDashArrayAttribute(SkSVGAttribute::kStrokeDashArray,renderableProps.strokeDasharray);
-    } else if(!strcmp(item.c_str(),"strokeDashoffset")) {
-      setLengthAttribute(SkSVGAttribute::kStrokeDashOffset,std::to_string(renderableProps.strokeDashoffset));
-    } else if(!strcmp(item.c_str(),"strokeMiterlimit")) {
-      setNumberAttribute( SkSVGAttribute::kStrokeMiterLimit,std::to_string(renderableProps.strokeMiterlimit));
-    } else if(!strcmp(item.c_str(),"vectorEffect")) {
-      //TODO : Vector EFFECT
+    if(s_propUpdateFunctionMap.count(item) ) {
+      s_propUpdateFunctionMap[item](this,renderableProps);
     } else {
       RNS_LOG_WARN(" Unknown Property : "<<item);
     }
@@ -73,13 +106,35 @@ void RSkSVGNode::setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps){
   setClipPathAttribute(SkSVGAttribute::kClipPath,nodeProps.clipPath.c_str());
 }
 
-void RSkSVGNode::setCommonGroupProps(const RNSVGGroupProps &groupProps) {
-  RNS_LOG_TODO("setCommonGroupProps To Be Handled");
+void RSkSVGNode::setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProps) {
+
+  #define SET_TEXT_FONT_ATTR(attr,value)                                 \
+    if(!value.empty()) {                                                 \
+     setStringAttribute(attr,value);                                     \
+    }
+
+  setLengthAttribute(SkSVGAttribute::kFontSize,commonGroupProps.font.fontSize);
+  setLengthAttribute(static_cast<SkSVGAttribute>(RSkSVGAttribute::kLetterSpacing),commonGroupProps.font.letterSpacing);
+  setLengthAttribute(static_cast<SkSVGAttribute>(RSkSVGAttribute::kWordSpacing),commonGroupProps.font.wordSpacing);
+
+  SET_TEXT_FONT_ATTR(SkSVGAttribute::kFontFamily,commonGroupProps.font.fontFamily)
+  SET_TEXT_FONT_ATTR(SkSVGAttribute::kFontStyle,commonGroupProps.font.fontStyle)
+  SET_TEXT_FONT_ATTR(SkSVGAttribute::kFontWeight,commonGroupProps.font.fontWeight)
+
+  #ifdef ENABLE_RNSVG_COMMON_RENDERABLE_PROPS_DEBUG
+    RNS_LOG_INFO("=== Common Text Props ===");
+    RNS_LOG_INFO("FontSize     : "<<commonGroupProps.font.fontSize <<;
+                 "FontStyle    : "<<commonGroupProps.font.fontStyle <<
+                 "FontWeight   : "<<commonGroupProps.font.fontWeight <<
+                 "LetterSpacing: "<<commonGroupProps.font.letterSpacing <<
+                 "WordSpacing  : "<<commonGroupProps.font.wordSpacing);
+    RNS_LOG_INFO("========================");
+  #endif /*ENABLE_RNSVG_COMMON_RENDERABLE_PROPS_DEBUG*/
 }
 
 void RSkSVGNode::setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr){
 
-  if(colorStruct.type == 0)  {
+  if(colorStruct.type == RNSVGColorStruct::SOLID)  {
     if(colorStruct.payload) {
       SkColor color= RSkColorFromSharedColor(colorStruct.payload, SK_ColorTRANSPARENT);
       SkSVGPaint paint(color);
@@ -87,14 +142,14 @@ void RSkSVGNode::setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVG
     } else {
       // Color specified as none
       setPaintAttribute(attr,"none");
-    } 
- } else if(colorStruct.type ==  2) { // currentColor
+    }
+ } else if(colorStruct.type ==  RNSVGColorStruct::CURRENT_COLOR) {
    setPaintAttribute(attr,"currentColor");
- } else if(colorStruct.type == 3) { // context-fill
+ } else if(colorStruct.type == RNSVGColorStruct::CONTEXT_FILL) {
    RNS_LOG_TODO(" Support for color : context-fill , color struct type : " <<colorStruct.type);
- }else if(colorStruct.type == 4) { // context-stroke
+ }else if(colorStruct.type == RNSVGColorStruct::CONTEXT_STROKE) {
    RNS_LOG_TODO(" Support for color : context-stroke , color struct type : " <<colorStruct.type);
- }else if(colorStruct.type == 1) { // brush ref
+ }else if(colorStruct.type == RNSVGColorStruct::BRUSH_REF) {
    RNS_LOG_TODO(" Support for color as brush Ref , color struct type : " <<colorStruct.type);
  }
 }
@@ -277,12 +332,12 @@ bool RSkSVGNode::setDashArrayAttribute(SkSVGAttribute attr, const std::vector<st
 bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Float> matrix) {
 
   if(matrix.size() == 6) {
-    RNS_LOG_DEBUG(" Matrix 0 : "<<matrix[0]);
-    RNS_LOG_DEBUG(" Matrix 1 : "<<matrix[1]);
-    RNS_LOG_DEBUG(" Matrix 2 : "<<matrix[2]);
-    RNS_LOG_DEBUG(" Matrix 3 : "<<matrix[3]);
-    RNS_LOG_DEBUG(" Matrix 4 : "<<matrix[4]);
-    RNS_LOG_DEBUG(" Matrix 5 : "<<matrix[5]);
+    RNS_LOG_DEBUG(" Matrix 0 : "<<matrix[0] <<
+                  " Matrix 1 : "<<matrix[1] <<
+                  " Matrix 2 : "<<matrix[2] <<
+                  " Matrix 3 : "<<matrix[3] <<
+                  " Matrix 4 : "<<matrix[4] <<
+                  " Matrix 5 : "<<matrix[5]);
 
     SkMatrix svgTransforMatrix=SkMatrix::Translate(matrix[4],matrix[5]);
     svgTransforMatrix.preConcat(SkMatrix::Scale(matrix[0],matrix[3]));
@@ -291,6 +346,26 @@ bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Flo
     return true;
   }
   return false;
+}
+
+void RSkSVGNode::setRoot(RSkSVGNode * rootNode) {
+
+  if(!rootNode) return;
+
+  if(rootNode && (rootNode->tag() == SkSVGTag::kSvg)) {
+    rootNode_=rootNode;
+    RNS_LOG_DEBUG("setRoot get for child with tag:"<<(int)tag());
+  } 
+}
+
+SkSize RSkSVGNode::getContainerSize() const {
+  if(rootNode_->tag() == SkSVGTag::kSvg) {
+    auto node=dynamic_cast<RSkComponentRNSVGSvgView *>(rootNode_);
+    if(node) {
+      return node->getContainerSize();
+    }
+  }
+  return SkSize::Make(0, 0);
 }
 
 SkPath RSkSVGNode::onAsPath(const SkSVGRenderContext&)  const  { 

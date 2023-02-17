@@ -18,8 +18,7 @@ RSkComponentRNSVGSvgView::RSkComponentRNSVGSvgView(const ShadowView &shadowView)
     : INHERITED(shadowView,LAYER_TYPE_PICTURE,SkSVGTag::kSvg) {}
 
 void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
-//TODO: How this container size is used to be analyzed and Updated
-  SkSVGLengthContext       lctx(svgContainerSize_);
+  SkSVGLengthContext       lctx(SkSize::Make(0, 0));
   SkSVGPresentationContext pctx;
 
 #ifdef ENABLE_SVG_CHILD_HIERARCHY_DEBUG
@@ -27,12 +26,12 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
 #endif
 
   //1. Set Clip to SVG ontainer size, to restrict child draw within SVG container
-  // TODO: Use Bitmap as an alternate approach for the platform with less memory constraint
+  // TODO: Consider utilizing Bitmap as an alternative strategy for platforms that have limited memory constraints
   SkAutoCanvasRestore save(canvas, true);
   canvas->clipRect(SkRect::MakeXYWH(lctx.resolve(x_, SkSVGLengthContext::LengthType::kHorizontal),
                                     lctx.resolve(y_, SkSVGLengthContext::LengthType::kVertical),
-                                    lctx.resolve(width_, SkSVGLengthContext::LengthType::kHorizontal),
-                                    lctx.resolve(height_, SkSVGLengthContext::LengthType::kVertical))
+                                    svgContainerSize_.width(),
+                                    svgContainerSize_.height())
                   );
 
   //2. Apply Container Style Props.
@@ -68,13 +67,15 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(Sh
   auto component = getComponentData();
   auto const &newRNSVGViewProps = *std::static_pointer_cast<RNSVGSvgViewProps const>(newViewProps);
 
-  RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
-  RNS_LOG_DEBUG("RNSVGSvgViewProps : minX :"<<newRNSVGViewProps.minX);
-  RNS_LOG_DEBUG("RNSVGSvgViewProps : minY :"<<newRNSVGViewProps.minY);
-  RNS_LOG_DEBUG("RNSVGSvgViewProps : vbWidth :"<<newRNSVGViewProps.vbWidth);
-  RNS_LOG_DEBUG("RNSVGSvgViewProps : vbHeight :"<<newRNSVGViewProps.vbHeight);
-  RNS_LOG_DEBUG("RNSVGSvgViewProps : tintColor :"<<newRNSVGViewProps.tintColor);
-  RNS_LOG_DEBUG("RNSVGSvgViewProps : color :"<<newRNSVGViewProps.color);
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
+  RNS_LOG_INFO( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
+  RNS_LOG_INFO("minX  :"<<newRNSVGViewProps.minX <<
+               "minY  :"<<newRNSVGViewProps.minY <<
+               "vbWidth :"<<newRNSVGViewProps.vbWidth <<
+               "vbHeight :"<<newRNSVGViewProps.vbHeight <<
+               "tintColor :"<<newRNSVGViewProps.tintColor <<
+               "color :"<<newRNSVGViewProps.color);
+#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
 
   std::string viewBox=std::to_string(newRNSVGViewProps.minX) + " "+ \
                       std::to_string(newRNSVGViewProps.minY)+ " " + \
@@ -87,6 +88,9 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(Sh
   setLengthAttribute(SkSVGAttribute::kY,std::to_string(component.layoutMetrics.frame.origin.y));
   setLengthAttribute(SkSVGAttribute::kWidth,std::to_string(component.layoutMetrics.frame.size.width));
   setLengthAttribute(SkSVGAttribute::kHeight,std::to_string(component.layoutMetrics.frame.size.height));
+
+  svgContainerSize_.set(component.layoutMetrics.frame.size.width,
+                        component.layoutMetrics.frame.size.height);
 
   //TODO: ("TO BE CONFIRMED: When the SVG dimensions change, it is unclear whether a remove and insert mount instruction will be received \
   // or an update mount instruction will be received. If an update mount instruction is received,update props will not be called for layout metric changes.");
@@ -157,7 +161,7 @@ inline void RSkComponentRNSVGSvgView::alterSkiaDefaultPaint() {
   for (auto item:childRSkNodeList_) {
     RNS_LOG_DEBUG(" Child Tag : "<<(int)item->tag());
     if(item->tag() == SkSVGTag::kG) {
-      auto componentNode=GET_DERIVED_OBJECT_FROM(item.get(),RSkComponentRNSVGGroup);
+      auto componentNode=dynamic_cast<RSkComponentRNSVGGroup *>(item.get());
       if(componentNode) {
         auto const &newRNSVGGroupPropsProps = *std::static_pointer_cast<RNSVGGroupProps const>(componentNode->getComponentData().props);
         // Reset Stroke & Fill Color if not specifed to transparent

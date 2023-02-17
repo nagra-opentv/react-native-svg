@@ -74,6 +74,15 @@ dynamic Uimanager::getConstantsForThirdpartyViewManager(std::string viewManagerN
         "strokeDasharray",true)("strokeDashoffset",true)("strokeMiterlimit",true)(
         "vectorEffect",true)("propList",true);
 
+  dynamic svgCommonGroupProps = folly::dynamic::object("fontSize",true)("fontWeight",true)("font",true)("fontStyle",true)(
+        "fontVariant",true)("fontWeight",true)("fontStretch",true)("fontSize",true)("fontFamily",true)(
+        "textAnchor",true)("textDecoration",true)("letterSpacing",true)("wordSpacing",true)(
+        "kerning",true)("fontFeatureSettings",true)("fontVariantLigatures",true)("fontVariationSettings",true);
+
+  dynamic svgCommonTextProps = folly::dynamic::object("dx",true)("dy",true)("x",true)("y",true)("rotate",true)(
+        "inlineSize",true)("textLength",true)("baselineShift",true)("lengthAdjust",true)(
+        "alignmentBaseline",true)("verticalAlign",true);
+
   if(viewManagerName == "RNSVGSvgView") {
     auto nativeProps = folly::dynamic::object("bbWidth", true)("bbHeight", true)(
         "minX", true)("minY", true)("vbWidth", true)("vbHeight", true)("align", true)(
@@ -180,6 +189,37 @@ dynamic Uimanager::getConstantsForThirdpartyViewManager(std::string viewManagerN
          "x1", true)("x2", true)("y1", true)("y2", true);
 
     auto nativeProps = folly::dynamic::merge_diff(svgCommonNodeProps,svgCommonRenderableProps) ;
+    nativeProps = folly::dynamic::merge_diff(componentNativeProps,nativeProps) ;
+
+    auto bubblingEventTypes = folly::dynamic::object();
+    auto directEventTypes = folly::dynamic::object();
+    auto registry = folly::dynamic::object(
+        NATIVE_PROPS_KEY, std::move(nativeProps))(
+        BASE_MODULE_NAME_KEY, "RCTView")(
+        BUBBLING_EVENTS_KEY, std::move(bubblingEventTypes))(
+       DIRECT_EVENTS_KEY, std::move(directEventTypes));
+    return {std::move(registry)};
+  } else if(viewManagerName == "RNSVGText") {
+
+    auto nativeProps = folly::dynamic::merge_diff(svgCommonNodeProps,svgCommonRenderableProps) ;
+    nativeProps = folly::dynamic::merge_diff(svgCommonTextProps,nativeProps) ;
+    nativeProps = folly::dynamic::merge_diff(svgCommonGroupProps,nativeProps) ;
+
+    auto bubblingEventTypes = folly::dynamic::object();
+    auto directEventTypes = folly::dynamic::object();
+    auto registry = folly::dynamic::object(
+        NATIVE_PROPS_KEY, std::move(nativeProps))(
+        BASE_MODULE_NAME_KEY, "RCTView")(
+        BUBBLING_EVENTS_KEY, std::move(bubblingEventTypes))(
+       DIRECT_EVENTS_KEY, std::move(directEventTypes));
+    return {std::move(registry)};
+  }else if(viewManagerName == "RNSVGTSpan") {
+
+    dynamic componentNativeProps = folly::dynamic::object("content",true);
+
+    auto nativeProps = folly::dynamic::merge_diff(svgCommonNodeProps,svgCommonRenderableProps) ;
+    nativeProps = folly::dynamic::merge_diff(svgCommonTextProps,nativeProps) ;
+    nativeProps = folly::dynamic::merge_diff(svgCommonGroupProps,nativeProps) ;
     nativeProps = folly::dynamic::merge_diff(componentNativeProps,nativeProps) ;
 
     auto bubblingEventTypes = folly::dynamic::object();

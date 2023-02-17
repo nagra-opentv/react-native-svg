@@ -31,9 +31,9 @@ class RSkSVGComponentNode : public RSkComponent,public RSkSVGNode {
 
   explicit RSkSVGComponentNode(const ShadowView &shadowView,
                                         RnsShell::LayerType layerType,
-                                        SkSVGTag t)
+                                        SkSVGTag tag)
             : RSkComponent(shadowView,layerType),
-              RSkSVGNode(t) {};
+              RSkSVGNode(tag) {};
 
   // Override from Base Class: RSkComponent
   void OnPaint(SkCanvas *canvas) override{};

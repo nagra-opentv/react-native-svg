@@ -16,7 +16,9 @@ RSkComponentRNSVGPath::RSkComponentRNSVGPath(const ShadowView &shadowView)
 RnsShell::LayerInvalidateMask RSkComponentRNSVGPath::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
   auto const &newRNSVGPathProps = *std::static_pointer_cast<RNSVGPathProps const>(newViewProps);
-
+  #ifdef ENABLE_NATIVE_PROPS_DEBUG
+  RNS_LOG_INFO(" Path String : "<<newRNSVGPathProps.d.c_str());
+  #endif/*ENABLE_NATIVE_PROPS_DEBUG*/
   setPathDataAttribute(SkSVGAttribute::kD,newRNSVGPathProps.d.c_str());// Native Prop
   setCommonRenderableProps(newRNSVGPathProps);
   setCommonNodeProps(newRNSVGPathProps);
@@ -24,15 +26,15 @@ RnsShell::LayerInvalidateMask RSkComponentRNSVGPath::updateComponentProps(Shared
   return RnsShell::LayerInvalidateAll;
 }
 
-void RSkComponentRNSVGPath::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
+void RSkComponentRNSVGPath::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) {
   switch (attr) {
     case SkSVGAttribute::kD:
-      if (const auto* path = v.as<SkSVGPathValue>()) {
+      if (const auto* path = attrValue.as<SkSVGPathValue>()) {
         path_=*path;
       }
     break;
     default:
-      this->INHERITED::onSetAttribute(attr, v);
+      this->INHERITED::onSetAttribute(attr, attrValue);
   }
 }
 

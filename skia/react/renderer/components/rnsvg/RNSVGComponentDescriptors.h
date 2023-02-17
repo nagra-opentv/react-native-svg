@@ -25,6 +25,8 @@ using RNSVGEllipseComponentDescriptor  = ConcreteComponentDescriptor<RNSVGEllips
 using RNSVGLineComponentDescriptor  = ConcreteComponentDescriptor<RNSVGLineShadowNode>;
 using RNSVGDefsComponentDescriptor  = ConcreteComponentDescriptor<RNSVGDefsShadowNode>;
 using RNSVGUseComponentDescriptor  = ConcreteComponentDescriptor<RNSVGUseShadowNode>;
+using RNSVGTextComponentDescriptor  = ConcreteComponentDescriptor<RNSVGTextShadowNode>;
+using RNSVGTSpanComponentDescriptor  = ConcreteComponentDescriptor<RNSVGTSpanShadowNode>;
 
 } // namespace react
 } // namespace facebook

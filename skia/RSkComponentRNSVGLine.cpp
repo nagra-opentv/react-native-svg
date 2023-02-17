@@ -26,11 +26,12 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::updateComponentProps(Share
 
 void  RSkComponentRNSVGLine::setNativeProps(const RNSVGLineProps &nativeProps) {
 
-  RNS_LOG_DEBUG(" X1: "<<nativeProps.x1);
-  RNS_LOG_DEBUG(" Y1: "<<nativeProps.y1);
-  RNS_LOG_DEBUG(" X2: "<<nativeProps.x2);
-  RNS_LOG_DEBUG(" Y2: "<<nativeProps.y2);
-
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
+  RNS_LOG_INFO(" X1: "<<nativeProps.x1 <<
+               " Y1: "<<nativeProps.y1 <<
+               " X2: "<<nativeProps.x2 <<
+               " Y2: "<<nativeProps.y2);
+#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
   setLengthAttribute(SkSVGAttribute::kX1,nativeProps.x1);
   setLengthAttribute(SkSVGAttribute::kX2,nativeProps.x2);
   setLengthAttribute(SkSVGAttribute::kY1,nativeProps.y1);
@@ -38,31 +39,31 @@ void  RSkComponentRNSVGLine::setNativeProps(const RNSVGLineProps &nativeProps) {
 
 }
 
-void RSkComponentRNSVGLine::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
+void RSkComponentRNSVGLine::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) {
 
   switch (attr) {
     case SkSVGAttribute::kX1:
-      if (const auto* x1 = v.as<SkSVGLengthValue>()) {
+      if (const auto* x1 = attrValue.as<SkSVGLengthValue>()) {
         x1_ =*x1;
       }
     break;
     case SkSVGAttribute::kY1:
-      if (const auto* y1 = v.as<SkSVGLengthValue>()) {
+      if (const auto* y1 = attrValue.as<SkSVGLengthValue>()) {
         y1_ =*y1;
       }
     break;
     case SkSVGAttribute::kX2:
-      if (const auto* x2 = v.as<SkSVGLengthValue>()) {
+      if (const auto* x2 = attrValue.as<SkSVGLengthValue>()) {
         x2_ =*x2;
       }
     break;
     case SkSVGAttribute::kY2:
-      if (const auto* y2 = v.as<SkSVGLengthValue>()) {
+      if (const auto* y2 = attrValue.as<SkSVGLengthValue>()) {
         y2_ =*y2;
       }
     break;
     default:
-      this->INHERITED::onSetAttribute(attr, v);
+      this->INHERITED::onSetAttribute(attr, attrValue);
   }
 }
 

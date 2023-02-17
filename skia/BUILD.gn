@@ -49,6 +49,10 @@ rn_cxx_component("Rnsvg") {
     "RSkComponentRNSVGPath.h",
     "RSkComponentRNSVGRect.cpp",
     "RSkComponentRNSVGRect.h",
+    "RSkComponentRNSVGText.cpp",
+    "RSkComponentRNSVGText.h",
+    "RSkComponentRNSVGTSpan.cpp",
+    "RSkComponentRNSVGTSpan.h",
     "RSkComponentRNSVGUse.cpp",
     "RSkComponentRNSVGUse.h",
     "RSkComponentRNSVGSvgView.cpp",
@@ -61,6 +65,8 @@ rn_cxx_component("Rnsvg") {
     "RSkSVGNode.h",
     "RSkSVGShape.cpp",
     "RSkSVGShape.h",
+    "RSkSVGTextContainer.cpp",
+    "RSkSVGTextContainer.h"
   ]
 ##########################################################################################################################
 #In the current version of Skia (m86), sksvg is in an experimental stage and doesn't have a build system for integration. #Therefore, the necessary files must be compiled as part of the Rnsvg module. When upgrading to the latest version of Skia, #sksvg can be enabled by enabling the feature "skia_enable_svg".

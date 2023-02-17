@@ -25,37 +25,37 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::updateComponentProps(Sha
 }
 
 void RSkComponentRNSVGCircle::setNativeProps(const RNSVGCircleProps &nativeProps) {
-
-  RNS_LOG_DEBUG(" CX: "<<nativeProps.cx);
-  RNS_LOG_DEBUG(" CY: "<<nativeProps.cy);
-  RNS_LOG_DEBUG(" r: "<<nativeProps.r);
-  
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
+  RNS_LOG_INFO(" CX: "<<nativeProps.cx <<
+               " CY: "<<nativeProps.cy <<
+               " r : "<<nativeProps.r);
+#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
   setLengthAttribute(SkSVGAttribute::kCx,nativeProps.cx);
   setLengthAttribute(SkSVGAttribute::kCy,nativeProps.cy);
   setLengthAttribute(SkSVGAttribute::kR,nativeProps.r);
 
 }
 
-void RSkComponentRNSVGCircle::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
+void RSkComponentRNSVGCircle::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) {
 
   switch (attr) {
     case SkSVGAttribute::kCx:
-      if (const auto* cx = v.as<SkSVGLengthValue>()) {
+      if (const auto* cx = attrValue.as<SkSVGLengthValue>()) {
         cx_ =*cx;
       }
       break;
     case SkSVGAttribute::kCy:
-      if (const auto* cy = v.as<SkSVGLengthValue>()) {
+      if (const auto* cy = attrValue.as<SkSVGLengthValue>()) {
         cy_ =*cy;
       }
       break;
     case SkSVGAttribute::kR:
-      if (const auto* r = v.as<SkSVGLengthValue>()) {
+      if (const auto* r = attrValue.as<SkSVGLengthValue>()) {
         r_ =*r;
       }
       break;
     default:
-      this->INHERITED::onSetAttribute(attr, v);
+      this->INHERITED::onSetAttribute(attr, attrValue);
   }
 }
 

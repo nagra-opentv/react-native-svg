@@ -12,8 +12,8 @@ namespace react {
 
 RSkSVGShape::RSkSVGShape(const ShadowView &shadowView,
                                            RnsShell::LayerType layerType,
-                                           SkSVGTag t)
-    : INHERITED(shadowView,layerType,t){}
+                                           SkSVGTag tag)
+    : INHERITED(shadowView,layerType,tag){}
 
 void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
 
@@ -29,12 +29,11 @@ void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
   }
 
   SkMatrix matrix=ctx.canvas()->getTotalMatrix();
-  RNS_LOG_DEBUG(" getScaleX "<<matrix.getScaleX());
-  RNS_LOG_DEBUG(" getScaleY "<<matrix.getScaleY());
-  RNS_LOG_DEBUG(" getTranslateX "<<matrix.getTranslateX());
-  RNS_LOG_DEBUG(" getTranslateY "<<matrix.getTranslateY());
-  RNS_LOG_DEBUG(" getSkewX "<<matrix.getSkewX());
-  RNS_LOG_DEBUG(" getSkewY "<<matrix.getSkewY());
+  RNS_LOG_DEBUG(" getScaleX "<<matrix.getScaleX() <<
+                " getScaleY "<<matrix.getScaleY()<<
+                " getTranslateX "<<matrix.getTranslateX()<<
+                " getSkewX "<<matrix.getSkewX()<<
+                " getSkewY "<<matrix.getSkewY());
 }
 
 } // namespace react

@@ -22,6 +22,22 @@
 namespace facebook {
 namespace react {
 
+// SVG Attributes , which are not handled in SKSVG Engine
+constexpr int RSkSVGAttrStart =(int)SkSVGAttribute::kUnknown +1;
+enum RSkSVGAttribute {
+  kDX =RSkSVGAttrStart,// DeltaX
+  kDY, //DeltaY
+  kLetterSpacing,
+  kWordSpacing
+};
+
+enum RNSVGColorStruct {
+  SOLID,
+  BRUSH_REF,
+  CURRENT_COLOR,
+  CONTEXT_FILL,
+  CONTEXT_STROKE,
+};
 
 class RSkSVGNode : public SkSVGTransformableNode {
 
@@ -30,6 +46,8 @@ class RSkSVGNode : public SkSVGTransformableNode {
   ~RSkSVGNode() override {};
   std::string nodeName;
 
+  virtual void setRoot(RSkSVGNode * rootNode);
+  virtual SkSize getContainerSize()const;
   void setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr);
   bool setNumberAttribute( SkSVGAttribute attr,std::string stringValue);
   bool setStringAttribute( SkSVGAttribute attr,std::string stringValue);
@@ -52,6 +70,8 @@ class RSkSVGNode : public SkSVGTransformableNode {
 
  protected:
 
+  RSkSVGNode * rootNode_{nullptr};
+
   explicit RSkSVGNode(SkSVGTag tag);
 
   SkPath onAsPath(const SkSVGRenderContext&)  const override;
@@ -59,7 +79,7 @@ class RSkSVGNode : public SkSVGTransformableNode {
 
   void setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps);
   void setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps);
-  void setCommonGroupProps(const RNSVGGroupProps &groupProps);
+  void setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProps);
 
  private :
 
