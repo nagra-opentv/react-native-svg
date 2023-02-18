@@ -44,25 +44,25 @@ inline void  RSkComponentRNSVGUse::setNativeProps(const RNSVGUseProps &nativePro
 
 }
 
-void RSkComponentRNSVGUse::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
+void RSkComponentRNSVGUse::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) {
   switch (attr) {
     case SkSVGAttribute::kHref:
-      if (const auto* href = v.as<SkSVGStringValue>()) {
+      if (const auto* href = attrValue.as<SkSVGStringValue>()) {
         href_ = *href;
       }
       break;
     case SkSVGAttribute::kX:
-      if (const auto* x = v.as<SkSVGLengthValue>()) {
+      if (const auto* x = attrValue.as<SkSVGLengthValue>()) {
         x_ = *x;
       }
       break;
     case SkSVGAttribute::kY:
-      if (const auto* y = v.as<SkSVGLengthValue>()) {
+      if (const auto* y = attrValue.as<SkSVGLengthValue>()) {
         y_ = *y;
       }
       break;
     default:
-      this->INHERITED::onSetAttribute(attr, v);
+      this->INHERITED::onSetAttribute(attr, attrValue);
   }
 }
 

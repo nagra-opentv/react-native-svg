@@ -28,9 +28,9 @@ namespace facebook {
 namespace react {
 
 RSkSVGContainer::RSkSVGContainer(const ShadowView &shadowView,
-                                                   RnsShell::LayerType layerType,
-                                                   SkSVGTag t)
-    : INHERITED(shadowView,layerType,t){}
+                                 RnsShell::LayerType layerType,
+                                 SkSVGTag tag)
+    : INHERITED(shadowView,layerType,tag){}
 
 RSkSVGContainer::~RSkSVGContainer() {
   childRSkNodeList_.clear();

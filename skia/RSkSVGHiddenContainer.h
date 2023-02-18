@@ -16,8 +16,8 @@ class RSkSVGHiddenContainer : public RSkSVGContainer {
 
   explicit RSkSVGHiddenContainer(const ShadowView &shadowView,
                                  RnsShell::LayerType layerType,
-                                 SkSVGTag t) :
-                       RSkSVGContainer(shadowView,layerType,t) {}
+                                 SkSVGTag tag) :
+                       RSkSVGContainer(shadowView,layerType,tag) {}
 
   void onRender(const SkSVGRenderContext&) const final {}
 

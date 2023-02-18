@@ -121,35 +121,35 @@ bool RSkComponentRNSVGSvgView::onPrepareToRender(SkSVGRenderContext* ctx) const 
   return this->INHERITED::onPrepareToRender(ctx);
 }
 
-void RSkComponentRNSVGSvgView::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& v) {
+void RSkComponentRNSVGSvgView::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) {
   switch (attr) {
     case SkSVGAttribute::kX:
-      if (const auto* x = v.as<SkSVGLengthValue>()) {
+      if (const auto* x = attrValue.as<SkSVGLengthValue>()) {
         x_ = *x;
       }
     break;
     case SkSVGAttribute::kY:
-      if (const auto* y = v.as<SkSVGLengthValue>()) {
+      if (const auto* y = attrValue.as<SkSVGLengthValue>()) {
         y_ = *y;
       }
     break;
     case SkSVGAttribute::kWidth:
-      if (const auto* w = v.as<SkSVGLengthValue>()) {
+      if (const auto* w = attrValue.as<SkSVGLengthValue>()) {
         width_ = *w;
       }
     break;
     case SkSVGAttribute::kHeight:
-      if (const auto* h = v.as<SkSVGLengthValue>()) {
+      if (const auto* h = attrValue.as<SkSVGLengthValue>()) {
         height_ = *h;
       }
     break;
     case SkSVGAttribute::kViewBox:
-      if (const auto* vb = v.as<SkSVGViewBoxValue>()) {
+      if (const auto* vb = attrValue.as<SkSVGViewBoxValue>()) {
         viewBox_=*vb;
       }
     break;
     default:
-      this->INHERITED::onSetAttribute(attr, v);
+      this->INHERITED::onSetAttribute(attr, attrValue);
   }
 }
 
