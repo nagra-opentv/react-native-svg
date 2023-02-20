@@ -25,7 +25,7 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
   printChildList();
 #endif
 
-  //1. Set Clip to SVG ontainer size, to restrict child draw within SVG container
+  //1. Svg children are always drawn inside the bounds of parent SVGView conatiner, hence we will clip & draw the children
   // TODO: Consider utilizing Bitmap as an alternative strategy for platforms that have limited memory constraints
   SkAutoCanvasRestore save(canvas, true);
   canvas->clipRect(SkRect::MakeXYWH(lctx.resolve(x_, SkSVGLengthContext::LengthType::kHorizontal),
@@ -127,7 +127,7 @@ void RSkComponentRNSVGSvgView::onSetAttribute(SkSVGAttribute attr, const SkSVGVa
       if (const auto* x = attrValue.as<SkSVGLengthValue>()) {
         x_ = *x;
       }
-    break;
+      break;
     case SkSVGAttribute::kY:
       if (const auto* y = attrValue.as<SkSVGLengthValue>()) {
         y_ = *y;
@@ -137,26 +137,29 @@ void RSkComponentRNSVGSvgView::onSetAttribute(SkSVGAttribute attr, const SkSVGVa
       if (const auto* w = attrValue.as<SkSVGLengthValue>()) {
         width_ = *w;
       }
-    break;
+      break;
     case SkSVGAttribute::kHeight:
       if (const auto* h = attrValue.as<SkSVGLengthValue>()) {
         height_ = *h;
       }
-    break;
+      break;
     case SkSVGAttribute::kViewBox:
       if (const auto* vb = attrValue.as<SkSVGViewBoxValue>()) {
         viewBox_=*vb;
       }
-    break;
+      break;
     default:
       this->INHERITED::onSetAttribute(attr, attrValue);
   }
 }
 
 inline void RSkComponentRNSVGSvgView::alterSkiaDefaultPaint() {
-//Note: Skia's default paint is black. WhereIn on SVG REference platform it's transparent
-//      To Match with Reference output, for the next immendiate child of SVGView,
-//      resetting color to transparent, if color not speciifed
+//Note: Skia's default paint is black. WhereIn on SVG Reference platform it's transparent
+//      To Match with Reference output, resetting color to transparent, if color not speciifed.
+
+//      This is done only on outtermost group/level 1 parent's of svg container , to enable
+//      children to inherit undefined value from it's parent. And for the same reason it's been
+//      done once all the child elements are inserted to the SVGView.
 
   for (auto item:childRSkNodeList_) {
     RNS_LOG_DEBUG(" Child Tag : "<<(int)item->tag());

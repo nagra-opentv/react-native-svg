@@ -58,10 +58,10 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
   SET_TEXT_FRAME_ATTR(SkSVGAttribute::kX,newRNSVGTextPropsProps.x,0)
   SET_TEXT_FRAME_ATTR(SkSVGAttribute::kY,newRNSVGTextPropsProps.y,0)
 
-#ifdef ENABLE_DELTA_ATTR_SUPPORT
+#ifdef ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT
   SET_TEXT_FRAME_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kDX),newRNSVGTextPropsProps.dx,0)
   SET_TEXT_FRAME_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kDY),newRNSVGTextPropsProps.dy,0)
-#endif/*ENABLE_DELTA_ATTR_SUPPORT*/
+#endif/*ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT*/
 
 #ifdef ENABLE_RNSVG_TEXT_NATIVE_PROPS_DEBUG
   RNS_LOG_INFO("========== TEXT Geometry Props ==========");
@@ -103,14 +103,14 @@ SkRect RSkSVGTextContainer::getContentFrame() const{
   SkRect frame;
   SkScalar positionX{0},positionY{0},deltaX{0},deltaY{0};
   std::vector<SkScalar> v;
-#ifdef ENABLE_DELTA_ATTR_SUPPORT
+#ifdef ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT
   if(findDeltaX(v)) {
     deltaX =v[0];
   }
   if(findDeltaY(v)) {
     deltaY =v[0];
   }
-#endif /*ENABLE_DELTA_ATTR_SUPPORT*/
+#endif /*ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT*/
   if(findPositionX(v)) {
     positionX =v[0] + deltaX;
   }
@@ -142,22 +142,22 @@ void RSkSVGTextContainer::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& 
       if (const auto* x = attrValue.as<SkSVGLengthValue>()) {
         setPositionX(*x);
       }
-    break;
+      break;
     case SkSVGAttribute::kY:
       if (const auto* y = attrValue.as<SkSVGLengthValue>()) {
         setPositionY(*y);
       }
-    break;
+      break;
     case SkSVGAttribute::kFontFamily:
       if (const auto* font_family = attrValue.as<SkSVGStringValue>()) {
         setFontFamily(*font_family);
       }
-    break;
+      break;
     case SkSVGAttribute::kFontSize:
       if (const auto* font_size = attrValue.as<SkSVGLengthValue>()) {
         setFontSize(*font_size);
       }
-    break;
+      break;
     default:
       onSetRSkSVGAttribute(static_cast<RSkSVGAttribute>(attr),attrValue);
   }
@@ -165,18 +165,18 @@ void RSkSVGTextContainer::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& 
 
 void RSkSVGTextContainer::onSetRSkSVGAttribute(RSkSVGAttribute attr, const SkSVGValue& attrValue) {
   switch (attr) {
-#ifdef ENABLE_DELTA_ATTR_SUPPORT
+#ifdef ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT
     case RSkSVGAttribute::kDX:
       if (const auto* dx = attrValue.as<SkSVGLengthValue>()) {
         setDeltaX(*dx);
       }
-    break;
+      break;
     case RSkSVGAttribute::kDY:
       if (const auto* dy = attrValue.as<SkSVGLengthValue>()) {
         setDeltaY(*dy);
       }
-    break;
-#endif/*ENABLE_DELTA_ATTR_SUPPORT*/
+      break;
+#endif/*ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT*/
     case RSkSVGAttribute::kLetterSpacing:
       if (const auto*letter_spacing = attrValue.as<SkSVGLengthValue>()) {
         setLetterSpacing(*letter_spacing);

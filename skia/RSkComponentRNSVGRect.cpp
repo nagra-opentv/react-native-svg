@@ -17,30 +17,25 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(Share
 
   auto const &newRNSVGRectProps = *std::static_pointer_cast<RNSVGRectProps const>(newViewProps);
   
-  setNativeProps(newRNSVGRectProps);
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
+  RNS_LOG_INFO(" X : "<<newRNSVGRectProps.x <<
+               " Y : "<<newRNSVGRectProps.y <<
+               " Rx : "<<newRNSVGRectProps.rx <<
+               " Ry : "<<newRNSVGRectProps.ry <<
+               " Width : "<<newRNSVGRectProps.width <<
+               " Height: "<<newRNSVGRectProps.height );
+#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
+  setLengthAttribute(SkSVGAttribute::kX,newRNSVGRectProps.x);
+  setLengthAttribute(SkSVGAttribute::kY,newRNSVGRectProps.y);
+  setLengthAttribute(SkSVGAttribute::kRx,newRNSVGRectProps.rx);
+  setLengthAttribute(SkSVGAttribute::kRy,newRNSVGRectProps.ry);
+  setLengthAttribute(SkSVGAttribute::kWidth,newRNSVGRectProps.width);
+  setLengthAttribute(SkSVGAttribute::kHeight,newRNSVGRectProps.height);
+
   setCommonRenderableProps(newRNSVGRectProps);
   setCommonNodeProps(newRNSVGRectProps);
 
   return RnsShell::LayerInvalidateAll;
-}
-
-void  RSkComponentRNSVGRect::setNativeProps(const RNSVGRectProps &nativeProps) {
-
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
-  RNS_LOG_INFO(" X : "<<nativeProps.x <<
-               " Y : "<<nativeProps.y <<
-               " Rx : "<<nativeProps.rx <<
-               " Ry : "<<nativeProps.ry <<
-               " Width : "<<nativeProps.width <<
-               " Height: "<<nativeProps.height );
-#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
-  setLengthAttribute(SkSVGAttribute::kX,nativeProps.x);
-  setLengthAttribute(SkSVGAttribute::kY,nativeProps.y);
-  setLengthAttribute(SkSVGAttribute::kRx,nativeProps.rx);
-  setLengthAttribute(SkSVGAttribute::kRy,nativeProps.ry);
-  setLengthAttribute(SkSVGAttribute::kWidth,nativeProps.width);
-  setLengthAttribute(SkSVGAttribute::kHeight,nativeProps.height);
-
 }
 
 void RSkComponentRNSVGRect::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) {
@@ -49,32 +44,32 @@ void RSkComponentRNSVGRect::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
       if (const auto* x = attrValue.as<SkSVGLengthValue>()) {
         x_ =*x;
       }
-    break;
+      break;
     case SkSVGAttribute::kY:
       if (const auto* y = attrValue.as<SkSVGLengthValue>()) {
         y_ =*y;
       }
-    break;
+      break;
     case SkSVGAttribute::kWidth:
       if (const auto* w = attrValue.as<SkSVGLengthValue>()) {
         width_=*w;
       }
-    break;
+      break;
     case SkSVGAttribute::kHeight:
       if (const auto* h = attrValue.as<SkSVGLengthValue>()) {
         height_=*h;
       }
-    break;
+      break;
     case SkSVGAttribute::kRx:
       if (const auto* rx = attrValue.as<SkSVGLengthValue>()) {
         rx_=*rx;
       }
-    break;
+      break;
     case SkSVGAttribute::kRy:
       if (const auto* ry = attrValue.as<SkSVGLengthValue>()) {
         ry_=*ry;
       }
-    break;
+      break;
     default:
       this->INHERITED::onSetAttribute(attr, attrValue);
   }

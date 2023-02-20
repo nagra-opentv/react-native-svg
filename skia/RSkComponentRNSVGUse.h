@@ -31,8 +31,6 @@ class RSkComponentRNSVGUse: public RSkSVGComponentNode {
   SkSVGLength        x_ = SkSVGLength(0);
   SkSVGLength        y_ = SkSVGLength(0);
 
-  void  setNativeProps(const RNSVGUseProps &nativeProps);
-
   typedef RSkSVGComponentNode INHERITED;
 };
 

@@ -18,26 +18,21 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::updateComponentProps(Sh
 
   auto const &newRNSVGEllipseProps = *std::static_pointer_cast<RNSVGEllipseProps const>(newViewProps);
 
-  setNativeProps(newRNSVGEllipseProps);
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
+  RNS_LOG_INFO(" CX: "<<newRNSVGEllipseProps.cx <<
+               " CY: "<<newRNSVGEllipseProps.cy <<
+               " RX: "<<newRNSVGEllipseProps.rx <<
+               " RY: "<<newRNSVGEllipseProps.ry);
+#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
+  setLengthAttribute(SkSVGAttribute::kCx,newRNSVGEllipseProps.cx);
+  setLengthAttribute(SkSVGAttribute::kCy,newRNSVGEllipseProps.cy);
+  setLengthAttribute(SkSVGAttribute::kRx,newRNSVGEllipseProps.rx);
+  setLengthAttribute(SkSVGAttribute::kRy,newRNSVGEllipseProps.ry);
+
   setCommonRenderableProps(newRNSVGEllipseProps);
   setCommonNodeProps(newRNSVGEllipseProps);
 
   return RnsShell::LayerInvalidateAll;
-}
-
-void  RSkComponentRNSVGEllipse::setNativeProps(const RNSVGEllipseProps &nativeProps) {
-
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
-  RNS_LOG_INFO(" CX: "<<nativeProps.cx <<
-               " CY: "<<nativeProps.cy <<
-               " RX: "<<nativeProps.rx <<
-               " RY: "<<nativeProps.ry);
-#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
-  setLengthAttribute(SkSVGAttribute::kCx,nativeProps.cx);
-  setLengthAttribute(SkSVGAttribute::kCy,nativeProps.cy);
-  setLengthAttribute(SkSVGAttribute::kRx,nativeProps.rx);
-  setLengthAttribute(SkSVGAttribute::kRy,nativeProps.ry);
-
 }
 
 void RSkComponentRNSVGEllipse::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) {
@@ -46,22 +41,22 @@ void RSkComponentRNSVGEllipse::onSetAttribute(SkSVGAttribute attr, const SkSVGVa
       if (const auto* cx = attrValue.as<SkSVGLengthValue>()) {
         cx_ =*cx;
       }
-    break;
+      break;
     case SkSVGAttribute::kCy:
       if (const auto* cy = attrValue.as<SkSVGLengthValue>()) {
         cy_ =*cy;
       }
-    break;
+      break;
     case SkSVGAttribute::kRx:
       if (const auto* rx = attrValue.as<SkSVGLengthValue>()) {
         rx_ =*rx;
       }
-    break;
+      break;
     case SkSVGAttribute::kRy:
       if (const auto* ry = attrValue.as<SkSVGLengthValue>()) {
         ry_ =*ry;
       }
-    break;
+      break;
     default:
       this->INHERITED::onSetAttribute(attr, attrValue);
   }

@@ -32,8 +32,6 @@ class RSkComponentRNSVGCircle final : public RSkSVGShape{
   SkSVGLength cy_ = SkSVGLength(0);
   SkSVGLength r_  = SkSVGLength(0);
 
-  void  setNativeProps(const RNSVGCircleProps &nativeProps);
-
   typedef RSkSVGShape INHERITED;
 
 };

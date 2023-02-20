@@ -20,6 +20,7 @@ RnsShell::LayerInvalidateMask RSkComponentRNSVGPath::updateComponentProps(Shared
   RNS_LOG_INFO(" Path String : "<<newRNSVGPathProps.d.c_str());
   #endif/*ENABLE_NATIVE_PROPS_DEBUG*/
   setPathDataAttribute(SkSVGAttribute::kD,newRNSVGPathProps.d.c_str());// Native Prop
+
   setCommonRenderableProps(newRNSVGPathProps);
   setCommonNodeProps(newRNSVGPathProps);
 
@@ -32,7 +33,7 @@ void RSkComponentRNSVGPath::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
       if (const auto* path = attrValue.as<SkSVGPathValue>()) {
         path_=*path;
       }
-    break;
+      break;
     default:
       this->INHERITED::onSetAttribute(attr, attrValue);
   }

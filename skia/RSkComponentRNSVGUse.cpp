@@ -19,29 +19,25 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGUse::updateComponentProps(Shared
   auto const &newRNSVGUseProps = *std::static_pointer_cast<RNSVGUseProps const>(newViewProps);
   
   RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
-  setNativeProps(newRNSVGUseProps);
+
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
+  RNS_LOG_INFO(" X  : "<<newRNSVGUseProps.x <<
+               " Y  : "<<newRNSVGUseProps.y <<
+               " Href : "<<newRNSVGUseProps.href.c_str()<<
+               " Width : "<<newRNSVGUseProps.width<<
+               " Height : "<<newRNSVGUseProps.height);
+#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
+
+  setLengthAttribute(SkSVGAttribute::kX,newRNSVGUseProps.x);
+  setLengthAttribute(SkSVGAttribute::kY,newRNSVGUseProps.y);
+  setAttribute(SkSVGAttribute::kHref,SkSVGStringValue(SkString(newRNSVGUseProps.href)));
+  setLengthAttribute(SkSVGAttribute::kWidth,newRNSVGUseProps.width);
+  setLengthAttribute(SkSVGAttribute::kHeight,newRNSVGUseProps.height);
+
   setCommonRenderableProps(newRNSVGUseProps);
   setCommonNodeProps(newRNSVGUseProps);
 
   return RnsShell::LayerInvalidateAll;
-}
-
-inline void  RSkComponentRNSVGUse::setNativeProps(const RNSVGUseProps &nativeProps) {
-
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
-  RNS_LOG_INFO(" X  : "<<nativeProps.x <<
-               " Y  : "<<nativeProps.y <<
-               " Href : "<<nativeProps.href.c_str()<<
-               " Width : "<<nativeProps.width<<
-               " Height : "<<nativeProps.height);
-#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
-
-  setLengthAttribute(SkSVGAttribute::kX,nativeProps.x);
-  setLengthAttribute(SkSVGAttribute::kY,nativeProps.y);
-  setAttribute(SkSVGAttribute::kHref,SkSVGStringValue(SkString(nativeProps.href)));
-  setLengthAttribute(SkSVGAttribute::kWidth,nativeProps.width);
-  setLengthAttribute(SkSVGAttribute::kHeight,nativeProps.height);
-
 }
 
 void RSkComponentRNSVGUse::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) {

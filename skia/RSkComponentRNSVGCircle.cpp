@@ -17,23 +17,19 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::updateComponentProps(Sha
 
   auto const &newRNSVGCircleProps = *std::static_pointer_cast<RNSVGCircleProps const>(newViewProps);
 
-  setNativeProps(newRNSVGCircleProps);
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
+  RNS_LOG_INFO(" CX: "<<newRNSVGCircleProps.cx <<
+               " CY: "<<newRNSVGCircleProps.cy <<
+               " r : "<<newRNSVGCircleProps.r);
+#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
+  setLengthAttribute(SkSVGAttribute::kCx,newRNSVGCircleProps.cx);
+  setLengthAttribute(SkSVGAttribute::kCy,newRNSVGCircleProps.cy);
+  setLengthAttribute(SkSVGAttribute::kR,newRNSVGCircleProps.r);
+
   setCommonRenderableProps(newRNSVGCircleProps);
   setCommonNodeProps(newRNSVGCircleProps);
 
   return RnsShell::LayerInvalidateAll;
-}
-
-void RSkComponentRNSVGCircle::setNativeProps(const RNSVGCircleProps &nativeProps) {
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
-  RNS_LOG_INFO(" CX: "<<nativeProps.cx <<
-               " CY: "<<nativeProps.cy <<
-               " r : "<<nativeProps.r);
-#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
-  setLengthAttribute(SkSVGAttribute::kCx,nativeProps.cx);
-  setLengthAttribute(SkSVGAttribute::kCy,nativeProps.cy);
-  setLengthAttribute(SkSVGAttribute::kR,nativeProps.r);
-
 }
 
 void RSkComponentRNSVGCircle::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) {

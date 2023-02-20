@@ -34,8 +34,6 @@ class RSkComponentRNSVGLine final : public RSkSVGShape{
   SkSVGLength x2_ = SkSVGLength(0);
   SkSVGLength y2_ = SkSVGLength(0);
 
-  void  setNativeProps(const RNSVGLineProps &nativeProps);
-
   typedef RSkSVGShape INHERITED;
 
 };

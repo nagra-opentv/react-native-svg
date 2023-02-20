@@ -17,26 +17,21 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::updateComponentProps(Share
 
   auto const &newRNSVGLineProps = *std::static_pointer_cast<RNSVGLineProps const>(newViewProps);
 
-  setNativeProps(newRNSVGLineProps);
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
+  RNS_LOG_INFO(" X1: "<<newRNSVGLineProps.x1 <<
+               " Y1: "<<newRNSVGLineProps.y1 <<
+               " X2: "<<newRNSVGLineProps.x2 <<
+               " Y2: "<<newRNSVGLineProps.y2);
+#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
+  setLengthAttribute(SkSVGAttribute::kX1,newRNSVGLineProps.x1);
+  setLengthAttribute(SkSVGAttribute::kX2,newRNSVGLineProps.x2);
+  setLengthAttribute(SkSVGAttribute::kY1,newRNSVGLineProps.y1);
+  setLengthAttribute(SkSVGAttribute::kY2,newRNSVGLineProps.y2);
+
   setCommonRenderableProps(newRNSVGLineProps);
   setCommonNodeProps(newRNSVGLineProps);
 
   return RnsShell::LayerInvalidateAll;
-}
-
-void  RSkComponentRNSVGLine::setNativeProps(const RNSVGLineProps &nativeProps) {
-
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
-  RNS_LOG_INFO(" X1: "<<nativeProps.x1 <<
-               " Y1: "<<nativeProps.y1 <<
-               " X2: "<<nativeProps.x2 <<
-               " Y2: "<<nativeProps.y2);
-#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
-  setLengthAttribute(SkSVGAttribute::kX1,nativeProps.x1);
-  setLengthAttribute(SkSVGAttribute::kX2,nativeProps.x2);
-  setLengthAttribute(SkSVGAttribute::kY1,nativeProps.y1);
-  setLengthAttribute(SkSVGAttribute::kY2,nativeProps.y2);
-
 }
 
 void RSkComponentRNSVGLine::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) {
@@ -46,22 +41,22 @@ void RSkComponentRNSVGLine::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
       if (const auto* x1 = attrValue.as<SkSVGLengthValue>()) {
         x1_ =*x1;
       }
-    break;
+      break;
     case SkSVGAttribute::kY1:
       if (const auto* y1 = attrValue.as<SkSVGLengthValue>()) {
         y1_ =*y1;
       }
-    break;
+      break;
     case SkSVGAttribute::kX2:
       if (const auto* x2 = attrValue.as<SkSVGLengthValue>()) {
         x2_ =*x2;
       }
-    break;
+      break;
     case SkSVGAttribute::kY2:
       if (const auto* y2 = attrValue.as<SkSVGLengthValue>()) {
         y2_ =*y2;
       }
-    break;
+      break;
     default:
       this->INHERITED::onSetAttribute(attr, attrValue);
   }

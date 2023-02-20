@@ -34,8 +34,6 @@ class RSkComponentRNSVGEllipse final : public RSkSVGShape{
   SkSVGLength rx_ = SkSVGLength(0);
   SkSVGLength ry_ = SkSVGLength(0);
 
-  void  setNativeProps(const RNSVGEllipseProps &nativeProps);
-
   typedef RSkSVGShape INHERITED;
 };
 

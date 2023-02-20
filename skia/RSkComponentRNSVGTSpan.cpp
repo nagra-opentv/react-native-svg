@@ -56,13 +56,13 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
                                       impl->getBoundaries().width(),
                                       impl->getBoundaries().height());
 
-    #ifdef PAINT_TEXT_BOUNDS
+    #ifdef RNS_SVG_TSPAN_PAINT_TEXT_BOUNDS
       SkPaint boundsPaint;
       boundsPaint.setColor(SK_ColorGREEN);
       boundsPaint.setStrokeWidth(5);
       boundsPaint.setStyle(SkPaint::kStroke_Style);
       ctx.canvas()->drawRect(impl->getBoundaries(),boundsPaint);
-    #endif/*PAINT_TEXT_BOUNDS*/
+    #endif/*RNS_SVG_TSPAN_PAINT_TEXT_BOUNDS*/
     }
   }
   updateContainerContentBounds(contentBounds_);
