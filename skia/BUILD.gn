@@ -1,0 +1,103 @@
+##############################################################
+
+import("//react-native/common.gni")
+
+config("LibRnsvg_config") {
+  cflags_cc = [ "-std=c++17"]
+  cflags_cc += [
+    "-Wno-extra-semi",
+    "-Wno-sign-compare",
+    "-Wno-header-hygiene",
+  ]
+
+  include_dirs = [".",
+                  "//react-native/ReactCommon/",
+                  "//react-native/ReactCommon/jsi/",
+                  "//react-native/ReactCommon/react/renderer/graphics/platform/cxx",
+                  "//react-native/ReactCommon/yoga/",
+                  ]
+}
+
+rn_cxx_component("Rnsvg") {
+
+  # RNS Native module and its dependencies
+  sources = [
+  ]
+
+  # RNS react common dependencies
+  sources += [
+    "react/renderer/components/rnsvg/RNSVGShadowNodes.cpp",
+    "react/renderer/components/rnsvg/RNSVGShadowNodes.h",
+    "react/renderer/components/rnsvg/RNSVGProps.cpp",
+    "react/renderer/components/rnsvg/RNSVGProps.h",
+    "react/renderer/components/rnsvg/RNSVGComponentDescriptors.h"
+  ]
+
+  # RNS Fabric Component and its dependencies
+  sources += [
+    "RSkComponentProviderRNSVG.cpp",
+    "RSkComponentRNSVGCircle.cpp",
+    "RSkComponentRNSVGCircle.h",
+    "RSkComponentRNSVGEllipse.cpp",
+    "RSkComponentRNSVGEllipse.h",
+    "RSkComponentRNSVGDefs.h",
+    "RSkComponentRNSVGGroup.cpp",
+    "RSkComponentRNSVGGroup.h",
+    "RSkComponentRNSVGLine.cpp",
+    "RSkComponentRNSVGLine.h",
+    "RSkComponentRNSVGPath.cpp",
+    "RSkComponentRNSVGPath.h",
+    "RSkComponentRNSVGRect.cpp",
+    "RSkComponentRNSVGRect.h",
+    "RSkComponentRNSVGText.cpp",
+    "RSkComponentRNSVGText.h",
+    "RSkComponentRNSVGTSpan.cpp",
+    "RSkComponentRNSVGTSpan.h",
+    "RSkComponentRNSVGUse.cpp",
+    "RSkComponentRNSVGUse.h",
+    "RSkComponentRNSVGSvgView.cpp",
+    "RSkComponentRNSVGSvgView.h",
+    "RSkSVGComponentNode.h",
+    "RSkSVGContainer.cpp",
+    "RSkSVGContainer.h",
+    "RSkSVGHiddenContainer.h",
+    "RSkSVGNode.cpp",
+    "RSkSVGNode.h",
+    "RSkSVGShape.cpp",
+    "RSkSVGShape.h",
+    "RSkSVGTextContainer.cpp",
+    "RSkSVGTextContainer.h"
+  ]
+##########################################################################################################################
+#In the current version of Skia (m86), sksvg is in an experimental stage and doesn't have a build system for integration. #Therefore, the necessary files must be compiled as part of the Rnsvg module. When upgrading to the latest version of Skia, #sksvg can be enabled by enabling the feature "skia_enable_svg".
+##########################################################################################################################
+  # SKSVG dependent skia cpp sources
+  sources += [
+    "//third_party/skia/experimental/svg/model/SkSVGAttribute.cpp",
+    "//third_party/skia/experimental/svg/model/SkSVGAttribute.h",
+    "//third_party/skia/experimental/svg/model/SkSVGAttributeParser.cpp",
+    "//third_party/skia/experimental/svg/model/SkSVGAttributeParser.h",
+    "//third_party/skia/experimental/svg/model/SkSVGNode.cpp",
+    "//third_party/skia/experimental/svg/model/SkSVGNode.h",
+    "//third_party/skia/experimental/svg/model/SkSVGIDMapper.h",
+    "//third_party/skia/experimental/svg/model/SkSVGRenderContext.cpp",
+    "//third_party/skia/experimental/svg/model/SkSVGRenderContext.h",
+    "//third_party/skia/experimental/svg/model/SkSVGTransformableNode.cpp",
+    "//third_party/skia/experimental/svg/model/SkSVGTransformableNode.h",
+    "//third_party/skia/experimental/svg/model/SkSVGTypes.h",
+    "//third_party/skia/experimental/svg/model/SkSVGValue.cpp",
+    "//third_party/skia/experimental/svg/model/SkSVGValue.h"
+  ]
+  public_configs = [ ":LibRnsvg_config" ]
+  deps = [
+    "//folly",
+    "//skia",
+    "//third_party/libevent",
+  ]
+
+  with_exceptions = true
+  with_rtti = true
+  if( react_native_platform == "tvos") {
+    defines = ["TARGET_OS_TV=1"]
+  }
+}
