@@ -27,8 +27,8 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
     ParagraphStyle paragraph_style;
     ParagraphBuilderImpl fillBuilder(paragraph_style, fontCollection_);
     ParagraphBuilderImpl strokeBuilder(paragraph_style, fontCollection_);
-    TextStyle textStyle=getTextStyle();
-    SkRect frame=getContentFrame();
+    TextStyle textStyle=getContentTextStyle();
+    SkPoint frame=getContentDrawCoOrdinates();
     std::unique_ptr<Paragraph> paragraph;
 
     if (SkPaint* fillPaint = const_cast<SkPaint*>(ctx.fillPaint())) {
@@ -51,21 +51,23 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
     }
     if(paragraph) {
       auto impl = static_cast<ParagraphImpl*>(paragraph.get());
-      contentBounds_=SkRect::MakeXYWH(impl->getBoundaries().x()+frame.x(),
-                                      impl->getBoundaries().y()+frame.y(),
-                                      impl->getBoundaries().width(),
-                                      impl->getBoundaries().height());
-
+      SkRect contBounds=impl->getBoundaries();
+      updateContainerContentBounds(SkRect::MakeXYWH(contBounds.x()+frame.x(),
+                                      contBounds.y()+frame.y(),
+                                      contBounds.width(),
+                                      contBounds.height()));
     #ifdef RNS_SVG_TSPAN_PAINT_TEXT_BOUNDS
       SkPaint boundsPaint;
       boundsPaint.setColor(SK_ColorGREEN);
       boundsPaint.setStrokeWidth(5);
       boundsPaint.setStyle(SkPaint::kStroke_Style);
-      ctx.canvas()->drawRect(impl->getBoundaries(),boundsPaint);
+      ctx.canvas()->drawRect(contentBounds_.front(),boundsPaint);
+      boundsPaint.setColor(SK_ColorRED);
+      boundsPaint.setStrokeWidth(2);
+      ctx.canvas()->drawPoint(frame.x(), frame.y(),boundsPaint);
     #endif/*RNS_SVG_TSPAN_PAINT_TEXT_BOUNDS*/
     }
   }
-  updateContainerContentBounds(contentBounds_);
   INHERITED::onRender(ctx);
 }
 

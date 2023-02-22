@@ -6,6 +6,8 @@
  */
 #pragma once
 
+#include <vector>
+
 #include "modules/skparagraph/include/Paragraph.h"
 #include "modules/skparagraph/include/ParagraphBuilder.h"
 #include "modules/skparagraph/src/ParagraphBuilderImpl.h"
@@ -33,25 +35,23 @@ class RSkSVGTextContainer : public RSkSVGContainer {
   void onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) override;
   void onSetRSkSVGAttribute(RSkSVGAttribute attr, const SkSVGValue& attrValue);
   void setTextParent(RSkSVGNode * rootNode);
-  TextStyle getTextStyle() const;
-  SkRect getContentFrame()const;
+  TextStyle getContentTextStyle() const;
+  SkPoint getContentDrawCoOrdinates()const;
   void updateContainerContentBounds(SkRect frame)const;
 
   sk_sp<skia::textlayout::FontCollection> fontCollection_;
+  RSkSVGNode * textParentNode_{nullptr};
+  mutable std::vector<SkRect> contentBounds_;
 
   SVG_TEXT_POSITION_ATTR(PositionX,SkSVGLength)
   SVG_TEXT_POSITION_ATTR(PositionY,SkSVGLength)
-#ifdef ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT
   SVG_TEXT_POSITION_DELTA_ATTR(DeltaX,SkSVGLength)
   SVG_TEXT_POSITION_DELTA_ATTR(DeltaY,SkSVGLength)
-#endif /*ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT*/
   SVG_TEXT_ATTR(FontSize,SkSVGLength)
   SVG_TEXT_ATTR(FontFamily,SkString)
   SVG_TEXT_ATTR(LetterSpacing,SkSVGLength)
   SVG_TEXT_ATTR(WordSpacing,SkSVGLength)
 
-  DECLARE_TEXT_PARENT_NODE
-  DECLARE_CONTAINER_CONTENT_BOUNDS
  private:
 
   typedef RSkSVGContainer INHERITED;
