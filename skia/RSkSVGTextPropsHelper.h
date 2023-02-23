@@ -4,11 +4,29 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
 */
+#include <map>
+#include "include/core/SkFontStyle.h"
 
 using namespace skia::textlayout;
 
 namespace facebook {
 namespace react {
+typedef std::map<std::string, SkFontStyle::Weight> FontWeightMap;
+static FontWeightMap fontWeightMap = {
+  { "normal" , SkFontStyle::kNormal_Weight     },
+  { "bold"   , SkFontStyle::kBold_Weight       },
+  { "bolder" , SkFontStyle::kExtraBold_Weight  },
+  { "lighter", SkFontStyle::kLight_Weight      },
+  { "100"    , SkFontStyle::kThin_Weight       },
+  { "200"    , SkFontStyle::kExtraLight_Weight },
+  { "300"    , SkFontStyle::kLight_Weight      },
+  { "400"    , SkFontStyle::kNormal_Weight     },
+  { "500"    , SkFontStyle::kMedium_Weight     },
+  { "600"    , SkFontStyle::kSemiBold_Weight   },
+  { "700"    , SkFontStyle::kBold_Weight       },
+  { "800"    , SkFontStyle::kExtraBold_Weight  },
+  { "900"    , SkFontStyle::kBlack_Weight      },
+};
 
 #define DEFINE_TEXT_ATTR(attr_name,attr_type)                                 \
  private:                                                                     \

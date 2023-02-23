@@ -76,7 +76,7 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
 TextStyle RSkSVGTextContainer::getContentTextStyle() const {
   TextStyle textStyle;
   SkSVGLength fontSize,letterSpacing,wordSpacing;
-  SkString fontFamily;
+  SkString fontFamily,fontWeight;
 
   //TODO: To Avoid querring Props on each render, Maintain  & Use Inherited Props Info.
 
@@ -91,6 +91,12 @@ TextStyle RSkSVGTextContainer::getContentTextStyle() const {
   }
   if(getWordSpacing(wordSpacing)) {
     textStyle.setWordSpacing(wordSpacing.value());
+  }
+  if(getFontWeight(fontWeight)) {
+    FontWeightMap::iterator it = fontWeightMap.find(fontWeight.c_str());
+    if(it != fontWeightMap.end()) {
+      textStyle.setFontStyle(SkFontStyle(it->second, SkFontStyle::kNormal_Width, SkFontStyle::kUpright_Slant));
+    }
   }
   return textStyle;
 }
@@ -164,11 +170,18 @@ void RSkSVGTextContainer::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& 
         setFontSize(*font_size);
       }
       break;
+    case SkSVGAttribute::kFontWeight:
+      if (const auto* font_weight = attrValue.as<SkSVGStringValue>()) {
+        if (strcmp((*font_weight)->c_str(), "inherit") != 0){
+          setFontWeight(*font_weight);
+        }
+      }
+      break;
       case SkSVGAttribute::kTextAnchor:
         if (const auto* text_anchor = attrValue.as<SkSVGStringValue>()) {
           setTextAnchor(*text_anchor);
         }
-      break;
+        break;
     default:
       onSetRSkSVGAttribute(static_cast<RSkSVGAttribute>(attr),attrValue);
   }
