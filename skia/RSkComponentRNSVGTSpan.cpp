@@ -10,6 +10,22 @@
 
 namespace facebook {
 namespace react {
+namespace RSKSVGTextUtil {
+
+SkScalar getTextAnchorXOffset(SkScalar width, const SkSVGStringType& text_anchor) {
+
+// Default Line = "Start".
+  if (strcmp(text_anchor.c_str(), "start") != 0) {
+    if (strcmp(text_anchor.c_str(), "middle") == 0) {
+      return -(0.5f*width);
+    } else if (strcmp(text_anchor.c_str(), "end") == 0) {
+      return -width;
+    }
+  }
+  return 0;
+}
+
+}//RSKSVGTextUtil
 
 RSkComponentRNSVGTSpan::RSkComponentRNSVGTSpan(const ShadowView &shadowView)
     : INHERITED(shadowView,LAYER_TYPE_VIRTUAL,SkSVGTag::kText) {}
@@ -26,6 +42,7 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
   if(content_.size()) {
 
     ParagraphStyle paragraph_style;
+
     ParagraphBuilderImpl fillBuilder(paragraph_style, fontCollection_);
     ParagraphBuilderImpl strokeBuilder(paragraph_style, fontCollection_);
     TextStyle textStyle=getContentTextStyle();
@@ -42,14 +59,19 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
         paragraph->layout(getContainerSize().width()); // Get Container Size from SVGView
         std::vector<LineMetrics> metrics;
         paragraph->getLineMetrics(metrics);
-
+        SkScalar xOffset{0};
+        SkString textAnchor;
+        if(getTextAnchor(textAnchor)) {
+          auto impl = static_cast<ParagraphImpl*>(paragraph.get());
+          xOffset=RSKSVGTextUtil::getTextAnchorXOffset(impl->getBoundaries().width(),textAnchor);
+        }
         // SkParagraph draw from TopLeft as like Other Skia components Rect...,which gives Text appear as Hanging Text.As below.
         /*____________________________
           HANGING TEXT LOOKS LIKE THIS
           ____________________________
         */
         // Shifting up Draw Point/Baseline to have behaviour as text written on line/Baseline.
-        paragraph->paint(ctx.canvas(), frame.x(), frame.y()-metrics[0].fBaseline);
+        paragraph->paint(ctx.canvas(), frame.x()+xOffset, frame.y()-metrics[0].fBaseline);
       }
      };
 

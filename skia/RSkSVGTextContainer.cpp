@@ -164,6 +164,11 @@ void RSkSVGTextContainer::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& 
         setFontSize(*font_size);
       }
       break;
+      case SkSVGAttribute::kTextAnchor:
+        if (const auto* text_anchor = attrValue.as<SkSVGStringValue>()) {
+          setTextAnchor(*text_anchor);
+        }
+      break;
     default:
       onSetRSkSVGAttribute(static_cast<RSkSVGAttribute>(attr),attrValue);
   }
