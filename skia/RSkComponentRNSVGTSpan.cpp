@@ -24,6 +24,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGTSpan::updateComponentProps(Shar
 
 void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
   if(content_.size()) {
+
     ParagraphStyle paragraph_style;
     ParagraphBuilderImpl fillBuilder(paragraph_style, fontCollection_);
     ParagraphBuilderImpl strokeBuilder(paragraph_style, fontCollection_);
@@ -31,40 +32,80 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
     SkPoint frame=getContentDrawCoOrdinates();
     std::unique_ptr<Paragraph> paragraph;
 
+    auto buildAndDrawParagraph =[&](SkPaint* paint,ParagraphBuilderImpl *builder){
+      if(paint && builder) {
+        paint->setAntiAlias(true);
+        textStyle.setForegroundColor(*paint);
+        builder->pushStyle(textStyle);
+        builder->addText(content_.c_str(), content_.length());
+        paragraph = builder->Build();
+        paragraph->layout(getContainerSize().width()); // Get Container Size from SVGView
+        std::vector<LineMetrics> metrics;
+        paragraph->getLineMetrics(metrics);
+
+        // SkParagraph draw from TopLeft as like Other Skia components Rect...,which gives Text appear as Hanging Text.As below.
+        /*____________________________
+          HANGING TEXT LOOKS LIKE THIS
+          ____________________________
+        */
+        // Shifting up Draw Point/Baseline to have behaviour as text written on line/Baseline.
+        paragraph->paint(ctx.canvas(), frame.x(), frame.y()-metrics[0].fBaseline);
+      }
+     };
+
     if (SkPaint* fillPaint = const_cast<SkPaint*>(ctx.fillPaint())) {
-      fillPaint->setAntiAlias(true);
-      textStyle.setForegroundColor(*ctx.fillPaint());
-      fillBuilder.pushStyle(textStyle);
-      fillBuilder.addText(content_.c_str(), content_.length());
-      paragraph = fillBuilder.Build();
-      paragraph->layout(getContainerSize().width()); // Get Container Size from SVGView
-      paragraph->paint(ctx.canvas(), frame.x(), frame.y());
+      buildAndDrawParagraph(fillPaint,&fillBuilder);
     }
     if (SkPaint* strokePaint = const_cast<SkPaint*>(ctx.strokePaint())) {
-      strokePaint->setAntiAlias(true);
-      textStyle.setForegroundColor(*ctx.strokePaint());
-      strokeBuilder.pushStyle(textStyle);
-      strokeBuilder.addText(content_.c_str(), content_.length());
-      paragraph = strokeBuilder.Build();
-      paragraph->layout(getContainerSize().width()); // Get Container Size from SVGView
-      paragraph->paint(ctx.canvas(), frame.x(), frame.y());
+      buildAndDrawParagraph(strokePaint,&strokeBuilder);
     }
+
     if(paragraph) {
       auto impl = static_cast<ParagraphImpl*>(paragraph.get());
-      SkRect contBounds=impl->getBoundaries();
-      updateContainerContentBounds(SkRect::MakeXYWH(contBounds.x()+frame.x(),
-                                      contBounds.y()+frame.y(),
-                                      contBounds.width(),
-                                      contBounds.height()));
+      SkRect conentBound=impl->getBoundaries();
+      updateContainerContentBounds(SkRect::MakeXYWH(conentBound.x()+frame.x(),
+                                                    conentBound.y()+frame.y(),
+                                                    conentBound.width(),
+                                                    conentBound.height()));
     #ifdef RNS_SVG_TSPAN_PAINT_TEXT_BOUNDS
-      SkPaint boundsPaint;
-      boundsPaint.setColor(SK_ColorGREEN);
-      boundsPaint.setStrokeWidth(5);
-      boundsPaint.setStyle(SkPaint::kStroke_Style);
-      ctx.canvas()->drawRect(contentBounds_.front(),boundsPaint);
-      boundsPaint.setColor(SK_ColorRED);
-      boundsPaint.setStrokeWidth(2);
-      ctx.canvas()->drawPoint(frame.x(), frame.y(),boundsPaint);
+      std::vector<LineMetrics> metrics;
+      paragraph->getLineMetrics(metrics);
+      SkRect frameRect= SkRect::MakeXYWH(contentBounds_.front().x(),
+                                         contentBounds_.front().y()-metrics[0].fBaseline,
+                                         contentBounds_.front().width(),
+                                         contentBounds_.front().height()
+                                        );
+      //Visualize Text Anchor
+      SkPaint anchorPaint;
+      anchorPaint.setStrokeWidth(3);
+      anchorPaint.setColor(SK_ColorRED);
+      ctx.canvas()->drawPoint(frameRect.x(), frameRect.y(),anchorPaint);
+
+      // Visualize Text BaseLine, Ascent & Descent
+      SkPaint baseLinePaint,ascentPaint,descentPaint;
+      baseLinePaint.setColor(SK_ColorGREEN);
+      baseLinePaint.setStrokeWidth(2);
+      ascentPaint.setColor(SK_ColorBLUE);
+      ascentPaint.setStrokeWidth(2);
+      descentPaint.setColor(SK_ColorYELLOW);
+      descentPaint.setStrokeWidth(2);
+
+      for (auto& metric : metrics) {
+
+        auto x0 = frameRect.x();
+        auto x1 = x0+metric.fWidth;
+        auto ascentY = metric.fAscent+frameRect.y();
+        auto descentY = metric.fDescent+frameRect.y();
+        auto baselineY = metric.fBaseline+frameRect.y();
+
+        ctx.canvas()->drawLine(x0, ascentY, x1, ascentY, ascentPaint);
+        ctx.canvas()->drawLine(x0, baselineY, x1, baselineY, baseLinePaint);
+        ctx.canvas()->drawLine(x0, descentY, x1, descentY, descentPaint);
+        RNS_LOG_INFO( " AscentY : [ "<<metric.fAscent <<
+                      " ] BaselineY : [ "<<metric.fBaseline<<
+                      " ] descentY : [ "<<metric.fDescent<<
+                      " ]");
+      }
     #endif/*RNS_SVG_TSPAN_PAINT_TEXT_BOUNDS*/
     }
   }
