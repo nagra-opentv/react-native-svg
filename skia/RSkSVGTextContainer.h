@@ -51,6 +51,7 @@ class RSkSVGTextContainer : public RSkSVGContainer {
   SVG_TEXT_ATTR(FontWeight,SkString)
   SVG_TEXT_ATTR(FontStyle,SkString)
   SVG_TEXT_ATTR(FontFamily,SkString)
+  SVG_TEXT_ATTR(FontStretch,SkString)
   SVG_TEXT_ATTR(LetterSpacing,SkSVGLength)
   SVG_TEXT_ATTR(WordSpacing,SkSVGLength)
   SVG_TEXT_ATTR(TextAnchor,SkString)

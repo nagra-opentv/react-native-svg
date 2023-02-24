@@ -82,13 +82,14 @@ void RSkSVGContainer::mountChildComponent(
       nodeIDMapper_.set(SkString(node->nodeName),sksvgNode);
     }
 
-    // If Child Node is of type of container , Merge it's defMap with it's Parent
+    // If Child Node is of type of container , Merge it's defMap with it's Parent & drop it's own
     auto nodeContainer=dynamic_cast<RSkSVGContainer *>(node);
     if(nodeContainer) {
       auto mergeFn= [&](SkString keyName,sk_sp<SkSVGNode> *value){
         nodeIDMapper_.set(keyName,*value);
       };
       nodeContainer->nodeIDMapper_.foreach(mergeFn);
+      nodeContainer->nodeIDMapper_.reset();
     }
 
     // Insert child RSkSVGNode in to List
@@ -116,12 +117,13 @@ void RSkSVGContainer::unmountChildComponent(
     RNS_LOG_ERROR("Invalid index passed for remove");
     return;
   }
-  // If the respective node has entry In Def ID Mapper , remove it from all teh containers
+  // If the respective node has entry In Def ID Mapper , remove it
   auto node=static_cast<RSkSVGNode *>(childRSkNodeList_[index].get());
   if(node && (!node->nodeName.empty())) {
+
     auto node=dynamic_cast<RSkSVGContainer *>(rootNode_);
     if(node) {
-     node->removeDefEntry(node->nodeName);
+     node->nodeIDMapper_.remove(SkString(node->nodeName));//remove from self
     }
   }
   childRSkNodeList_.erase(childRSkNodeList_.begin() + index);
@@ -156,19 +158,6 @@ void RSkSVGContainer::setRoot(RSkSVGNode * rootNode) {
     auto node=static_cast<RSkSVGNode *>(childRSkNodeList_[i].get());
     if(node) {
      node->setRoot(rootNode);
-    }
-  }
-}
-
-void RSkSVGContainer::removeDefEntry(std::string key) {
-
-  nodeIDMapper_.remove(SkString(key));//remove from self
-  //Remove from children
-  for (auto &item: childRSkNodeList_) {
-    RNS_LOG_MODE_FOR_CONTAINER(" Erase Entries from Child containers : "<<(int)item->tag());
-    auto node=dynamic_cast<RSkSVGContainer *>(item.get());
-    if(node) {
-     node->removeDefEntry(key);
     }
   }
 }

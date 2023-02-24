@@ -32,6 +32,11 @@ void RSkSVGTextContainer::mountChildComponent(
   }
   auto node=static_cast<RSkSVGTextContainer *>(childComponent.get());
   if (node) { 
+    if(node->tag() != SkSVGTag::kText) {
+      RNS_LOG_ERROR("Parent Componet [ " << this->getComponentData().componentName<<
+                    " ] can only hold Tetx/TextPath SVG Elements");
+      return;
+    }
     node->setTextParent(this);
   }
   INHERITED::mountChildComponent(childComponent,index);
@@ -59,6 +64,20 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
   SET_TEXT_FRAME_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kDX),newRNSVGTextPropsProps.dx,0)
   SET_TEXT_FRAME_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kDY),newRNSVGTextPropsProps.dy,0)
 
+  if((newRNSVGTextPropsProps.x.size() > 1 ) || (newRNSVGTextPropsProps.y.size() > 1 )  ||
+     (newRNSVGTextPropsProps.dx.size() > 1 ) || (newRNSVGTextPropsProps.dx.size() > 1 ) ){
+    RNS_LOG_WARN("Positioning each character in a content is not supported");
+  }
+
+  if( newRNSVGTextPropsProps.rotate.size()  ||
+     (!newRNSVGTextPropsProps.textLength.empty()) ||
+     (!newRNSVGTextPropsProps.lengthAdjust.empty())) {
+    RNS_LOG_WARN("One of the below not supported property is used" << "\n"<<
+                 "rotate : "<< (newRNSVGTextPropsProps.rotate.size() ? "Yes" : "No") << "\n" <<
+                 "textLength : "<<(!newRNSVGTextPropsProps.textLength.empty() ? "Yes" : "No") << "\n" <<
+                 "lengthAdjust : "<<(!newRNSVGTextPropsProps.lengthAdjust.empty() ? "Yes" : "No"));
+  }
+
 #ifdef ENABLE_RNSVG_TEXT_NATIVE_PROPS_DEBUG
   RNS_LOG_INFO("========== TEXT Geometry Props ==========");
   for(auto value:newRNSVGTextPropsProps.x)
@@ -76,7 +95,7 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
 TextStyle RSkSVGTextContainer::getContentTextStyle() const {
   TextStyle textStyle;
   SkSVGLength fontSize,letterSpacing,wordSpacing;
-  SkString fontFamily,fontWeight,fontStyle;
+  SkString fontFamily,fontWeight,fontStyle,fontStretch;
 
   //TODO: To Avoid querring Props on each render, Maintain  & Use Inherited Props Info.
 
@@ -100,7 +119,7 @@ TextStyle RSkSVGTextContainer::getContentTextStyle() const {
         return it->second;
       }
     }
-    return SkFontStyle::kNormal_Weight;
+    return SkFontStyle::Weight::kNormal_Weight;
   };
   auto slant=[&]() {
     if(getFontStyle(fontStyle)) {
@@ -109,9 +128,19 @@ TextStyle RSkSVGTextContainer::getContentTextStyle() const {
         return it->second;
       }
     }
-    return SkFontStyle::kUpright_Slant;
+    return SkFontStyle::Slant::kUpright_Slant;
   };
-  textStyle.setFontStyle(SkFontStyle(weight(), SkFontStyle::kNormal_Width, slant()));
+  auto width=[&]() {
+    if(getFontStretch(fontStretch)) {
+      FontWidthMap::iterator it = fontWidthMap.find(fontStretch.c_str());
+      if(it != fontWidthMap.end()) {
+        RNS_LOG_WARN(" Not every font family has the capability to support fontStretch");
+        return it->second;
+      }
+    }
+    return SkFontStyle::Width::kNormal_Width;
+  };
+  textStyle.setFontStyle(SkFontStyle(weight(), width(), slant()));
   return textStyle;
 }
 
@@ -228,6 +257,11 @@ void RSkSVGTextContainer::onSetRSkSVGAttribute(RSkSVGAttribute attr, const SkSVG
     case RSkSVGAttribute::kWordSpacing:
       if (const auto* word_spacing = attrValue.as<SkSVGLengthValue>()) {
         setWordSpacing(*word_spacing);
+      }
+      break;
+    case RSkSVGAttribute::kFontStretch:
+      if (const auto* font_stretch = attrValue.as<SkSVGStringValue>()) {
+        setFontStretch(*font_stretch);
       }
       break;
     default:

@@ -10,22 +10,19 @@
 
 namespace facebook {
 namespace react {
-namespace RSKSVGTextUtil {
+namespace {
 
-SkScalar getTextAnchorXOffset(SkScalar width, const SkSVGStringType& text_anchor) {
+SkScalar getTextAnchorXOffset(SkScalar width, const SkSVGStringType& textAnchor) {
 
-// Default Line = "Start".
-  if (strcmp(text_anchor.c_str(), "start") != 0) {
-    if (strcmp(text_anchor.c_str(), "middle") == 0) {
-      return -(0.5f*width);
-    } else if (strcmp(text_anchor.c_str(), "end") == 0) {
-      return -width;
-    }
+  if(textAnchor == SkString("middle")) {
+    return -(0.5f*width);
+  } else if(textAnchor == SkString("end")) {
+    return -width;
   }
-  return 0;
+  return 0; // default anchor pt "start/Left"
 }
 
-}//RSKSVGTextUtil
+}//namespace
 
 RSkComponentRNSVGTSpan::RSkComponentRNSVGTSpan(const ShadowView &shadowView)
     : INHERITED(shadowView,LAYER_TYPE_VIRTUAL,SkSVGTag::kText) {}
@@ -63,7 +60,7 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
         SkString textAnchor;
         if(getTextAnchor(textAnchor)) {
           auto impl = static_cast<ParagraphImpl*>(paragraph.get());
-          xOffset=RSKSVGTextUtil::getTextAnchorXOffset(impl->getBoundaries().width(),textAnchor);
+          xOffset=getTextAnchorXOffset(impl->getBoundaries().width(),textAnchor);
         }
         // SkParagraph draw from TopLeft as like Other Skia components Rect...,which gives Text appear as Hanging Text.As below.
         /*____________________________

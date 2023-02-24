@@ -14,26 +14,42 @@ namespace react {
 
 typedef std::map<std::string, SkFontStyle::Weight> FontWeightMap;
 typedef std::map<std::string, SkFontStyle::Slant> FontSlantMap;
+typedef std::map<std::string, SkFontStyle::Width> FontWidthMap;
 
 static FontWeightMap fontWeightMap = {
-  { "normal" , SkFontStyle::kNormal_Weight     },
-  { "bold"   , SkFontStyle::kBold_Weight       },
-  { "bolder" , SkFontStyle::kExtraBold_Weight  },
-  { "lighter", SkFontStyle::kLight_Weight      },
-  { "100"    , SkFontStyle::kThin_Weight       },
-  { "200"    , SkFontStyle::kExtraLight_Weight },
-  { "300"    , SkFontStyle::kLight_Weight      },
-  { "400"    , SkFontStyle::kNormal_Weight     },
-  { "500"    , SkFontStyle::kMedium_Weight     },
-  { "600"    , SkFontStyle::kSemiBold_Weight   },
-  { "700"    , SkFontStyle::kBold_Weight       },
-  { "800"    , SkFontStyle::kExtraBold_Weight  },
-  { "900"    , SkFontStyle::kBlack_Weight      },
+  { "normal" , SkFontStyle::Weight::kNormal_Weight     },
+  { "bold"   , SkFontStyle::Weight::kBold_Weight       },
+  { "bolder" , SkFontStyle::Weight::kExtraBold_Weight  },
+  { "lighter", SkFontStyle::Weight::kLight_Weight      },
+  { "0"      , SkFontStyle::Weight::kInvisible_Weight  },
+  { "100"    , SkFontStyle::Weight::kThin_Weight       },
+  { "200"    , SkFontStyle::Weight::kExtraLight_Weight },
+  { "300"    , SkFontStyle::Weight::kLight_Weight      },
+  { "400"    , SkFontStyle::Weight::kNormal_Weight     },
+  { "500"    , SkFontStyle::Weight::kMedium_Weight     },
+  { "600"    , SkFontStyle::Weight::kSemiBold_Weight   },
+  { "700"    , SkFontStyle::Weight::kBold_Weight       },
+  { "800"    , SkFontStyle::Weight::kExtraBold_Weight  },
+  { "900"    , SkFontStyle::Weight::kBlack_Weight      },
+  { "1000"   , SkFontStyle::Weight::kExtraBlack_Weight },
 };
 static FontSlantMap fontSlantMap = {
-  { "normal" , SkFontStyle::kUpright_Slant     },
-  { "italic" , SkFontStyle::kItalic_Slant      },
-  { "oblique", SkFontStyle::kOblique_Slant     },
+  { "normal" , SkFontStyle::Slant::kUpright_Slant     },
+  { "italic" , SkFontStyle::Slant::kItalic_Slant      },
+  { "oblique", SkFontStyle::Slant::kOblique_Slant     },
+};
+static FontWidthMap fontWidthMap ={
+  { "normal"          , SkFontStyle::Width::kNormal_Width          },
+  { "wider"           , SkFontStyle::Width::kUltraExpanded_Width   },
+  { "narrower"        , SkFontStyle::Width::kUltraCondensed_Width  },
+  { "condensed"       , SkFontStyle::Width::kCondensed_Width       },
+  { "ultra-condensed" , SkFontStyle::Width::kUltraCondensed_Width  },
+  { "extra-condensed" , SkFontStyle::Width::kExtraCondensed_Width  },
+  { "semi-condensed"  , SkFontStyle::Width::kSemiCondensed_Width   },
+  { "semi-expanded"   , SkFontStyle::Width::kSemiExpanded_Width    },
+  { "expanded"        , SkFontStyle::Width::kExpanded_Width        },
+  { "extra-expanded"  , SkFontStyle::Width::kExtraExpanded_Width   },
+  { "ultra-expanded"  , SkFontStyle::Width::kUltraExpanded_Width   },
 };
 
 #define DEFINE_TEXT_ATTR(attr_name,attr_type)                                 \

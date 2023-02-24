@@ -28,7 +28,8 @@ enum RSkSVGAttribute {
   kDX =RSkSVGAttrStart,// DeltaX
   kDY, //DeltaY
   kLetterSpacing,
-  kWordSpacing
+  kWordSpacing,
+  kFontStretch
 };
 
 enum RNSVGColorStruct {
