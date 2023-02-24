@@ -76,7 +76,7 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
 TextStyle RSkSVGTextContainer::getContentTextStyle() const {
   TextStyle textStyle;
   SkSVGLength fontSize,letterSpacing,wordSpacing;
-  SkString fontFamily,fontWeight;
+  SkString fontFamily,fontWeight,fontStyle;
 
   //TODO: To Avoid querring Props on each render, Maintain  & Use Inherited Props Info.
 
@@ -92,12 +92,26 @@ TextStyle RSkSVGTextContainer::getContentTextStyle() const {
   if(getWordSpacing(wordSpacing)) {
     textStyle.setWordSpacing(wordSpacing.value());
   }
-  if(getFontWeight(fontWeight)) {
-    FontWeightMap::iterator it = fontWeightMap.find(fontWeight.c_str());
-    if(it != fontWeightMap.end()) {
-      textStyle.setFontStyle(SkFontStyle(it->second, SkFontStyle::kNormal_Width, SkFontStyle::kUpright_Slant));
+
+  auto weight=[&]() {
+    if(getFontWeight(fontWeight)) {
+      FontWeightMap::iterator it = fontWeightMap.find(fontWeight.c_str());
+      if(it != fontWeightMap.end()) {
+        return it->second;
+      }
     }
-  }
+    return SkFontStyle::kNormal_Weight;
+  };
+  auto slant=[&]() {
+    if(getFontStyle(fontStyle)) {
+      FontSlantMap::iterator it = fontSlantMap.find(fontStyle.c_str());
+      if(it != fontSlantMap.end()) {
+        return it->second;
+      }
+    }
+    return SkFontStyle::kUpright_Slant;
+  };
+  textStyle.setFontStyle(SkFontStyle(weight(), SkFontStyle::kNormal_Width, slant()));
   return textStyle;
 }
 
@@ -177,11 +191,18 @@ void RSkSVGTextContainer::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& 
         }
       }
       break;
-      case SkSVGAttribute::kTextAnchor:
-        if (const auto* text_anchor = attrValue.as<SkSVGStringValue>()) {
-          setTextAnchor(*text_anchor);
+    case SkSVGAttribute::kFontStyle:
+      if (const auto* font_style = attrValue.as<SkSVGStringValue>()) {
+        if (strcmp((*font_style)->c_str(), "inherit") != 0){
+          setFontStyle(*font_style);
         }
-        break;
+      }
+      break;
+    case SkSVGAttribute::kTextAnchor:
+      if (const auto* text_anchor = attrValue.as<SkSVGStringValue>()) {
+        setTextAnchor(*text_anchor);
+      }
+      break;
     default:
       onSetRSkSVGAttribute(static_cast<RSkSVGAttribute>(attr),attrValue);
   }

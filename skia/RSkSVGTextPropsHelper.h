@@ -11,7 +11,10 @@ using namespace skia::textlayout;
 
 namespace facebook {
 namespace react {
+
 typedef std::map<std::string, SkFontStyle::Weight> FontWeightMap;
+typedef std::map<std::string, SkFontStyle::Slant> FontSlantMap;
+
 static FontWeightMap fontWeightMap = {
   { "normal" , SkFontStyle::kNormal_Weight     },
   { "bold"   , SkFontStyle::kBold_Weight       },
@@ -26,6 +29,11 @@ static FontWeightMap fontWeightMap = {
   { "700"    , SkFontStyle::kBold_Weight       },
   { "800"    , SkFontStyle::kExtraBold_Weight  },
   { "900"    , SkFontStyle::kBlack_Weight      },
+};
+static FontSlantMap fontSlantMap = {
+  { "normal" , SkFontStyle::kUpright_Slant     },
+  { "italic" , SkFontStyle::kItalic_Slant      },
+  { "oblique", SkFontStyle::kOblique_Slant     },
 };
 
 #define DEFINE_TEXT_ATTR(attr_name,attr_type)                                 \

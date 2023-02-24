@@ -49,6 +49,7 @@ class RSkSVGTextContainer : public RSkSVGContainer {
   SVG_TEXT_POSITION_DELTA_ATTR(DeltaY,SkSVGLength)
   SVG_TEXT_ATTR(FontSize,SkSVGLength)
   SVG_TEXT_ATTR(FontWeight,SkString)
+  SVG_TEXT_ATTR(FontStyle,SkString)
   SVG_TEXT_ATTR(FontFamily,SkString)
   SVG_TEXT_ATTR(LetterSpacing,SkSVGLength)
   SVG_TEXT_ATTR(WordSpacing,SkSVGLength)
