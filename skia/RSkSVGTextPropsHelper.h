@@ -6,6 +6,7 @@
 */
 #include <map>
 #include "include/core/SkFontStyle.h"
+#include "modules/skparagraph/include/TextStyle.h"
 
 using namespace skia::textlayout;
 
@@ -15,6 +16,7 @@ namespace react {
 typedef std::map<std::string, SkFontStyle::Weight> FontWeightMap;
 typedef std::map<std::string, SkFontStyle::Slant> FontSlantMap;
 typedef std::map<std::string, SkFontStyle::Width> FontWidthMap;
+typedef std::map<std::string, TextDecoration> TextDecorationMap;
 
 static FontWeightMap fontWeightMap = {
   { "normal" , SkFontStyle::Weight::kNormal_Weight     },
@@ -50,6 +52,12 @@ static FontWidthMap fontWidthMap ={
   { "expanded"        , SkFontStyle::Width::kExpanded_Width        },
   { "extra-expanded"  , SkFontStyle::Width::kExtraExpanded_Width   },
   { "ultra-expanded"  , SkFontStyle::Width::kUltraExpanded_Width   },
+};
+static TextDecorationMap textDecorationMap = {
+  { "none"         , TextDecoration::kNoDecoration },
+  { "underline"    , TextDecoration::kUnderline    },
+  { "overline"     , TextDecoration::kOverline     },
+  { "line-through" , TextDecoration::kLineThrough  },
 };
 
 #define DEFINE_TEXT_ATTR(attr_name,attr_type)                                 \

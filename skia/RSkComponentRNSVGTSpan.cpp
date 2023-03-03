@@ -50,6 +50,8 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
       if(paint && builder) {
         paint->setAntiAlias(true);
         textStyle.setForegroundColor(*paint);
+        //Note: Decoration color is same as the color of text. So applying it here from paint.
+        textStyle.setDecorationColor(paint->getColor());
         builder->pushStyle(textStyle);
         builder->addText(content_.c_str(), content_.length());
         paragraph = builder->Build();

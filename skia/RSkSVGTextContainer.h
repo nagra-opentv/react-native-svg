@@ -55,6 +55,7 @@ class RSkSVGTextContainer : public RSkSVGContainer {
   SVG_TEXT_ATTR(LetterSpacing,SkSVGLength)
   SVG_TEXT_ATTR(WordSpacing,SkSVGLength)
   SVG_TEXT_ATTR(TextAnchor,SkString)
+  SVG_TEXT_ATTR(TextDecoration,SkString)
 
  private:
 

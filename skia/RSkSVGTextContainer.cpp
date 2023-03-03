@@ -95,7 +95,7 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
 TextStyle RSkSVGTextContainer::getContentTextStyle() const {
   TextStyle textStyle;
   SkSVGLength fontSize,letterSpacing,wordSpacing;
-  SkString fontFamily,fontWeight,fontStyle,fontStretch;
+  SkString fontFamily,fontWeight,fontStyle,fontStretch,textDecoration;
 
   //TODO: To Avoid querring Props on each render, Maintain  & Use Inherited Props Info.
 
@@ -111,7 +111,13 @@ TextStyle RSkSVGTextContainer::getContentTextStyle() const {
   if(getWordSpacing(wordSpacing)) {
     textStyle.setWordSpacing(wordSpacing.value());
   }
-
+  if(getTextDecoration(textDecoration)) {
+    TextDecorationMap::iterator it = textDecorationMap.find(textDecoration.c_str());
+    if(it != textDecorationMap.end()) {
+      textStyle.setDecoration(it->second);
+      //Note: Decoration color is same as the color of text. So it be applied from paint while render
+    }
+  }
   auto weight=[&]() {
     if(getFontWeight(fontWeight)) {
       FontWeightMap::iterator it = fontWeightMap.find(fontWeight.c_str());
@@ -262,6 +268,11 @@ void RSkSVGTextContainer::onSetRSkSVGAttribute(RSkSVGAttribute attr, const SkSVG
     case RSkSVGAttribute::kFontStretch:
       if (const auto* font_stretch = attrValue.as<SkSVGStringValue>()) {
         setFontStretch(*font_stretch);
+      }
+      break;
+    case RSkSVGAttribute::kTextDecoration:
+      if (const auto* text_decoration = attrValue.as<SkSVGStringValue>()) {
+        setTextDecoration(*text_decoration);
       }
       break;
     default:
