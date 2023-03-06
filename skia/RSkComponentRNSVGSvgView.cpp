@@ -69,12 +69,15 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(Sh
 
 #ifdef ENABLE_NATIVE_PROPS_DEBUG
   RNS_LOG_INFO( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
-  RNS_LOG_INFO("minX  :"<<newRNSVGViewProps.minX <<
-               "minY  :"<<newRNSVGViewProps.minY <<
-               "vbWidth :"<<newRNSVGViewProps.vbWidth <<
-               "vbHeight :"<<newRNSVGViewProps.vbHeight <<
-               "tintColor :"<<newRNSVGViewProps.tintColor <<
-               "color :"<<newRNSVGViewProps.color);
+  RNS_LOG_INFO("\n" <<
+               "===Native Props for SVG Element View==="<< "\n" <<
+               "minX      : "<<newRNSVGViewProps.minX << "\n" <<
+               "minY      : "<<newRNSVGViewProps.minY << "\n" <<
+               "vbWidth   : "<<newRNSVGViewProps.vbWidth << "\n" <<
+               "vbHeight  : "<<newRNSVGViewProps.vbHeight << "\n" <<
+               "tintColor : "<<newRNSVGViewProps.tintColor << "\n" <<
+               "color     : "<<newRNSVGViewProps.color << "\n" <<
+               "=======================================");
 #endif /*ENABLE_NATIVE_PROPS_DEBUG*/
 
   std::string viewBox=std::to_string(newRNSVGViewProps.minX) + " "+ \

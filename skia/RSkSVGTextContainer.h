@@ -41,21 +41,21 @@ class RSkSVGTextContainer : public RSkSVGContainer {
 
   sk_sp<skia::textlayout::FontCollection> fontCollection_;
   RSkSVGNode * textParentNode_{nullptr};
-  mutable std::vector<SkRect> contentBounds_;
+  mutable std::vector<SkRect> containerContentBounds_;
 
-  SVG_TEXT_POSITION_ATTR(PositionX,SkSVGLength)
-  SVG_TEXT_POSITION_ATTR(PositionY,SkSVGLength)
-  SVG_TEXT_POSITION_DELTA_ATTR(DeltaX,SkSVGLength)
-  SVG_TEXT_POSITION_DELTA_ATTR(DeltaY,SkSVGLength)
-  SVG_TEXT_ATTR(FontSize,SkSVGLength)
-  SVG_TEXT_ATTR(FontWeight,SkString)
-  SVG_TEXT_ATTR(FontStyle,SkString)
-  SVG_TEXT_ATTR(FontFamily,SkString)
-  SVG_TEXT_ATTR(FontStretch,SkString)
-  SVG_TEXT_ATTR(LetterSpacing,SkSVGLength)
-  SVG_TEXT_ATTR(WordSpacing,SkSVGLength)
-  SVG_TEXT_ATTR(TextAnchor,SkString)
-  SVG_TEXT_ATTR(TextDecoration,SkString)
+  RNS_SVG_TEXT_POSITION_ATTR(PositionX,SkSVGLength)
+  RNS_SVG_TEXT_POSITION_ATTR(PositionY,SkSVGLength)
+  RNS_SVG_TEXT_POSITION_DELTA_ATTR(DeltaX,SkSVGLength)
+  RNS_SVG_TEXT_POSITION_DELTA_ATTR(DeltaY,SkSVGLength)
+  RNS_SVG_TEXT_ATTR(FontSize,SkSVGLength)
+  RNS_SVG_TEXT_ATTR(FontWeight,SkString)
+  RNS_SVG_TEXT_ATTR(FontStyle,SkString)
+  RNS_SVG_TEXT_ATTR(FontFamily,SkString)
+  RNS_SVG_TEXT_ATTR(FontStretch,SkString)
+  RNS_SVG_TEXT_ATTR(LetterSpacing,SkSVGLength)
+  RNS_SVG_TEXT_ATTR(WordSpacing,SkSVGLength)
+  RNS_SVG_TEXT_ATTR(TextAnchor,SkString)
+  RNS_SVG_TEXT_ATTR(TextDecoration,SkString)
 
  private:
 

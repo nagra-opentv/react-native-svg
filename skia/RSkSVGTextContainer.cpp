@@ -50,7 +50,7 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
   setCommonNodeProps(newRNSVGTextPropsProps);
   setCommonGroupProps(newRNSVGTextPropsProps);
 
-#define SET_TEXT_FRAME_ATTR(attr,vectorValue,index)                      \
+#define RNS_SVG_SET_TEXT_FRAME_ATTR(attr,vectorValue,index)                      \
   if(vectorValue.size() && (index < vectorValue.size() )) {             \
     setLengthAttribute(attr,vectorValue[index]);                         \
   }
@@ -59,14 +59,14 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
 // while subsequent elements specify the dimensions for each individual character.
 // At present, the placement of the text as a whole is being considered.
 
-  SET_TEXT_FRAME_ATTR(SkSVGAttribute::kX,newRNSVGTextPropsProps.x,0)
-  SET_TEXT_FRAME_ATTR(SkSVGAttribute::kY,newRNSVGTextPropsProps.y,0)
-  SET_TEXT_FRAME_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kDX),newRNSVGTextPropsProps.dx,0)
-  SET_TEXT_FRAME_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kDY),newRNSVGTextPropsProps.dy,0)
+  RNS_SVG_SET_TEXT_FRAME_ATTR(SkSVGAttribute::kX,newRNSVGTextPropsProps.x,0)
+  RNS_SVG_SET_TEXT_FRAME_ATTR(SkSVGAttribute::kY,newRNSVGTextPropsProps.y,0)
+  RNS_SVG_SET_TEXT_FRAME_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kDX),newRNSVGTextPropsProps.dx,0)
+  RNS_SVG_SET_TEXT_FRAME_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kDY),newRNSVGTextPropsProps.dy,0)
 
   if((newRNSVGTextPropsProps.x.size() > 1 ) || (newRNSVGTextPropsProps.y.size() > 1 )  ||
      (newRNSVGTextPropsProps.dx.size() > 1 ) || (newRNSVGTextPropsProps.dx.size() > 1 ) ){
-    RNS_LOG_WARN("Positioning each character in a content is not supported");
+    RNS_LOG_NOT_IMPL_MSG(" Multiple positioning ( x and delta) ");
   }
 
   if( newRNSVGTextPropsProps.rotate.size()  ||
@@ -183,7 +183,7 @@ SkPoint RSkSVGTextContainer::getContentDrawCoOrdinates() const{
 }
 
 void RSkSVGTextContainer::updateContainerContentBounds(SkRect frame) const{
-  contentBounds_.push_back(frame);//Add to it's own container bound list
+  containerContentBounds_.push_back(frame);//Add to it's own container bound list
   // Add to it's parent container bound list
   auto node=static_cast<RSkSVGTextContainer *>(textParentNode_);
   if(node) {
@@ -210,32 +210,32 @@ void RSkSVGTextContainer::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& 
       }
       break;
     case SkSVGAttribute::kFontFamily:
-      if (const auto* font_family = attrValue.as<SkSVGStringValue>()) {
-        setFontFamily(*font_family);
+      if (const auto* fontFamily = attrValue.as<SkSVGStringValue>()) {
+        setFontFamily(*fontFamily);
       }
       break;
     case SkSVGAttribute::kFontSize:
-      if (const auto* font_size = attrValue.as<SkSVGLengthValue>()) {
-        setFontSize(*font_size);
+      if (const auto* fontSize = attrValue.as<SkSVGLengthValue>()) {
+        setFontSize(*fontSize);
       }
       break;
     case SkSVGAttribute::kFontWeight:
-      if (const auto* font_weight = attrValue.as<SkSVGStringValue>()) {
-        if (strcmp((*font_weight)->c_str(), "inherit") != 0){
-          setFontWeight(*font_weight);
+      if (const auto* fontWeight = attrValue.as<SkSVGStringValue>()) {
+        if (strcmp((*fontWeight)->c_str(), "inherit") != 0){
+          setFontWeight(*fontWeight);
         }
       }
       break;
     case SkSVGAttribute::kFontStyle:
-      if (const auto* font_style = attrValue.as<SkSVGStringValue>()) {
-        if (strcmp((*font_style)->c_str(), "inherit") != 0){
-          setFontStyle(*font_style);
+      if (const auto* fontStyle = attrValue.as<SkSVGStringValue>()) {
+        if (strcmp((*fontStyle)->c_str(), "inherit") != 0){
+          setFontStyle(*fontStyle);
         }
       }
       break;
     case SkSVGAttribute::kTextAnchor:
-      if (const auto* text_anchor = attrValue.as<SkSVGStringValue>()) {
-        setTextAnchor(*text_anchor);
+      if (const auto* textAnchor = attrValue.as<SkSVGStringValue>()) {
+        setTextAnchor(*textAnchor);
       }
       break;
     default:
@@ -256,23 +256,23 @@ void RSkSVGTextContainer::onSetRSkSVGAttribute(RSkSVGAttribute attr, const SkSVG
       }
       break;
     case RSkSVGAttribute::kLetterSpacing:
-      if (const auto*letter_spacing = attrValue.as<SkSVGLengthValue>()) {
-        setLetterSpacing(*letter_spacing);
+      if (const auto*letterSpacing = attrValue.as<SkSVGLengthValue>()) {
+        setLetterSpacing(*letterSpacing);
       }
       break;
     case RSkSVGAttribute::kWordSpacing:
-      if (const auto* word_spacing = attrValue.as<SkSVGLengthValue>()) {
-        setWordSpacing(*word_spacing);
+      if (const auto* wordSpacing = attrValue.as<SkSVGLengthValue>()) {
+        setWordSpacing(*wordSpacing);
       }
       break;
     case RSkSVGAttribute::kFontStretch:
-      if (const auto* font_stretch = attrValue.as<SkSVGStringValue>()) {
-        setFontStretch(*font_stretch);
+      if (const auto* fontStretch = attrValue.as<SkSVGStringValue>()) {
+        setFontStretch(*fontStretch);
       }
       break;
     case RSkSVGAttribute::kTextDecoration:
-      if (const auto* text_decoration = attrValue.as<SkSVGStringValue>()) {
-        setTextDecoration(*text_decoration);
+      if (const auto* textDecoration = attrValue.as<SkSVGStringValue>()) {
+        setTextDecoration(*textDecoration);
       }
       break;
     default:

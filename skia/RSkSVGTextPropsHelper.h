@@ -60,7 +60,7 @@ static TextDecorationMap textDecorationMap = {
   { "line-through" , TextDecoration::kLineThrough  },
 };
 
-#define DEFINE_TEXT_ATTR(attr_name,attr_type)                                 \
+#define RNS_SVG_DEFINE_TEXT_ATTR(attr_name,attr_type)                         \
  private:                                                                     \
   attr_type attr_name##_;                                                     \
   bool    attr_name##Set_{false};                                             \
@@ -79,7 +79,7 @@ static TextDecorationMap textDecorationMap = {
       3.Traverse the text container and repeat steps 1 and 2 until the attribute value is found 
         or until the root element is reached.
 */
-#define DEFINE_TEXT_STYLE_ATTR_GETTER(attr_name,attr_type)                    \
+#define RNS_SVG_DEFINE_TEXT_STYLE_ATTR_GETTER(attr_name,attr_type)            \
  public:                                                                      \
   bool get##attr_name(attr_type& returnVar) const {                           \
     if(attr_name##HasValue()) {                                               \
@@ -105,7 +105,7 @@ static TextDecorationMap textDecorationMap = {
         in the parent's parent element ,applying rules 1 & 2.
 */
 
-#define DEFINE_GET_POSITION_ATTR(attr_name)                                   \
+#define RNS_SVG_DEFINE_GET_POSITION_ATTR(attr_name)                           \
  public:                                                                      \
   bool get##attr_name(std::vector<SkScalar>& attrVal) const {                 \
     attrVal.resize(0);                                                        \
@@ -121,9 +121,9 @@ static TextDecorationMap textDecorationMap = {
    return false;                                                              \
   }                                                                           \
   bool get##attr_name##FromParent(std::vector<SkScalar>& attrVal) const {     \
-    if(!contentBounds_.empty()) {                                             \
-      attrVal.push_back(contentBounds_.back().fRight);                        \
-      attrVal.push_back(contentBounds_.back().fTop);                          \
+    if(!containerContentBounds_.empty()) {                                    \
+      attrVal.push_back(containerContentBounds_.back().fRight);               \
+      attrVal.push_back(containerContentBounds_.back().fTop);                 \
       return true;                                                            \
     } else if(attr_name##HasValue()) {                                        \
       attrVal.push_back(get##attr_name().value());                            \
@@ -149,7 +149,7 @@ static TextDecorationMap textDecorationMap = {
         in the parent's parent element ,applying rules 1 & 2.
 */
 
-#define DEFINE_GET_DELTA_POSITION_ATTR(attr_name)                             \
+#define RNS_SVG_DEFINE_GET_DELTA_POSITION_ATTR(attr_name)                     \
  public:                                                                      \
   bool get##attr_name(SkScalar& delatAttrVal) const {                         \
     if(attr_name##HasValue()) {                                               \
@@ -164,7 +164,7 @@ static TextDecorationMap textDecorationMap = {
     return false;                                                             \
   }                                                                           \
   bool get##attr_name##FromParent(SkScalar& delatAttrVal) const {             \
-    if(!contentBounds_.empty()) {                                             \
+    if(!containerContentBounds_.empty()) {                                    \
       return false;                                                           \
     } else if (attr_name##HasValue()){                                        \
       delatAttrVal= get##attr_name().value();                                 \
@@ -178,16 +178,16 @@ static TextDecorationMap textDecorationMap = {
     return false;                                                             \
   }
 
-#define SVG_TEXT_ATTR(attr_name,attr_type)                                    \
-  DEFINE_TEXT_ATTR(attr_name,attr_type)                                       \
-  DEFINE_TEXT_STYLE_ATTR_GETTER(attr_name,attr_type)
+#define RNS_SVG_TEXT_ATTR(attr_name,attr_type)                                \
+  RNS_SVG_DEFINE_TEXT_ATTR(attr_name,attr_type)                               \
+  RNS_SVG_DEFINE_TEXT_STYLE_ATTR_GETTER(attr_name,attr_type)
 
-#define SVG_TEXT_POSITION_ATTR(attr_name,attr_type)                           \
-  DEFINE_TEXT_ATTR(attr_name,attr_type)                                       \
-  DEFINE_GET_POSITION_ATTR(attr_name)
+#define RNS_SVG_TEXT_POSITION_ATTR(attr_name,attr_type)                       \
+  RNS_SVG_DEFINE_TEXT_ATTR(attr_name,attr_type)                               \
+  RNS_SVG_DEFINE_GET_POSITION_ATTR(attr_name)
 
-#define SVG_TEXT_POSITION_DELTA_ATTR(attr_name,attr_type)                     \
-  DEFINE_TEXT_ATTR(attr_name,attr_type)                                       \
-  DEFINE_GET_DELTA_POSITION_ATTR(attr_name)
+#define RNS_SVG_TEXT_POSITION_DELTA_ATTR(attr_name,attr_type)                 \
+  RNS_SVG_DEFINE_TEXT_ATTR(attr_name,attr_type)                               \
+  RNS_SVG_DEFINE_GET_DELTA_POSITION_ATTR(attr_name)
 } // namespace react
 } // namespace facebook

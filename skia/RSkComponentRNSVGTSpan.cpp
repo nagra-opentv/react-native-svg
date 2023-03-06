@@ -38,10 +38,10 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGTSpan::updateComponentProps(Shar
 void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
   if(content_.size()) {
 
-    ParagraphStyle paragraph_style;
-
-    ParagraphBuilderImpl fillBuilder(paragraph_style, fontCollection_);
-    ParagraphBuilderImpl strokeBuilder(paragraph_style, fontCollection_);
+    ParagraphStyle paraStyle;
+    paraStyle.setMaxLines(1);//Svg text content to be presented in single line. 
+    ParagraphBuilderImpl fillBuilder(paraStyle, fontCollection_);
+    ParagraphBuilderImpl strokeBuilder(paraStyle, fontCollection_);
     TextStyle textStyle=getContentTextStyle();
     SkPoint frame=getContentDrawCoOrdinates();
     std::unique_ptr<Paragraph> paragraph;
@@ -83,18 +83,18 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
 
     if(paragraph) {
       auto impl = static_cast<ParagraphImpl*>(paragraph.get());
-      SkRect conentBound=impl->getBoundaries();
-      updateContainerContentBounds(SkRect::MakeXYWH(conentBound.x()+frame.x(),
-                                                    conentBound.y()+frame.y(),
-                                                    conentBound.width(),
-                                                    conentBound.height()));
+      SkRect contentBound=impl->getBoundaries();
+      updateContainerContentBounds(SkRect::MakeXYWH(contentBound.x()+frame.x(),
+                                                    contentBound.y()+frame.y(),
+                                                    contentBound.width(),
+                                                    contentBound.height()));
     #ifdef RNS_SVG_TSPAN_PAINT_TEXT_BOUNDS
       std::vector<LineMetrics> metrics;
       paragraph->getLineMetrics(metrics);
-      SkRect frameRect= SkRect::MakeXYWH(contentBounds_.front().x(),
-                                         contentBounds_.front().y()-metrics[0].fBaseline,
-                                         contentBounds_.front().width(),
-                                         contentBounds_.front().height()
+      SkRect frameRect= SkRect::MakeXYWH(containerContentBounds_.front().x(),
+                                         containerContentBounds_.front().y()-metrics[0].fBaseline,
+                                         containerContentBounds_.front().width(),
+                                         containerContentBounds_.front().height()
                                         );
       //Visualize Text Anchor
       SkPaint anchorPaint;
@@ -113,15 +113,15 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
 
       for (auto& metric : metrics) {
 
-        auto x0 = frameRect.x();
-        auto x1 = x0+metric.fWidth;
+        auto startPtX = frameRect.x();
+        auto endtPtX = startPtX+metric.fWidth;
         auto ascentY = metric.fAscent+frameRect.y();
         auto descentY = metric.fDescent+frameRect.y();
         auto baselineY = metric.fBaseline+frameRect.y();
 
-        ctx.canvas()->drawLine(x0, ascentY, x1, ascentY, ascentPaint);
-        ctx.canvas()->drawLine(x0, baselineY, x1, baselineY, baseLinePaint);
-        ctx.canvas()->drawLine(x0, descentY, x1, descentY, descentPaint);
+        ctx.canvas()->drawLine(startPtX, ascentY, endtPtX, ascentY, ascentPaint);
+        ctx.canvas()->drawLine(startPtX, baselineY, endtPtX, baselineY, baseLinePaint);
+        ctx.canvas()->drawLine(startPtX, descentY, endtPtX, descentY, descentPaint);
         RNS_LOG_INFO( " AscentY : [ "<<metric.fAscent <<
                       " ] BaselineY : [ "<<metric.fBaseline<<
                       " ] descentY : [ "<<metric.fDescent<<

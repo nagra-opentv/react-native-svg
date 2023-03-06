@@ -18,7 +18,6 @@
 #include "include/utils/SkParsePath.h"
 
 #include "react/renderer/components/rnsvg/RNSVGProps.h"
-
 namespace facebook {
 namespace react {
 
