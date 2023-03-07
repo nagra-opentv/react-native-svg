@@ -32,7 +32,6 @@ class RSkSVGContainer : public RSkSVGComponentNode {
   void unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index)override;
 
   RSkSVGNode* getRSKSvgNodeFromComponent(std::shared_ptr<RSkComponent> component);
-  void removeDefEntry(std::string key);
 
  protected:
 

@@ -27,7 +27,9 @@ To incorporate RNSSVGComponents from the third-party ReactNativeSVG:
     {"RNSVGEllipse",RSkComponentProviderRNSVGEllipseCls}, 
     {"RNSVGLine",RSkComponentProviderRNSVGLineCls},    
     {"RNSVGDefs",RSkComponentProviderRNSVGDefsCls}, 
-    {"RNSVGUse",RSkComponentProviderRNSVGUseCls}
+    {"RNSVGUse",RSkComponentProviderRNSVGUseCls},
+    {"RNSVGText",RSkComponentProviderRNSVGTextCls},
+    {"RNSVGTSpan",RSkComponentProviderRNSVGTSpanCls}
 
 to add elemnts , add an entry in the following format
 {RNSVGElementName,RSkComponentProviderRNSVGElemnet functionobject}
@@ -43,6 +45,8 @@ RSkComponentProvider *RSkComponentProviderRNSVGEllipseCls() ; // RNSVGEllipse
 RSkComponentProvider *RSkComponentProviderRNSVGLineCls() ; // RNSVGLine
 RSkComponentProvider *RSkComponentProviderRNSVGDefsCls(); // RNSVGDefs
 RSkComponentProvider *RSkComponentProviderRNSVGUseCls(); // RNSVGUse
+RSkComponentProvider *RSkComponentProviderRNSVGTextCls() ; // RNSVGText
+RSkComponentProvider *RSkComponentProviderRNSVGTSpanCls() ; // RNSVGTSpan
 
 Follow the same pattern to extend the support for more SVG component.
 

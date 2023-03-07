@@ -18,10 +18,13 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLine::updateComponentProps(Share
   auto const &newRNSVGLineProps = *std::static_pointer_cast<RNSVGLineProps const>(newViewProps);
 
 #ifdef ENABLE_NATIVE_PROPS_DEBUG
-  RNS_LOG_INFO(" X1: "<<newRNSVGLineProps.x1 <<
-               " Y1: "<<newRNSVGLineProps.y1 <<
-               " X2: "<<newRNSVGLineProps.x2 <<
-               " Y2: "<<newRNSVGLineProps.y2);
+  RNS_LOG_INFO("\n" <<
+               "===Native Props for SVG Element Circle==="<< "\n" <<
+               " X1: "<<newRNSVGLineProps.x1 << "\n" <<
+               " Y1: "<<newRNSVGLineProps.y1 << "\n" <<
+               " X2: "<<newRNSVGLineProps.x2 << "\n" <<
+               " Y2: "<<newRNSVGLineProps.y2 << "\n" <<
+               "==========================================");
 #endif/*ENABLE_NATIVE_PROPS_DEBUG*/
   setLengthAttribute(SkSVGAttribute::kX1,newRNSVGLineProps.x1);
   setLengthAttribute(SkSVGAttribute::kX2,newRNSVGLineProps.x2);

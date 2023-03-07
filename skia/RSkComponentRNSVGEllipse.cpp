@@ -19,10 +19,13 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGEllipse::updateComponentProps(Sh
   auto const &newRNSVGEllipseProps = *std::static_pointer_cast<RNSVGEllipseProps const>(newViewProps);
 
 #ifdef ENABLE_NATIVE_PROPS_DEBUG
-  RNS_LOG_INFO(" CX: "<<newRNSVGEllipseProps.cx <<
-               " CY: "<<newRNSVGEllipseProps.cy <<
-               " RX: "<<newRNSVGEllipseProps.rx <<
-               " RY: "<<newRNSVGEllipseProps.ry);
+  RNS_LOG_INFO("\n" <<
+               "===Native Props for SVG Element Ellipse==="<< "\n" <<
+               " CX: "<<newRNSVGEllipseProps.cx << "\n" <<
+               " CY: "<<newRNSVGEllipseProps.cy << "\n" <<
+               " RX: "<<newRNSVGEllipseProps.rx << "\n" <<
+               " RY: "<<newRNSVGEllipseProps.ry << "\n" <<
+               "==========================================");
 #endif/*ENABLE_NATIVE_PROPS_DEBUG*/
   setLengthAttribute(SkSVGAttribute::kCx,newRNSVGEllipseProps.cx);
   setLengthAttribute(SkSVGAttribute::kCy,newRNSVGEllipseProps.cy);

@@ -18,12 +18,15 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGRect::updateComponentProps(Share
   auto const &newRNSVGRectProps = *std::static_pointer_cast<RNSVGRectProps const>(newViewProps);
   
 #ifdef ENABLE_NATIVE_PROPS_DEBUG
-  RNS_LOG_INFO(" X : "<<newRNSVGRectProps.x <<
-               " Y : "<<newRNSVGRectProps.y <<
-               " Rx : "<<newRNSVGRectProps.rx <<
-               " Ry : "<<newRNSVGRectProps.ry <<
-               " Width : "<<newRNSVGRectProps.width <<
-               " Height: "<<newRNSVGRectProps.height );
+  RNS_LOG_INFO("\n" <<
+               "===Native Props for SVG Element Rect==="<< "\n" <<
+               " X     : "<<newRNSVGRectProps.x <<  "\n" <<
+               " Y     : "<<newRNSVGRectProps.y <<  "\n" <<
+               " Rx    : "<<newRNSVGRectProps.rx <<  "\n" <<
+               " Ry    : "<<newRNSVGRectProps.ry <<  "\n" <<
+               " Width : "<<newRNSVGRectProps.width <<  "\n" <<
+               " Height: "<<newRNSVGRectProps.height<< "\n" <<
+               "=======================================" );
 #endif /*ENABLE_NATIVE_PROPS_DEBUG*/
   setLengthAttribute(SkSVGAttribute::kX,newRNSVGRectProps.x);
   setLengthAttribute(SkSVGAttribute::kY,newRNSVGRectProps.y);

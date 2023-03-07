@@ -108,7 +108,7 @@ void RSkSVGNode::setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps){
 
 void RSkSVGNode::setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProps) {
 
-  #define SET_TEXT_FONT_ATTR(attr,value)                                 \
+  #define RNS_SVG_SET_TEXT_FONT_ATTR(attr,value)                                 \
     if(!value.empty()) {                                                 \
      setStringAttribute(attr,value);                                     \
     }
@@ -117,18 +117,25 @@ void RSkSVGNode::setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProp
   setLengthAttribute(static_cast<SkSVGAttribute>(RSkSVGAttribute::kLetterSpacing),commonGroupProps.font.letterSpacing);
   setLengthAttribute(static_cast<SkSVGAttribute>(RSkSVGAttribute::kWordSpacing),commonGroupProps.font.wordSpacing);
 
-  SET_TEXT_FONT_ATTR(SkSVGAttribute::kFontFamily,commonGroupProps.font.fontFamily)
-  SET_TEXT_FONT_ATTR(SkSVGAttribute::kFontStyle,commonGroupProps.font.fontStyle)
-  SET_TEXT_FONT_ATTR(SkSVGAttribute::kFontWeight,commonGroupProps.font.fontWeight)
+  RNS_SVG_SET_TEXT_FONT_ATTR(SkSVGAttribute::kFontFamily,commonGroupProps.font.fontFamily)
+  RNS_SVG_SET_TEXT_FONT_ATTR(SkSVGAttribute::kFontStyle,commonGroupProps.font.fontStyle)
+  RNS_SVG_SET_TEXT_FONT_ATTR(SkSVGAttribute::kFontWeight,commonGroupProps.font.fontWeight)
+  RNS_SVG_SET_TEXT_FONT_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kFontStretch),commonGroupProps.font.fontStretch)
+  RNS_SVG_SET_TEXT_FONT_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kTextDecoration),commonGroupProps.font.textDecoration)
+  RNS_SVG_SET_TEXT_FONT_ATTR(SkSVGAttribute::kTextAnchor,commonGroupProps.font.textAnchor)
 
   #ifdef ENABLE_RNSVG_COMMON_RENDERABLE_PROPS_DEBUG
-    RNS_LOG_INFO("=== Common Text Props ===");
-    RNS_LOG_INFO("FontSize     : "<<commonGroupProps.font.fontSize <<;
-                 "FontStyle    : "<<commonGroupProps.font.fontStyle <<
-                 "FontWeight   : "<<commonGroupProps.font.fontWeight <<
-                 "LetterSpacing: "<<commonGroupProps.font.letterSpacing <<
-                 "WordSpacing  : "<<commonGroupProps.font.wordSpacing);
-    RNS_LOG_INFO("========================");
+    RNS_LOG_INFO("\n" <<
+                 "=== Common Text Props ==="<< "\n" <<
+                 "FontSize     : "<<commonGroupProps.font.fontSize << "\n" <<
+                 "FontStyle    : "<<commonGroupProps.font.fontStyle << "\n" <<
+                 "FontWeight   : "<<commonGroupProps.font.fontWeight << "\n" <<
+                 "fontFamily   : "<<commonGroupProps.font.fontFamily << "\n" <<
+                 "FontStretch  : "<<commonGroupProps.font.fontStretch << "\n" <<
+                 "textAnchor   : "<<commonGroupProps.font.textAnchor << "\n" <<
+                 "LetterSpacing: "<<commonGroupProps.font.letterSpacing << "\n" <<
+                 "WordSpacing  : "<<commonGroupProps.font.wordSpacing<< "\n" <<
+                 "========================");
   #endif /*ENABLE_RNSVG_COMMON_RENDERABLE_PROPS_DEBUG*/
 }
 

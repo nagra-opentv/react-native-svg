@@ -18,7 +18,6 @@ RSkSVGTextContainer::RSkSVGTextContainer(const ShadowView &shadowView,
 //TODO: To improve performance, Good to have single FontCollection & use it across all the TextContainers.
   fontCollection_ = sk_make_sp<skia::textlayout::FontCollection>();
   fontCollection_->setDefaultFontManager(SkFontMgr::RefDefault());
-  contentBounds_=SkRect::MakeEmpty();
 }
 
 void RSkSVGTextContainer::mountChildComponent(
@@ -33,6 +32,11 @@ void RSkSVGTextContainer::mountChildComponent(
   }
   auto node=static_cast<RSkSVGTextContainer *>(childComponent.get());
   if (node) { 
+    if(node->tag() != SkSVGTag::kText) {
+      RNS_LOG_ERROR("Parent Componet [ " << this->getComponentData().componentName<<
+                    " ] can only hold Tetx/TextPath SVG Elements");
+      return;
+    }
     node->setTextParent(this);
   }
   INHERITED::mountChildComponent(childComponent,index);
@@ -46,7 +50,7 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
   setCommonNodeProps(newRNSVGTextPropsProps);
   setCommonGroupProps(newRNSVGTextPropsProps);
 
-#define SET_TEXT_FRAME_ATTR(attr,vectorValue,index)                      \
+#define RNS_SVG_SET_TEXT_FRAME_ATTR(attr,vectorValue,index)                      \
   if(vectorValue.size() && (index < vectorValue.size() )) {             \
     setLengthAttribute(attr,vectorValue[index]);                         \
   }
@@ -55,13 +59,24 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
 // while subsequent elements specify the dimensions for each individual character.
 // At present, the placement of the text as a whole is being considered.
 
-  SET_TEXT_FRAME_ATTR(SkSVGAttribute::kX,newRNSVGTextPropsProps.x,0)
-  SET_TEXT_FRAME_ATTR(SkSVGAttribute::kY,newRNSVGTextPropsProps.y,0)
+  RNS_SVG_SET_TEXT_FRAME_ATTR(SkSVGAttribute::kX,newRNSVGTextPropsProps.x,0)
+  RNS_SVG_SET_TEXT_FRAME_ATTR(SkSVGAttribute::kY,newRNSVGTextPropsProps.y,0)
+  RNS_SVG_SET_TEXT_FRAME_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kDX),newRNSVGTextPropsProps.dx,0)
+  RNS_SVG_SET_TEXT_FRAME_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kDY),newRNSVGTextPropsProps.dy,0)
 
-#ifdef ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT
-  SET_TEXT_FRAME_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kDX),newRNSVGTextPropsProps.dx,0)
-  SET_TEXT_FRAME_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kDY),newRNSVGTextPropsProps.dy,0)
-#endif/*ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT*/
+  if((newRNSVGTextPropsProps.x.size() > 1 ) || (newRNSVGTextPropsProps.y.size() > 1 )  ||
+     (newRNSVGTextPropsProps.dx.size() > 1 ) || (newRNSVGTextPropsProps.dx.size() > 1 ) ){
+    RNS_LOG_NOT_IMPL_MSG(" Multiple positioning ( x and delta) ");
+  }
+
+  if( newRNSVGTextPropsProps.rotate.size()  ||
+     (!newRNSVGTextPropsProps.textLength.empty()) ||
+     (!newRNSVGTextPropsProps.lengthAdjust.empty())) {
+    RNS_LOG_WARN("One of the below not supported property is used" << "\n"<<
+                 "rotate : "<< (newRNSVGTextPropsProps.rotate.size() ? "Yes" : "No") << "\n" <<
+                 "textLength : "<<(!newRNSVGTextPropsProps.textLength.empty() ? "Yes" : "No") << "\n" <<
+                 "lengthAdjust : "<<(!newRNSVGTextPropsProps.lengthAdjust.empty() ? "Yes" : "No"));
+  }
 
 #ifdef ENABLE_RNSVG_TEXT_NATIVE_PROPS_DEBUG
   RNS_LOG_INFO("========== TEXT Geometry Props ==========");
@@ -77,56 +92,102 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
 #endif /*ENABLE_RNSVG_TEXT_NATIVE_PROPS_DEBUG*/
 }
 
-TextStyle RSkSVGTextContainer::getTextStyle() const {
+TextStyle RSkSVGTextContainer::getContentTextStyle() const {
   TextStyle textStyle;
   SkSVGLength fontSize,letterSpacing,wordSpacing;
-  SkString fontFamily;
+  SkString fontFamily,fontWeight,fontStyle,fontStretch,textDecoration;
 
   //TODO: To Avoid querring Props on each render, Maintain  & Use Inherited Props Info.
 
-  if(findFontFamily(fontFamily)) {
+  if(getFontFamily(fontFamily)) {
     textStyle.setFontFamilies({fontFamily});
   }
-  if(findFontSize(fontSize)) {
+  if(getFontSize(fontSize)) {
     textStyle.setFontSize(fontSize.value());
   }
-  if(findLetterSpacing(letterSpacing)) {
+  if(getLetterSpacing(letterSpacing)) {
     textStyle.setLetterSpacing(letterSpacing.value());
   }
-  if(findWordSpacing(wordSpacing)) {
+  if(getWordSpacing(wordSpacing)) {
     textStyle.setWordSpacing(wordSpacing.value());
   }
+  if(getTextDecoration(textDecoration)) {
+    TextDecorationMap::iterator it = textDecorationMap.find(textDecoration.c_str());
+    if(it != textDecorationMap.end()) {
+      textStyle.setDecoration(it->second);
+      //Note: Decoration color is same as the color of text. So it be applied from paint while render
+    }
+  }
+  auto weight=[&]() {
+    if(getFontWeight(fontWeight)) {
+      FontWeightMap::iterator it = fontWeightMap.find(fontWeight.c_str());
+      if(it != fontWeightMap.end()) {
+        return it->second;
+      }
+    }
+    return SkFontStyle::Weight::kNormal_Weight;
+  };
+  auto slant=[&]() {
+    if(getFontStyle(fontStyle)) {
+      FontSlantMap::iterator it = fontSlantMap.find(fontStyle.c_str());
+      if(it != fontSlantMap.end()) {
+        return it->second;
+      }
+    }
+    return SkFontStyle::Slant::kUpright_Slant;
+  };
+  auto width=[&]() {
+    if(getFontStretch(fontStretch)) {
+      FontWidthMap::iterator it = fontWidthMap.find(fontStretch.c_str());
+      if(it != fontWidthMap.end()) {
+        RNS_LOG_WARN(" Not every font family has the capability to support fontStretch");
+        return it->second;
+      }
+    }
+    return SkFontStyle::Width::kNormal_Width;
+  };
+  textStyle.setFontStyle(SkFontStyle(weight(), width(), slant()));
   return textStyle;
 }
 
-SkRect RSkSVGTextContainer::getContentFrame() const{
-  SkRect frame;
+SkPoint RSkSVGTextContainer::getContentDrawCoOrdinates() const{
+  bool findAttrY{true}; // There is a possibility attrY found as part search for attrX
   SkScalar positionX{0},positionY{0},deltaX{0},deltaY{0};
-  std::vector<SkScalar> v;
-#ifdef ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT
-  if(findDeltaX(v)) {
-    deltaX =v[0];
+  std::vector<SkScalar> attrVec;
+  //Get Position X
+  if(getPositionX(attrVec)) {
+    positionX =attrVec[0];
+    if(attrVec.size() == 2) {
+      positionY =attrVec[1];
+      findAttrY=false;
+    }
   }
-  if(findDeltaY(v)) {
-    deltaY =v[0];
+  //Get Position Y
+  if(PositionYHasValue()) {
+    positionY =getPositionY().value();
+  } else if(findAttrY && getPositionY(attrVec)) {
+    positionY =attrVec[attrVec.size()-1 ];
   }
-#endif /*ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT*/
-  if(findPositionX(v)) {
-    positionX =v[0] + deltaX;
+  // get dx & dy
+  if(getDeltaX(deltaX)) {
+    positionX += deltaX;
   }
-  if(findPositionY(v)) {
-    positionY =v[v.size()-1 ] + deltaY;
+  if(getDeltaY(deltaY)) {
+    positionY += deltaY;
   }
-  frame.setXYWH(positionX,positionY,contentBounds_.width(),contentBounds_.height());
-  return frame;
+  RNS_LOG_DEBUG(" positionX :[ "<<positionX <<
+                " ] positionY :[ "<<positionY <<
+                " ]");
+
+  return {positionX,positionY};
 }
 
 void RSkSVGTextContainer::updateContainerContentBounds(SkRect frame) const{
+  containerContentBounds_.push_back(frame);//Add to it's own container bound list
+  // Add to it's parent container bound list
   auto node=static_cast<RSkSVGTextContainer *>(textParentNode_);
   if(node) {
-    node->contentBounds_.join(frame);
-    contentBounds_=node->contentBounds_;
-    node->updateContainerContentBounds(contentBounds_);
+    node->updateContainerContentBounds(frame);
   }
 }
 
@@ -149,13 +210,32 @@ void RSkSVGTextContainer::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& 
       }
       break;
     case SkSVGAttribute::kFontFamily:
-      if (const auto* font_family = attrValue.as<SkSVGStringValue>()) {
-        setFontFamily(*font_family);
+      if (const auto* fontFamily = attrValue.as<SkSVGStringValue>()) {
+        setFontFamily(*fontFamily);
       }
       break;
     case SkSVGAttribute::kFontSize:
-      if (const auto* font_size = attrValue.as<SkSVGLengthValue>()) {
-        setFontSize(*font_size);
+      if (const auto* fontSize = attrValue.as<SkSVGLengthValue>()) {
+        setFontSize(*fontSize);
+      }
+      break;
+    case SkSVGAttribute::kFontWeight:
+      if (const auto* fontWeight = attrValue.as<SkSVGStringValue>()) {
+        if (strcmp((*fontWeight)->c_str(), "inherit") != 0){
+          setFontWeight(*fontWeight);
+        }
+      }
+      break;
+    case SkSVGAttribute::kFontStyle:
+      if (const auto* fontStyle = attrValue.as<SkSVGStringValue>()) {
+        if (strcmp((*fontStyle)->c_str(), "inherit") != 0){
+          setFontStyle(*fontStyle);
+        }
+      }
+      break;
+    case SkSVGAttribute::kTextAnchor:
+      if (const auto* textAnchor = attrValue.as<SkSVGStringValue>()) {
+        setTextAnchor(*textAnchor);
       }
       break;
     default:
@@ -165,7 +245,6 @@ void RSkSVGTextContainer::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& 
 
 void RSkSVGTextContainer::onSetRSkSVGAttribute(RSkSVGAttribute attr, const SkSVGValue& attrValue) {
   switch (attr) {
-#ifdef ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT
     case RSkSVGAttribute::kDX:
       if (const auto* dx = attrValue.as<SkSVGLengthValue>()) {
         setDeltaX(*dx);
@@ -176,15 +255,24 @@ void RSkSVGTextContainer::onSetRSkSVGAttribute(RSkSVGAttribute attr, const SkSVG
         setDeltaY(*dy);
       }
       break;
-#endif/*ENABLE_EXPERIMENTAL_DELTA_ATTRIBUTE_SUPPORT*/
     case RSkSVGAttribute::kLetterSpacing:
-      if (const auto*letter_spacing = attrValue.as<SkSVGLengthValue>()) {
-        setLetterSpacing(*letter_spacing);
+      if (const auto*letterSpacing = attrValue.as<SkSVGLengthValue>()) {
+        setLetterSpacing(*letterSpacing);
       }
       break;
     case RSkSVGAttribute::kWordSpacing:
-      if (const auto* word_spacing = attrValue.as<SkSVGLengthValue>()) {
-        setWordSpacing(*word_spacing);
+      if (const auto* wordSpacing = attrValue.as<SkSVGLengthValue>()) {
+        setWordSpacing(*wordSpacing);
+      }
+      break;
+    case RSkSVGAttribute::kFontStretch:
+      if (const auto* fontStretch = attrValue.as<SkSVGStringValue>()) {
+        setFontStretch(*fontStretch);
+      }
+      break;
+    case RSkSVGAttribute::kTextDecoration:
+      if (const auto* textDecoration = attrValue.as<SkSVGStringValue>()) {
+        setTextDecoration(*textDecoration);
       }
       break;
     default:

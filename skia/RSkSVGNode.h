@@ -18,7 +18,6 @@
 #include "include/utils/SkParsePath.h"
 
 #include "react/renderer/components/rnsvg/RNSVGProps.h"
-
 namespace facebook {
 namespace react {
 
@@ -28,7 +27,9 @@ enum RSkSVGAttribute {
   kDX =RSkSVGAttrStart,// DeltaX
   kDY, //DeltaY
   kLetterSpacing,
-  kWordSpacing
+  kWordSpacing,
+  kFontStretch,
+  kTextDecoration
 };
 
 enum RNSVGColorStruct {

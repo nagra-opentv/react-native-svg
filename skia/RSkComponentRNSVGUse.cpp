@@ -21,11 +21,13 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGUse::updateComponentProps(Shared
   RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
 
 #ifdef ENABLE_NATIVE_PROPS_DEBUG
-  RNS_LOG_INFO(" X  : "<<newRNSVGUseProps.x <<
-               " Y  : "<<newRNSVGUseProps.y <<
-               " Href : "<<newRNSVGUseProps.href.c_str()<<
-               " Width : "<<newRNSVGUseProps.width<<
-               " Height : "<<newRNSVGUseProps.height);
+  RNS_LOG_INFO("\n" <<
+               "===Native Props for SVG Element Use==="<< "\n" <<
+               " Y      : "<<newRNSVGUseProps.y << "\n" <<
+               " Href   : "<<newRNSVGUseProps.href.c_str() << "\n" <<
+               " Width  : "<<newRNSVGUseProps.width << "\n" <<
+               " Height : "<<newRNSVGUseProps.height << "\n" <<
+               "======================================");
 #endif/*ENABLE_NATIVE_PROPS_DEBUG*/
 
   setLengthAttribute(SkSVGAttribute::kX,newRNSVGUseProps.x);

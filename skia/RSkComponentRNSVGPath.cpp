@@ -17,7 +17,10 @@ RnsShell::LayerInvalidateMask RSkComponentRNSVGPath::updateComponentProps(Shared
 
   auto const &newRNSVGPathProps = *std::static_pointer_cast<RNSVGPathProps const>(newViewProps);
   #ifdef ENABLE_NATIVE_PROPS_DEBUG
-  RNS_LOG_INFO(" Path String : "<<newRNSVGPathProps.d.c_str());
+  RNS_LOG_INFO("\n" <<
+               "===Native Props for SVG Element Path==="<< "\n" <<
+               "Path String : "<<newRNSVGPathProps.d.c_str() << "\n" <<
+               "=======================================");
   #endif/*ENABLE_NATIVE_PROPS_DEBUG*/
   setPathDataAttribute(SkSVGAttribute::kD,newRNSVGPathProps.d.c_str());// Native Prop
 
