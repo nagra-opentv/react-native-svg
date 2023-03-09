@@ -29,11 +29,13 @@ void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
   }
 
   SkMatrix matrix=ctx.canvas()->getTotalMatrix();
-  RNS_LOG_DEBUG(" getScaleX "<<matrix.getScaleX() <<
-                " getScaleY "<<matrix.getScaleY()<<
-                " getTranslateX "<<matrix.getTranslateX()<<
-                " getSkewX "<<matrix.getSkewX()<<
-                " getSkewY "<<matrix.getSkewY());
+  RNS_LOG_DEBUG("\n"<<
+                " getScaleX      : "<<matrix.getScaleX() << "\n" <<
+                " getScaleY      : "<<matrix.getScaleY()<<  "\n" <<
+                " getTranslateX  : "<<matrix.getTranslateX()<<  "\n" <<
+                " getTranslateY  : "<<matrix.getTranslateY()<<  "\n" <<
+                " getSkewX       : "<<matrix.getSkewX()<<  "\n" <<
+                " getSkewY       : "<<matrix.getSkewY());
 }
 
 } // namespace react
