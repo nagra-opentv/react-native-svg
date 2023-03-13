@@ -44,8 +44,9 @@ class RSkSVGNode : public SkSVGTransformableNode {
 
  public:
 
-  ~RSkSVGNode() override {};
-  std::string nodeName;
+  ~RSkSVGNode() {}
+
+  std::string svgNodeId;
 
   virtual void setRoot(RSkSVGNode * rootNode);
   virtual SkSize getContainerSize()const;

@@ -16,7 +16,7 @@ class RSkComponentRNSVGText : public RSkSVGTextContainer{
  public:
 
   RSkComponentRNSVGText(const ShadowView &shadowView);
-  ~RSkComponentRNSVGText() override {};
+  ~RSkComponentRNSVGText() {}
 
  // Override for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;

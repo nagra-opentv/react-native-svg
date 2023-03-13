@@ -16,7 +16,7 @@ class RSkComponentRNSVGEllipse final : public RSkSVGShape{
  public:
 
   RSkComponentRNSVGEllipse(const ShadowView &shadowView);
-  ~RSkComponentRNSVGEllipse() override {};
+  ~RSkComponentRNSVGEllipse() {}
 
   // Overrides for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;

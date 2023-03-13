@@ -17,7 +17,7 @@ class RSkComponentRNSVGDefs: public RSkSVGHiddenContainer {
   RSkComponentRNSVGDefs(const ShadowView &shadowView) :
           RSkSVGHiddenContainer(shadowView,LAYER_TYPE_VIRTUAL,SkSVGTag::kDefs) {}
 
-  ~RSkComponentRNSVGDefs() override {};
+  ~RSkComponentRNSVGDefs() {}
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override {return RnsShell::LayerInvalidateNone;}
 
  protected:

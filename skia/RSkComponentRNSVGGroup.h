@@ -17,7 +17,7 @@ class RSkComponentRNSVGGroup final : public RSkSVGContainer{
  public:
 
   RSkComponentRNSVGGroup(const ShadowView &shadowView);
-  ~RSkComponentRNSVGGroup() override {};
+  ~RSkComponentRNSVGGroup() {}
 
  // Override for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;

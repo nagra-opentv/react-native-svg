@@ -13,25 +13,16 @@
 namespace facebook {
 namespace react {
 
-template<typename T>
-  RSkSVGNode* getRSKSVGNode(std::shared_ptr<RSkComponent> component) {
-    if(component) {
-      return static_cast<T *>(component.get());
-    } else {
-      return nullptr;
-    }
-}
-
 class RSkSVGContainer : public RSkSVGComponentNode {
  public:
 
-  ~RSkSVGContainer() override;
+  ~RSkSVGContainer();
 
   //Overrides from Base Class :RSkComponent
   void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override;
   void unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index)override;
 
-  RSkSVGNode* getRSKSvgNodeFromComponent(std::shared_ptr<RSkComponent> component);
+  RSkSVGIDMapper    rskNodeIDMapper;
 
  protected:
 
@@ -51,8 +42,7 @@ class RSkSVGContainer : public RSkSVGComponentNode {
   void printChildList();
 #endif //ENABLE_SVG_CHILD_HIERARCHY_DEBUG
 
-  SkSVGIDMapper    nodeIDMapper_;
-  std::vector<sk_sp<SkSVGNode>> childRSkNodeList_;
+  std::vector<RSkSVGNode *> childRSkNodeList_;
 
  private:
 

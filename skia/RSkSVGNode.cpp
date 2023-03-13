@@ -96,7 +96,7 @@ void RSkSVGNode::setCommonRenderableProps(const RNSVGCommonRenderableProps  &ren
 
 void RSkSVGNode::setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps){
 
-  nodeName=nodeProps.name.c_str();
+  svgNodeId=nodeProps.name;
   //set Opacity
   setNumberAttribute(SkSVGAttribute::kOpacity,std::to_string(nodeProps.opacity).c_str());
   //set Transform

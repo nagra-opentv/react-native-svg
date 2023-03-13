@@ -58,7 +58,8 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
 
   //3. Start render from Root SVG Node
   RNS_LOG_DEBUG("---Start render from Root SVG Node---");
-  INHERITED::render(SkSVGRenderContext(canvas, nodeIDMapper_, lctx, pctx));
+  SkSVGIDMapper    dummyIDMapper; // Deprecated, will be using RSkSVGIDMapper
+  INHERITED::render(SkSVGRenderContext(canvas, dummyIDMapper, lctx, pctx));
 
 }
 
@@ -169,7 +170,7 @@ inline void RSkComponentRNSVGSvgView::alterSkiaDefaultPaint() {
   for (auto item:childRSkNodeList_) {
     RNS_LOG_DEBUG(" Child Tag : "<<(int)item->tag());
     if(item->tag() == SkSVGTag::kG) {
-      auto componentNode=dynamic_cast<RSkComponentRNSVGGroup *>(item.get());
+      auto componentNode=dynamic_cast<RSkComponentRNSVGGroup *>(item);
       if(componentNode) {
         auto const &newRNSVGGroupPropsProps = *std::static_pointer_cast<RNSVGGroupProps const>(componentNode->getComponentData().props);
         // Reset Stroke & Fill Color if not specifed to transparent

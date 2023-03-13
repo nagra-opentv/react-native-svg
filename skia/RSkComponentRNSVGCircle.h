@@ -16,7 +16,7 @@ class RSkComponentRNSVGCircle final : public RSkSVGShape{
  public:
 
   RSkComponentRNSVGCircle(const ShadowView &shadowView);
-  ~RSkComponentRNSVGCircle() override {};
+  ~RSkComponentRNSVGCircle() {}
 
   // Override for Base Class: RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
