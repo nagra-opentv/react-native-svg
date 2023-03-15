@@ -34,13 +34,13 @@ void RSkSVGContainer::mountChildComponent(
     RNS_LOG_ERROR("Invalid child component received");
     return;
   }
-  /*
+/*
                       RSkComponent
                      /
   RSkSVGComponentNode
                      \
                       RSkSVGNode
-  */
+*/
 // Type convert from base class RSkComponent to base class RSkSVGNode
   RSkSVGNode* rskSvgNode=dynamic_cast<RSkSVGComponentNode *>(childComponent.get());
   if(rskSvgNode) {
@@ -60,16 +60,15 @@ void RSkSVGContainer::mountChildComponent(
       nodeContainer->rskNodeIDMapper.reset();
     }
 
+    // Insert child RSkSVGNode in to List
+    childRSkNodeList_.insert(std::make_pair(index, rskSvgNode));
+
     //If this parent is SVGView , set itself as Root
     if(this->tag() == SkSVGTag::kSvg) {
+      rootNode_=this;
       rskSvgNode->setRoot(this);
     }
   }
-
-  // Insert child RSkSVGNode in to List
-  size_t indexAt = std::min((size_t)index, childRSkNodeList_.size());
-  RNS_LOG_MODE_FOR_CONTAINER("Insert Child at index : " << indexAt );
-  childRSkNodeList_.insert(childRSkNodeList_.begin() + indexAt, rskSvgNode);
 
   RNS_LOG_MODE_FOR_CONTAINER("RSK SVG Def Map Size for component : "<< this->getComponentData().componentName << " : "<<rskNodeIDMapper.count());
   RNS_LOG_MODE_FOR_CONTAINER("RSK SVG container Size for the Parent : "<<childRSkNodeList_.size());
@@ -82,24 +81,22 @@ void RSkSVGContainer::unmountChildComponent(
                     "recieved unmount for child :" << oldChildComponent->getComponentData().componentName<<
                     "@ index : "<<index);
 
-  if(index >= childRSkNodeList_.size()) {
-    RNS_LOG_ERROR("Invalid index passed for unmountChildComponent : "<<index);
-    return;
-  }
-  if(childRSkNodeList_[index] == nullptr) {
-    RNS_LOG_ERROR("Unmount Called for UnSupported SVG Element : "<<oldChildComponent->getComponentData().componentName);
+  auto it = childRSkNodeList_.find(index);
+
+  if(it == childRSkNodeList_.end()) {
+    RNS_LOG_ERROR("Received unmount request for not supported svg Elements or may be invalid index passed : "<<index);
     return;
   }
 
   // If the respective node has entry In Def ID Mapper , remove it
-  auto node=childRSkNodeList_[index];
-  if(node && (!node->svgNodeId.empty())) {
+  auto rskSvgnode=it->second;
+  if(rskSvgnode && (!rskSvgnode->svgNodeId.empty())) {
     auto rootNode=dynamic_cast<RSkSVGContainer *>(rootNode_);
     if(rootNode) {
-     rootNode->rskNodeIDMapper.remove(SkString(node->svgNodeId));
+      rootNode->rskNodeIDMapper.remove(SkString(rskSvgnode->svgNodeId));
     }
   }
-  childRSkNodeList_.erase(childRSkNodeList_.begin() + index);
+  childRSkNodeList_.erase(index);
 }
 
 void RSkSVGContainer::OnPaint(SkCanvas *canvas) {
@@ -111,44 +108,27 @@ bool RSkSVGContainer::hasChildren() const {
 }
 
 void RSkSVGContainer::onRender(const SkSVGRenderContext& ctx) const {
-  for (int i = 0; i < childRSkNodeList_.size(); ++i) {
-    if(childRSkNodeList_[i] != nullptr) {
-      RNS_LOG_MODE_FOR_CONTAINER(" Child Tag : "<<(int)childRSkNodeList_[i]->tag());
-      childRSkNodeList_[i]->render(ctx);
-    }
+  for (auto &item : childRSkNodeList_) {
+    RNS_LOG_MODE_FOR_CONTAINER(" Child Tag : "<<(int)item.second->tag());
+    item.second->render(ctx);
   }
 }
 
 void RSkSVGContainer::setRoot(RSkSVGNode * rootNode) {
-
-  if(!rootNode) return;
-
-  if(rootNode && (rootNode->tag() == SkSVGTag::kSvg)) {
-    rootNode_=rootNode;
-    RNS_LOG_MODE_FOR_CONTAINER("setRoot for child :"<<(int)tag());
-  }
-
-  for (int i = 0; i < childRSkNodeList_.size(); ++i) {
-    if(childRSkNodeList_[i] != nullptr) {
-      RNS_LOG_MODE_FOR_CONTAINER(" setRoot for Child  with Tag : "<<(int)childRSkNodeList_[i]->tag());
-      auto node=childRSkNodeList_[i];
-      if(node) {
-       node->setRoot(rootNode);
-      }
-    }
+  rootNode_=rootNode;
+  for (auto &item : childRSkNodeList_) {
+    item.second->setRoot(rootNode);
   }
 }
 
 #ifdef ENABLE_SVG_CHILD_HIERARCHY_DEBUG
 void RSkSVGContainer::printChildList() {
-  for (int i = 0; i < childRSkNodeList_.size(); ++i) {
-    if(childRSkNodeList_[i] != nullptr) {
-      RNS_LOG_INFO(" Child Node Tag : "<<(int)childRSkNodeList_[i]->tag());
-      auto node=dynamic_cast<RSkSVGContainer *>(childRSkNodeList_[i]);
-      if(node) {
-        RNS_LOG_INFO("Child Node is a container");
-        node->printChildList();
-       }
+  for (auto &item : childRSkNodeList_) {
+    RNS_LOG_INFO(" Child Node Tag : "<<(int)item.second->tag());
+    auto node=dynamic_cast<RSkSVGContainer *>(item.second);
+    if(node) {
+      RNS_LOG_INFO("Child Node is a container");
+      node->printChildList();
     }
   }
 }

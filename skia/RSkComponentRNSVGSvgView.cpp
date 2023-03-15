@@ -113,8 +113,8 @@ bool RSkComponentRNSVGSvgView::onPrepareToRender(SkSVGRenderContext* ctx) const 
     contentMatrix.preConcat(
       SkMatrix::MakeRectToRect(viewBox_, viewPortRect, SkMatrix::kFill_ScaleToFit));
   }
-  contentMatrix.postConcat(SkMatrix::Translate(ctx->lengthContext().resolve(x_, SkSVGLengthContext::LengthType::kHorizontal),
-                                               ctx->lengthContext().resolve(y_, SkSVGLengthContext::LengthType::kVertical)));
+  contentMatrix.postTranslate(ctx->lengthContext().resolve(x_, SkSVGLengthContext::LengthType::kHorizontal),
+                              ctx->lengthContext().resolve(y_, SkSVGLengthContext::LengthType::kVertical));
 
   if (!contentMatrix.isIdentity()) {
     ctx->saveOnce();
@@ -167,10 +167,10 @@ inline void RSkComponentRNSVGSvgView::alterSkiaDefaultPaint() {
 //      children to inherit undefined value from it's parent. And for the same reason it's been
 //      done once all the child elements are inserted to the SVGView.
 
-  for (auto item:childRSkNodeList_) {
-    RNS_LOG_DEBUG(" Child Tag : "<<(int)item->tag());
-    if(item->tag() == SkSVGTag::kG) {
-      auto componentNode=dynamic_cast<RSkComponentRNSVGGroup *>(item);
+  for (auto &item:childRSkNodeList_) {
+    RNS_LOG_DEBUG(" Child Tag : "<<(int)item.second->tag());
+    if(item.second->tag() == SkSVGTag::kG) {
+      auto componentNode=dynamic_cast<RSkComponentRNSVGGroup *>(item.second);
       if(componentNode) {
         auto const &newRNSVGGroupPropsProps = *std::static_pointer_cast<RNSVGGroupProps const>(componentNode->getComponentData().props);
         // Reset Stroke & Fill Color if not specifed to transparent

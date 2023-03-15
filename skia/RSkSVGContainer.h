@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include <vector>
+#include <map>
 
 #include "RSkSVGComponentNode.h"
 
@@ -42,7 +42,7 @@ class RSkSVGContainer : public RSkSVGComponentNode {
   void printChildList();
 #endif //ENABLE_SVG_CHILD_HIERARCHY_DEBUG
 
-  std::vector<RSkSVGNode *> childRSkNodeList_;
+  std::map<int,RSkSVGNode *> childRSkNodeList_;
 
  private:
 

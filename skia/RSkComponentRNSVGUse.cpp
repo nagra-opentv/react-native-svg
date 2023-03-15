@@ -85,11 +85,12 @@ void RSkComponentRNSVGUse::onRender(const SkSVGRenderContext& ctx) const {
     auto rootSvgContainerNode=static_cast<RSkComponentRNSVGSvgView *>(rootNode_);
     if(rootSvgContainerNode) {
        RSkSVGNode**  nodeRef = rootSvgContainerNode->rskNodeIDMapper.find(href_);
-      if (!nodeRef && !(*nodeRef)) {
-        RNS_LOG_ERROR(" !!! Id not Found !!!!");
+      if (nodeRef && (*nodeRef)) {
+        (*nodeRef)->render(ctx);
+      } else {
+        RNS_LOG_ERROR(" The specified Href for the component is not available : "<<href_.c_str());
         return;
       }
-      (*nodeRef)->render(ctx);
     }
   }
 }
