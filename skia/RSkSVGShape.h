@@ -15,7 +15,7 @@ namespace react {
 class RSkSVGShape : public RSkSVGComponentNode {
  public:
 
-  ~RSkSVGShape() override { };
+  ~RSkSVGShape() {}
 
  protected:
 

@@ -15,13 +15,16 @@
 
 using namespace std;
 
+using RSkSVGIDMapper = SkTHashMap<SkString, RSkSVGNode*>;
+
 namespace facebook {
 namespace react {
 
 class RSkSVGComponentNode : public RSkComponent,public RSkSVGNode {
+
  public:
 
-  ~RSkSVGComponentNode() override {};
+  ~RSkSVGComponentNode() {}
 
   // Overrides for Base Class: RSkComponent
   void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override {};

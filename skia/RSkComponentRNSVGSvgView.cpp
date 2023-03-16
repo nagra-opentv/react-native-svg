@@ -18,7 +18,7 @@ RSkComponentRNSVGSvgView::RSkComponentRNSVGSvgView(const ShadowView &shadowView)
     : INHERITED(shadowView,LAYER_TYPE_PICTURE,SkSVGTag::kSvg) {}
 
 void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
-  SkSVGLengthContext       lctx(SkSize::Make(0, 0));
+  SkSVGLengthContext       lctx(SkSize::Make(svgContainerSize_.width(), svgContainerSize_.height()));
   SkSVGPresentationContext pctx;
 
 #ifdef ENABLE_SVG_CHILD_HIERARCHY_DEBUG
@@ -52,13 +52,14 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
   }
   drawBackground(canvas,frame,borderMetrics,viewProps.backgroundColor);
   drawBorder(canvas,frame,borderMetrics,viewProps.backgroundColor);
-  RNS_LOG_DEBUG("---Start render from Root SVG Node---");
 
   // Fix: Altering Skia's defult paint behaviour to match with reference platform.
   alterSkiaDefaultPaint();
 
   //3. Start render from Root SVG Node
-  INHERITED::render(SkSVGRenderContext(canvas, nodeIDMapper_, lctx, pctx));
+  RNS_LOG_DEBUG("---Start render from Root SVG Node---");
+  SkSVGIDMapper    dummyIDMapper; // Deprecated, will be using RSkSVGIDMapper
+  INHERITED::render(SkSVGRenderContext(canvas, dummyIDMapper, lctx, pctx));
 
 }
 
@@ -102,9 +103,9 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(Sh
 }
 
 bool RSkComponentRNSVGSvgView::onPrepareToRender(SkSVGRenderContext* ctx) const {
-  auto viewPortRect  = ctx->lengthContext().resolveRect(x_,y_,width_,height_); 
-  auto contentMatrix = SkMatrix::Translate(viewPortRect.x(), viewPortRect.y());
+  auto viewPortRect  = ctx->lengthContext().resolveRect(SkSVGLength(0),SkSVGLength(0),width_,height_);
   auto viewPort      = SkSize::Make(viewPortRect.width(), viewPortRect.height());
+  SkMatrix contentMatrix;
 
   if (!viewBox_.isEmpty()) {
     // A viewBox overrides the intrinsic viewport.
@@ -112,6 +113,8 @@ bool RSkComponentRNSVGSvgView::onPrepareToRender(SkSVGRenderContext* ctx) const 
     contentMatrix.preConcat(
       SkMatrix::MakeRectToRect(viewBox_, viewPortRect, SkMatrix::kFill_ScaleToFit));
   }
+  contentMatrix.postTranslate(ctx->lengthContext().resolve(x_, SkSVGLengthContext::LengthType::kHorizontal),
+                              ctx->lengthContext().resolve(y_, SkSVGLengthContext::LengthType::kVertical));
 
   if (!contentMatrix.isIdentity()) {
     ctx->saveOnce();
@@ -164,10 +167,10 @@ inline void RSkComponentRNSVGSvgView::alterSkiaDefaultPaint() {
 //      children to inherit undefined value from it's parent. And for the same reason it's been
 //      done once all the child elements are inserted to the SVGView.
 
-  for (auto item:childRSkNodeList_) {
-    RNS_LOG_DEBUG(" Child Tag : "<<(int)item->tag());
-    if(item->tag() == SkSVGTag::kG) {
-      auto componentNode=dynamic_cast<RSkComponentRNSVGGroup *>(item.get());
+  for (auto &item:childRSkNodeList_) {
+    RNS_LOG_DEBUG(" Child Tag : "<<(int)item.second->tag());
+    if(item.second->tag() == SkSVGTag::kG) {
+      auto componentNode=dynamic_cast<RSkComponentRNSVGGroup *>(item.second);
       if(componentNode) {
         auto const &newRNSVGGroupPropsProps = *std::static_pointer_cast<RNSVGGroupProps const>(componentNode->getComponentData().props);
         // Reset Stroke & Fill Color if not specifed to transparent

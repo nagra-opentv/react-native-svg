@@ -15,7 +15,7 @@ class RSkComponentRNSVGUse: public RSkSVGComponentNode {
  public:
 
   RSkComponentRNSVGUse(const ShadowView &shadowView);
-  ~RSkComponentRNSVGUse() override {};
+  ~RSkComponentRNSVGUse() {}
 
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
 

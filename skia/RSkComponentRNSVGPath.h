@@ -16,7 +16,7 @@ class RSkComponentRNSVGPath final : public RSkSVGShape{
  public:
 
   RSkComponentRNSVGPath(const ShadowView &shadowView);
-  ~RSkComponentRNSVGPath() override {};
+  ~RSkComponentRNSVGPath() {}
 
   // Override for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;

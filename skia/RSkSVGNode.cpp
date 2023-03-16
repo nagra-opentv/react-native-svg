@@ -96,7 +96,7 @@ void RSkSVGNode::setCommonRenderableProps(const RNSVGCommonRenderableProps  &ren
 
 void RSkSVGNode::setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps){
 
-  nodeName=nodeProps.name.c_str();
+  svgNodeId=nodeProps.name;
   //set Opacity
   setNumberAttribute(SkSVGAttribute::kOpacity,std::to_string(nodeProps.opacity).c_str());
   //set Transform
@@ -339,11 +339,12 @@ bool RSkSVGNode::setDashArrayAttribute(SkSVGAttribute attr, const std::vector<st
 bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Float> matrix) {
 
   if(matrix.size() == 6) {
-    RNS_LOG_DEBUG(" Matrix 0 : "<<matrix[0] <<
-                  " Matrix 1 : "<<matrix[1] <<
-                  " Matrix 2 : "<<matrix[2] <<
-                  " Matrix 3 : "<<matrix[3] <<
-                  " Matrix 4 : "<<matrix[4] <<
+    RNS_LOG_DEBUG("\n"<<
+                  " Matrix 0 : "<<matrix[0] << "\n" <<
+                  " Matrix 1 : "<<matrix[1] << "\n" <<
+                  " Matrix 2 : "<<matrix[2] << "\n" <<
+                  " Matrix 3 : "<<matrix[3] << "\n" <<
+                  " Matrix 4 : "<<matrix[4] << "\n" <<
                   " Matrix 5 : "<<matrix[5]);
 
     SkMatrix svgTransforMatrix=SkMatrix::Translate(matrix[4],matrix[5]);
@@ -357,8 +358,6 @@ bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Flo
 
 void RSkSVGNode::setRoot(RSkSVGNode * rootNode) {
 
-  if(!rootNode) return;
-
   if(rootNode && (rootNode->tag() == SkSVGTag::kSvg)) {
     rootNode_=rootNode;
     RNS_LOG_DEBUG("setRoot get for child with tag:"<<(int)tag());
@@ -366,7 +365,7 @@ void RSkSVGNode::setRoot(RSkSVGNode * rootNode) {
 }
 
 SkSize RSkSVGNode::getContainerSize() const {
-  if(rootNode_->tag() == SkSVGTag::kSvg) {
+  if( rootNode_ && (rootNode_->tag() == SkSVGTag::kSvg)) {
     auto node=dynamic_cast<RSkComponentRNSVGSvgView *>(rootNode_);
     if(node) {
       return node->getContainerSize();

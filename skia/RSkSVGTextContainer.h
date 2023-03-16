@@ -22,7 +22,7 @@ namespace react {
 class RSkSVGTextContainer : public RSkSVGContainer {
  public:
 
-  ~RSkSVGTextContainer() override{};
+  ~RSkSVGTextContainer() {}
   void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override;
   void updateCommonTextProps(SharedProps newViewProps);
 

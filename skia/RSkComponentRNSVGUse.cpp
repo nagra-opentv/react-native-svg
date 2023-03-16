@@ -6,6 +6,7 @@
  */
 
 #include "RSkComponentRNSVGUse.h"
+#include "RSkComponentRNSVGSvgView.h"
 
 namespace facebook {
 namespace react {
@@ -80,13 +81,18 @@ bool RSkComponentRNSVGUse::onPrepareToRender(SkSVGRenderContext* ctx) const {
 }
 
 void RSkComponentRNSVGUse::onRender(const SkSVGRenderContext& ctx) const {
-
-  const auto ref = ctx.findNodeById(href_);
-  if (!ref) {
-    RNS_LOG_ERROR(" !!! Id not Found !!!!");
-    return;
+  if(rootNode_) {
+    auto rootSvgContainerNode=static_cast<RSkComponentRNSVGSvgView *>(rootNode_);
+    if(rootSvgContainerNode) {
+       RSkSVGNode**  nodeRef = rootSvgContainerNode->rskNodeIDMapper.find(href_);
+      if (nodeRef && (*nodeRef)) {
+        (*nodeRef)->render(ctx);
+      } else {
+        RNS_LOG_ERROR(" The specified Href for the component is not available : "<<href_.c_str());
+        return;
+      }
+    }
   }
-  ref->render(ctx);
 }
 
 } // namespace react
