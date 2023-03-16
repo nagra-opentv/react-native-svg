@@ -346,11 +346,16 @@ bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Flo
                   " Matrix 3 : "<<matrix[3] << "\n" <<
                   " Matrix 4 : "<<matrix[4] << "\n" <<
                   " Matrix 5 : "<<matrix[5]);
+    SkMatrix svgTransforMatrix;
+    // Converting received Matrix from React Native framework which is in column major Order to row Major Order for SKia
+    svgTransforMatrix[SkMatrix::kMScaleX] = matrix[0];  //horizontal scale factor
+    svgTransforMatrix[SkMatrix::kMSkewY]  = matrix[1];  // vertical skew factor
+    svgTransforMatrix[SkMatrix::kMSkewX]  = matrix[2];  //horizontal skew factor
+    svgTransforMatrix[SkMatrix::kMScaleY] = matrix[3];  //vertical scale factor
+    svgTransforMatrix[SkMatrix::kMTransX] = matrix[4];  //horizontal translation
+    svgTransforMatrix[SkMatrix::kMTransY] = matrix[5];  // vertical translation
 
-    SkMatrix svgTransforMatrix=SkMatrix::Translate(matrix[4],matrix[5]);
-    svgTransforMatrix.preConcat(SkMatrix::Scale(matrix[0],matrix[3]));
     setAttribute(attr,SkSVGTransformValue(svgTransforMatrix));
-
     return true;
   }
   return false;
