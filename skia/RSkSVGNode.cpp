@@ -7,12 +7,12 @@
 
 #include <unordered_map>
 
-#include "ReactSkia/components/RSkComponent.h"
 #include "ReactSkia/utils/RnsLog.h"
-#include "ReactSkia/views/common/RSkConversion.h"
 #include "RSkComponentRNSVGSvgView.h"
+#include "RSkSVGComponentNode.h"
 #include "RSkSVGContainer.h"
-#include "RSkSVGNode.h"
+
+#define ENABLE_NATIVE_PROPS_DEBUG
 
 namespace facebook {
 namespace react {
@@ -21,15 +21,16 @@ RSkSVGNode::RSkSVGNode(SkSVGTag tag) : INHERITED(tag) {};
 
 void RSkSVGNode::setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps) {
 
-#ifdef ENABLE_RNSVG_COMMON_RENDERABLE_PROPS_DEBUG
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
   RNS_LOG_INFO("========== Common Renderable Props ==========");
+  RSkComponent* componetNode=dynamic_cast<RSkSVGComponentNode *>(this);
   RNS_LOG_INFO("Supported Properties count  :" << renderableProps.propList.size() <<
-               " : for SVG TAG: "<< (int)tag());
+               " : for component: "<< componetNode->getComponentData().componentName);
   for (auto props : renderableProps.propList ) {
     RNS_LOG_INFO(props);
   }
   RNS_LOG_INFO("=============================================");
-#endif /*ENABLE_RNSVG_COMMON_RENDERABLE_PROPS_DEBUG*/
+#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
 
   #define APPLY_FILL_COLOUR         [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
                                       {node->setColorFromColorStruct((renderableProps).fill,SkSVGAttribute::kFill);}
@@ -124,7 +125,7 @@ void RSkSVGNode::setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProp
   RNS_SVG_SET_TEXT_FONT_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kTextDecoration),commonGroupProps.font.textDecoration)
   RNS_SVG_SET_TEXT_FONT_ATTR(SkSVGAttribute::kTextAnchor,commonGroupProps.font.textAnchor)
 
-  #ifdef ENABLE_RNSVG_COMMON_RENDERABLE_PROPS_DEBUG
+  #ifdef ENABLE_NATIVE_PROPS_DEBUG
     RNS_LOG_INFO("\n" <<
                  "=== Common Text Props ==="<< "\n" <<
                  "FontSize     : "<<commonGroupProps.font.fontSize << "\n" <<
@@ -136,10 +137,17 @@ void RSkSVGNode::setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProp
                  "LetterSpacing: "<<commonGroupProps.font.letterSpacing << "\n" <<
                  "WordSpacing  : "<<commonGroupProps.font.wordSpacing<< "\n" <<
                  "========================");
-  #endif /*ENABLE_RNSVG_COMMON_RENDERABLE_PROPS_DEBUG*/
+  #endif /*ENABLE_NATIVE_PROPS_DEBUG*/
 }
 
 void RSkSVGNode::setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr){
+
+  #ifdef ENABLE_NATIVE_PROPS_DEBUG
+  RNS_LOG_INFO(" Color for prop : "<< ((attr == SkSVGAttribute::kFill) ? "Fill" : "Stroke" ) << "\n" <<
+               " Color Type : "<<colorStruct.type <<
+               " SharedColor: "<<colorStruct.payload <<
+               " Brush Ref : "<<colorStruct.brushRef);
+  #endif/*ENABLE_NATIVE_PROPS_DEBUG*/
 
   if(colorStruct.type == RNSVGColorStruct::SOLID)  {
     if(colorStruct.payload) {
@@ -152,12 +160,12 @@ void RSkSVGNode::setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVG
     }
  } else if(colorStruct.type ==  RNSVGColorStruct::CURRENT_COLOR) {
    setPaintAttribute(attr,"currentColor");
+ } else if(colorStruct.type == RNSVGColorStruct::BRUSH_REF) {
+    (attr == SkSVGAttribute::kFill) ? (fillBrushRef=colorStruct.brushRef) : (strokeBrushRef=colorStruct.brushRef);
  } else if(colorStruct.type == RNSVGColorStruct::CONTEXT_FILL) {
    RNS_LOG_TODO(" Support for color : context-fill , color struct type : " <<colorStruct.type);
- }else if(colorStruct.type == RNSVGColorStruct::CONTEXT_STROKE) {
+ } else if(colorStruct.type == RNSVGColorStruct::CONTEXT_STROKE) {
    RNS_LOG_TODO(" Support for color : context-stroke , color struct type : " <<colorStruct.type);
- }else if(colorStruct.type == RNSVGColorStruct::BRUSH_REF) {
-   RNS_LOG_TODO(" Support for color as brush Ref , color struct type : " <<colorStruct.type);
  }
 }
 
@@ -339,13 +347,17 @@ bool RSkSVGNode::setDashArrayAttribute(SkSVGAttribute attr, const std::vector<st
 bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Float> matrix) {
 
   if(matrix.size() == 6) {
-    RNS_LOG_DEBUG("\n"<<
+
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
+    RNS_LOG_INFO("\n"<<
                   " Matrix 0 : "<<matrix[0] << "\n" <<
                   " Matrix 1 : "<<matrix[1] << "\n" <<
                   " Matrix 2 : "<<matrix[2] << "\n" <<
                   " Matrix 3 : "<<matrix[3] << "\n" <<
                   " Matrix 4 : "<<matrix[4] << "\n" <<
                   " Matrix 5 : "<<matrix[5]);
+#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
+
     SkMatrix svgTransforMatrix;
     // Converting received Matrix from React Native framework which is in column major Order to row Major Order for SKia
     svgTransforMatrix[SkMatrix::kMScaleX] = matrix[0];  //horizontal scale factor

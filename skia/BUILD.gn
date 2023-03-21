@@ -45,6 +45,8 @@ rn_cxx_component("Rnsvg") {
     "RSkComponentRNSVGGroup.h",
     "RSkComponentRNSVGLine.cpp",
     "RSkComponentRNSVGLine.h",
+    "RSkComponentRNSVGLinearGradient.cpp",
+    "RSkComponentRNSVGLinearGradient.h",
     "RSkComponentRNSVGPath.cpp",
     "RSkComponentRNSVGPath.h",
     "RSkComponentRNSVGRect.cpp",

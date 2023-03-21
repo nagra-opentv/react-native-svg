@@ -17,7 +17,10 @@
 #include "include/core/SkColor.h"
 #include "include/utils/SkParsePath.h"
 
+#include "ReactSkia/views/common/RSkConversion.h"
+
 #include "react/renderer/components/rnsvg/RNSVGProps.h"
+
 namespace facebook {
 namespace react {
 
@@ -73,6 +76,8 @@ class RSkSVGNode : public SkSVGTransformableNode {
  protected:
 
   RSkSVGNode * rootNode_{nullptr};
+  std::string fillBrushRef;
+  std::string strokeBrushRef;
 
   explicit RSkSVGNode(SkSVGTag tag);
 

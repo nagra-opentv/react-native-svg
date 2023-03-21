@@ -27,30 +27,21 @@ void RSkSVGContainer::mountChildComponent(
     const int index) {
 
   RNS_LOG_MODE_FOR_CONTAINER("Parent :"<<getComponentData().componentName<<
-                    "recieved mount for child :" << childComponent->getComponentData().componentName<<
-                    "@ index : "<<index);
+                             "recieved mount for child :" << childComponent->getComponentData().componentName<<
+                             "@ index : "<<index);
 
   if(!childComponent || !childComponent.get()) {
-    RNS_LOG_ERROR("Invalid child component received");
+    RNS_LOG_ERROR("Invalid or not supported svg component received for mounting ");
     return;
   }
-/*
-                      RSkComponent
-                     /
-  RSkSVGComponentNode
-                     \
-                      RSkSVGNode
-*/
-// Type convert from base class RSkComponent to base class RSkSVGNode
+
   RSkSVGNode* rskSvgNode=dynamic_cast<RSkSVGComponentNode *>(childComponent.get());
   if(rskSvgNode) {
-    RNS_LOG_MODE_FOR_CONTAINER("Child Node type  : "<<(int)rskSvgNode->tag());
     if(!rskSvgNode->svgNodeId.empty()) {
-      RNS_LOG_MODE_FOR_CONTAINER("Child Node has ID : "<<rskSvgNode->svgNodeId);
       rskNodeIDMapper.set(SkString(rskSvgNode->svgNodeId),rskSvgNode);
     }
 
-    // If Child Node is of type of container , Merge it's defMap with it's Parent & drop it's own
+    // If the type of a Child Node is a container, then combine its defMap with that of its parent and discard its own.
     auto nodeContainer=dynamic_cast<RSkSVGContainer *>(rskSvgNode);
     if(nodeContainer) {
       auto mergeFn= [&](SkString keyName,RSkSVGNode** value){
@@ -60,26 +51,21 @@ void RSkSVGContainer::mountChildComponent(
       nodeContainer->rskNodeIDMapper.reset();
     }
 
-    // Insert child RSkSVGNode in to List
     childRSkNodeList_.insert(std::make_pair(index, rskSvgNode));
 
-    //If this parent is SVGView , set itself as Root
     if(this->tag() == SkSVGTag::kSvg) {
       rootNode_=this;
       rskSvgNode->setRoot(this);
     }
   }
-
-  RNS_LOG_MODE_FOR_CONTAINER("RSK SVG Def Map Size for component : "<< this->getComponentData().componentName << " : "<<rskNodeIDMapper.count());
-  RNS_LOG_MODE_FOR_CONTAINER("RSK SVG container Size for the Parent : "<<childRSkNodeList_.size());
 }
 
 void RSkSVGContainer::unmountChildComponent(
     std::shared_ptr<RSkComponent> oldChildComponent,
     const int index) {
   RNS_LOG_MODE_FOR_CONTAINER("Parent :"<<getComponentData().componentName<<
-                    "recieved unmount for child :" << oldChildComponent->getComponentData().componentName<<
-                    "@ index : "<<index);
+                             "recieved unmount for child :" << oldChildComponent->getComponentData().componentName<<
+                             "@ index : "<<index);
 
   auto it = childRSkNodeList_.find(index);
 
@@ -109,7 +95,8 @@ bool RSkSVGContainer::hasChildren() const {
 
 void RSkSVGContainer::onRender(const SkSVGRenderContext& ctx) const {
   for (auto &item : childRSkNodeList_) {
-    RNS_LOG_MODE_FOR_CONTAINER(" Child Tag : "<<(int)item.second->tag());
+    RSkComponent* componetNode=dynamic_cast<RSkSVGComponentNode *>(item.second);
+    RNS_LOG_INFO(" Rendering Child Element  : "<<componetNode->getComponentData().componentName);
     item.second->render(ctx);
   }
 }
@@ -124,11 +111,20 @@ void RSkSVGContainer::setRoot(RSkSVGNode * rootNode) {
 #ifdef ENABLE_SVG_CHILD_HIERARCHY_DEBUG
 void RSkSVGContainer::printChildList() {
   for (auto &item : childRSkNodeList_) {
-    RNS_LOG_INFO(" Child Node Tag : "<<(int)item.second->tag());
-    auto node=dynamic_cast<RSkSVGContainer *>(item.second);
-    if(node) {
-      RNS_LOG_INFO("Child Node is a container");
-      node->printChildList();
+    RSkComponent* componetNode=dynamic_cast<RSkSVGComponentNode *>(item.second);
+    if(componetNode) {
+      RNS_LOG_INFO(" Child Componet : "<<componetNode->getComponentData().componentName<<
+                   " @Index = "<<item.first);
+      auto node=dynamic_cast<RSkSVGContainer *>(item.second);
+      if(node) {
+        RNS_LOG_INFO(" Container Info For component : "<<item.second->getComponentData().componentName << "\n" <<
+                     "-------------------------------"<<"\n"<<
+                     " No of Def Elements   : "<<rskNodeIDMapper.count()<<"\n"<<
+                     " No of Brush Elements : "<<rskBrushIdMapper.count()<<"\n"<<
+                     " No of Child Element/s: "<<childRSkNodeList_.size()<<"\n"<<
+                     "-------------------------------");
+        node->printChildList();
+      }
     }
   }
 }

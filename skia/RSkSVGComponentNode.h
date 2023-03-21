@@ -33,8 +33,8 @@ class RSkSVGComponentNode : public RSkComponent,public RSkSVGNode {
  protected:
 
   explicit RSkSVGComponentNode(const ShadowView &shadowView,
-                                        RnsShell::LayerType layerType,
-                                        SkSVGTag tag)
+                               RnsShell::LayerType layerType,
+                               SkSVGTag tag)
             : RSkComponent(shadowView,layerType),
               RSkSVGNode(tag) {};
 
