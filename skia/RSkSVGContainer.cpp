@@ -8,8 +8,6 @@
 
 #include "RSkSVGContainer.h"
 
-#define RNS_LOG_MODE_FOR_CONTAINER RNS_LOG_DEBUG
-
 namespace facebook {
 namespace react {
 
@@ -26,9 +24,9 @@ void RSkSVGContainer::mountChildComponent(
     std::shared_ptr<RSkComponent> childComponent,
     const int index) {
 
-  RNS_LOG_MODE_FOR_CONTAINER("Parent :"<<getComponentData().componentName<<
-                             "recieved mount for child :" << childComponent->getComponentData().componentName<<
-                             "@ index : "<<index);
+  RNS_LOG_DEBUG("Parent :"<<getComponentData().componentName<<
+                "recieved mount for child :" << childComponent->getComponentData().componentName<<
+                "@ index : "<<index);
 
   if(!childComponent || !childComponent.get()) {
     RNS_LOG_ERROR("Invalid or not supported svg component received for mounting ");
@@ -41,7 +39,7 @@ void RSkSVGContainer::mountChildComponent(
       rskNodeIDMapper.set(SkString(rskSvgNode->svgNodeId),rskSvgNode);
     }
 
-    // If the type of a Child Node is a container, then combine its defMap with that of its parent and discard its own.
+    // If the type of a Child Node is a container,then combine its defMap with that of its parent and discard its own.
     auto nodeContainer=dynamic_cast<RSkSVGContainer *>(rskSvgNode);
     if(nodeContainer) {
       auto mergeFn= [&](SkString keyName,RSkSVGNode** value){
@@ -55,7 +53,7 @@ void RSkSVGContainer::mountChildComponent(
 
     if(this->tag() == SkSVGTag::kSvg) {
       rootNode_=this;
-      rskSvgNode->setRoot(this);
+      rskSvgNode->setRootNode(this);
     }
   }
 }
@@ -63,9 +61,9 @@ void RSkSVGContainer::mountChildComponent(
 void RSkSVGContainer::unmountChildComponent(
     std::shared_ptr<RSkComponent> oldChildComponent,
     const int index) {
-  RNS_LOG_MODE_FOR_CONTAINER("Parent :"<<getComponentData().componentName<<
-                             "recieved unmount for child :" << oldChildComponent->getComponentData().componentName<<
-                             "@ index : "<<index);
+  RNS_LOG_DEBUG("Parent :"<<getComponentData().componentName<<
+                "recieved unmount for child :" << oldChildComponent->getComponentData().componentName<<
+                "@ index : "<<index);
 
   auto it = childRSkNodeList_.find(index);
 
@@ -93,22 +91,55 @@ bool RSkSVGContainer::hasChildren() const {
   return !childRSkNodeList_.empty();
 }
 
+bool RSkSVGContainer::onPrepareToRender(SkSVGRenderContext* ctx) const {
+  /*For  colorType- uri/BRUSH_REF, inheritence  to be handled in RSKSVG*/
+  RNS_LOG_INFO(__func__<<" For component : "<<getComponentData().componentName);
+  auto inheritColor =[&](RSkSVGNode* childNode, std::string colorType,RNSVGColorFillStruct colorStruct){
+    auto node=dynamic_cast<RSkSVGComponentNode *>(childNode);
+    RNS_LOG_ERROR(" child component : "<<node->getComponentData().componentName);
+
+    if((std::find (childNode->renderablePropList.begin(), childNode->renderablePropList.end(), colorType) == childNode->renderablePropList.end())) {
+      RNS_LOG_INFO(colorType << "Not available for childNode : ");
+      if((std::find (renderablePropList.begin(), renderablePropList.end(), colorType) != renderablePropList.end())) {
+              RNS_LOG_INFO(colorType << "But Parent Has : ");
+
+        if(colorStruct.type == RNSVGColorType::BRUSH_REF) {
+          RNS_LOG_INFO(" colorStruct.type is BrushRef");
+          (colorType == "fill") ? (childNode->fillColor=colorStruct) : (childNode->strokeColor=colorStruct);
+        }
+      }
+    }
+  };
+
+  for (auto &item:childRSkNodeList_) {
+    inheritColor(item.second,"fill",fillColor);
+    inheritColor(item.second,"stroke",strokeColor);
+    auto containerNode=dynamic_cast<RSkSVGContainer *>(item.second);
+    if(containerNode) {
+      containerNode->RSkSVGContainer::onPrepareToRender(ctx);
+    }
+  }
+  return this->INHERITED::onPrepareToRender(ctx);
+}
+
 void RSkSVGContainer::onRender(const SkSVGRenderContext& ctx) const {
   for (auto &item : childRSkNodeList_) {
+  #ifdef ENABLE_SVG_RENDER_DEBUG
     RSkComponent* componetNode=dynamic_cast<RSkSVGComponentNode *>(item.second);
     RNS_LOG_INFO(" Rendering Child Element  : "<<componetNode->getComponentData().componentName);
+  #endif/*ENABLE_SVG_RENDER_DEBUG*/
     item.second->render(ctx);
   }
 }
 
-void RSkSVGContainer::setRoot(RSkSVGNode * rootNode) {
+void RSkSVGContainer::setRootNode(RSkSVGNode * rootNode) {
   rootNode_=rootNode;
   for (auto &item : childRSkNodeList_) {
-    item.second->setRoot(rootNode);
+    item.second->setRootNode(rootNode);
   }
 }
 
-#ifdef ENABLE_SVG_CHILD_HIERARCHY_DEBUG
+#ifdef ENABLE_SVG_RENDER_DEBUG
 void RSkSVGContainer::printChildList() {
   for (auto &item : childRSkNodeList_) {
     RSkComponent* componetNode=dynamic_cast<RSkSVGComponentNode *>(item.second);
@@ -117,10 +148,9 @@ void RSkSVGContainer::printChildList() {
                    " @Index = "<<item.first);
       auto node=dynamic_cast<RSkSVGContainer *>(item.second);
       if(node) {
-        RNS_LOG_INFO(" Container Info For component : "<<item.second->getComponentData().componentName << "\n" <<
+        RNS_LOG_INFO(" Container Info For component : "<<node->getComponentData().componentName << "\n" <<
                      "-------------------------------"<<"\n"<<
                      " No of Def Elements   : "<<rskNodeIDMapper.count()<<"\n"<<
-                     " No of Brush Elements : "<<rskBrushIdMapper.count()<<"\n"<<
                      " No of Child Element/s: "<<childRSkNodeList_.size()<<"\n"<<
                      "-------------------------------");
         node->printChildList();
@@ -128,7 +158,7 @@ void RSkSVGContainer::printChildList() {
     }
   }
 }
-#endif //ENABLE_SVG_CHILD_HIERARCHY_DEBUG
+#endif //ENABLE_SVG_RENDER_DEBUG
 
 } // namespace react
 } // namespace facebook

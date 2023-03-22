@@ -50,7 +50,7 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
   setCommonNodeProps(newRNSVGTextPropsProps);
   setCommonGroupProps(newRNSVGTextPropsProps);
 
-#define RNS_SVG_SET_TEXT_FRAME_ATTR(attr,vectorValue,index)                      \
+#define RNS_SVG_SET_TEXT_FRAME_ATTR(attr,vectorValue,index)              \
   if(vectorValue.size() && (index < vectorValue.size() )) {             \
     setLengthAttribute(attr,vectorValue[index]);                         \
   }
@@ -78,7 +78,7 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
                  "lengthAdjust : "<<(!newRNSVGTextPropsProps.lengthAdjust.empty() ? "Yes" : "No"));
   }
 
-#ifdef ENABLE_RNSVG_TEXT_NATIVE_PROPS_DEBUG
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
   RNS_LOG_INFO("========== TEXT Geometry Props ==========");
   for(auto value:newRNSVGTextPropsProps.x)
     RNS_LOG_INFO("x"<<value);
@@ -89,7 +89,7 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
   for(auto value:newRNSVGTextPropsProps.dy)
     RNS_LOG_INFO("dy"<<value);
   RNS_LOG_INFO("========================================");
-#endif /*ENABLE_RNSVG_TEXT_NATIVE_PROPS_DEBUG*/
+#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
 }
 
 TextStyle RSkSVGTextContainer::getContentTextStyle() const {

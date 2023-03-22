@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "RSkComponentRNSVGLinearGradient.h"
-#include "RSkComponentRNSVGSvgView.h"
 #include "RSkSVGShape.h"
 
 namespace facebook {
@@ -21,19 +19,19 @@ void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
 
   const auto fillType = ctx.presentationContext().fInherited.fFillRule->asFillType();
 
-  if (SkPaint* fillPaint = const_cast<SkPaint*>(ctx.fillPaint())) {
-    fillPaint->setAntiAlias(true);
-    if(!fillBrushRef.empty()) {
-      applyShader(fillPaint,fillBrushRef,ctx);
+  auto renderShape =[&](SkPaint* paint,const RNSVGColorFillStruct & colorStruct){
+    paint->setAntiAlias(true);
+    if((colorStruct.type == RNSVGColorType::BRUSH_REF) && (!colorStruct.brushRef.empty())) {
+      applyShader(paint,colorStruct.brushRef,ctx);
     }
-    this->onDraw(ctx.canvas(), ctx.lengthContext(), *fillPaint, fillType);
+    this->onDraw(ctx.canvas(), ctx.lengthContext(), *paint, fillType);
+  };
+
+  if (SkPaint* fillPaint = const_cast<SkPaint*>(ctx.fillPaint())) {
+    renderShape(fillPaint,fillColor);
   }
   if (SkPaint* strokePaint = const_cast<SkPaint*>(ctx.strokePaint())) {
-    strokePaint->setAntiAlias(true);
-    if(!strokeBrushRef.empty()) {
-      applyShader(strokePaint,strokeBrushRef,ctx);
-    }
-    this->onDraw(ctx.canvas(), ctx.lengthContext(), *strokePaint, fillType);
+    renderShape(strokePaint,strokeColor);
   }
 
 #ifdef ENABLE_NATIVE_PROPS_DEBUG
@@ -49,23 +47,6 @@ void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
                "----------------------------");
 #endif/*ENABLE_NATIVE_PROPS_DEBUG*/
 
-}
-
-void RSkSVGShape::applyShader(SkPaint* paint,std::string brushRef,const SkSVGRenderContext& ctx) const{
-  if(rootNode_) {
-    auto rootSvgContainerNode=static_cast<RSkComponentRNSVGSvgView *>(rootNode_);
-    if(rootSvgContainerNode) {
-       RSkSVGNode**  nodeRef = rootSvgContainerNode->rskNodeIDMapper.find(SkString(brushRef));
-      if (nodeRef && (*nodeRef) && ((*nodeRef)->tag() == SkSVGTag::kLinearGradient)) {
-        auto linearGradientNode=dynamic_cast<RSkComponentRNSVGLinearGradient *>(*nodeRef);
-        if(linearGradientNode) {
-          paint->setShader(linearGradientNode->getShader(ctx));
-        }
-      } else {
-        RNS_LOG_ERROR(" Provided Invalid Svg Element as a brushRef : "<<brushRef);
-      }
-    }
-  }
 }
 
 } // namespace react

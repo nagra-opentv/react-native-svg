@@ -7,7 +7,6 @@
 
 #include "RSkComponentRNSVGTSpan.h"
 
-
 namespace facebook {
 namespace react {
 namespace {
@@ -46,9 +45,13 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
     SkPoint frame=getContentDrawCoOrdinates();
     std::unique_ptr<Paragraph> paragraph;
 
-    auto buildAndDrawParagraph =[&](SkPaint* paint,ParagraphBuilderImpl *builder){
+    auto buildAndDrawParagraph =[&](SkPaint* paint,ParagraphBuilderImpl *builder,const RNSVGColorFillStruct & colorStruct){
       if(paint && builder) {
         paint->setAntiAlias(true);
+        RNS_LOG_INFO(" Color Type : "<<colorStruct.type << " brushRef : "<<colorStruct.brushRef);
+        if((colorStruct.type == RNSVGColorType::BRUSH_REF) && (!colorStruct.brushRef.empty())) {
+          applyShader(paint,colorStruct.brushRef,ctx);
+        }
         textStyle.setForegroundColor(*paint);
         //Note: Decoration color is same as the color of text. So applying it here from paint.
         textStyle.setDecorationColor(paint->getColor());
@@ -75,10 +78,12 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
      };
 
     if (SkPaint* fillPaint = const_cast<SkPaint*>(ctx.fillPaint())) {
-      buildAndDrawParagraph(fillPaint,&fillBuilder);
+      RNS_LOG_INFO(" Painting fillPaint");
+      buildAndDrawParagraph(fillPaint,&fillBuilder,fillColor);
     }
     if (SkPaint* strokePaint = const_cast<SkPaint*>(ctx.strokePaint())) {
-      buildAndDrawParagraph(strokePaint,&strokeBuilder);
+      RNS_LOG_INFO(" Painting strokePaint");
+      buildAndDrawParagraph(strokePaint,&strokeBuilder,strokeColor);
     }
 
     if(paragraph) {

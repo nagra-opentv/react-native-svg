@@ -8,6 +8,7 @@
 #include <unordered_map>
 
 #include "ReactSkia/utils/RnsLog.h"
+#include "RSkComponentRNSVGLinearGradient.h"
 #include "RSkComponentRNSVGSvgView.h"
 #include "RSkSVGComponentNode.h"
 #include "RSkSVGContainer.h"
@@ -93,6 +94,7 @@ void RSkSVGNode::setCommonRenderableProps(const RNSVGCommonRenderableProps  &ren
       RNS_LOG_WARN(" Unknown Property : "<<item);
     }
   }
+  renderablePropList=renderableProps.propList;
 }
 
 void RSkSVGNode::setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps){
@@ -149,7 +151,7 @@ void RSkSVGNode::setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVG
                " Brush Ref : "<<colorStruct.brushRef);
   #endif/*ENABLE_NATIVE_PROPS_DEBUG*/
 
-  if(colorStruct.type == RNSVGColorStruct::SOLID)  {
+  if(colorStruct.type == RNSVGColorType::SOLID)  {
     if(colorStruct.payload) {
       SkColor color= RSkColorFromSharedColor(colorStruct.payload, SK_ColorTRANSPARENT);
       SkSVGPaint paint(color);
@@ -158,13 +160,13 @@ void RSkSVGNode::setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVG
       // Color specified as none
       setPaintAttribute(attr,"none");
     }
- } else if(colorStruct.type ==  RNSVGColorStruct::CURRENT_COLOR) {
+ } else if(colorStruct.type ==  RNSVGColorType::CURRENT_COLOR) {
    setPaintAttribute(attr,"currentColor");
- } else if(colorStruct.type == RNSVGColorStruct::BRUSH_REF) {
-    (attr == SkSVGAttribute::kFill) ? (fillBrushRef=colorStruct.brushRef) : (strokeBrushRef=colorStruct.brushRef);
- } else if(colorStruct.type == RNSVGColorStruct::CONTEXT_FILL) {
+ } else if(colorStruct.type == RNSVGColorType::BRUSH_REF) {
+    (attr == SkSVGAttribute::kFill) ? (fillColor=colorStruct) : (strokeColor=colorStruct);
+ } else if(colorStruct.type == RNSVGColorType::CONTEXT_FILL) {
    RNS_LOG_TODO(" Support for color : context-fill , color struct type : " <<colorStruct.type);
- } else if(colorStruct.type == RNSVGColorStruct::CONTEXT_STROKE) {
+ } else if(colorStruct.type == RNSVGColorType::CONTEXT_STROKE) {
    RNS_LOG_TODO(" Support for color : context-stroke , color struct type : " <<colorStruct.type);
  }
 }
@@ -373,11 +375,9 @@ bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Flo
   return false;
 }
 
-void RSkSVGNode::setRoot(RSkSVGNode * rootNode) {
-
+void RSkSVGNode::setRootNode(RSkSVGNode * rootNode) {
   if(rootNode && (rootNode->tag() == SkSVGTag::kSvg)) {
     rootNode_=rootNode;
-    RNS_LOG_DEBUG("setRoot get for child with tag:"<<(int)tag());
   } 
 }
 
@@ -389,6 +389,23 @@ SkSize RSkSVGNode::getContainerSize() const {
     }
   }
   return SkSize::Make(0, 0);
+}
+
+void RSkSVGNode::applyShader(SkPaint* paint,std::string brushRef,const SkSVGRenderContext& ctx) const{
+  if(rootNode_) {
+    auto rootSvgContainerNode=static_cast<RSkComponentRNSVGSvgView *>(rootNode_);
+    if(rootSvgContainerNode) {
+       RSkSVGNode**  nodeRef = rootSvgContainerNode->rskNodeIDMapper.find(SkString(brushRef));
+      if (nodeRef && (*nodeRef) && ((*nodeRef)->tag() == SkSVGTag::kLinearGradient)) {
+        auto linearGradientNode=dynamic_cast<RSkComponentRNSVGLinearGradient *>(*nodeRef);
+        if(linearGradientNode) {
+          paint->setShader(linearGradientNode->getShader(ctx));
+        }
+      } else {
+        RNS_LOG_ERROR(" Provided Invalid Svg Element as a brushRef : "<<brushRef);
+      }
+    }
+  }
 }
 
 SkPath RSkSVGNode::onAsPath(const SkSVGRenderContext&)  const  { 

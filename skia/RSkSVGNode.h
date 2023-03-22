@@ -35,7 +35,7 @@ enum RSkSVGAttribute {
   kTextDecoration
 };
 
-enum RNSVGColorStruct {
+enum RNSVGColorType {
   SOLID,
   BRUSH_REF,
   CURRENT_COLOR,
@@ -50,8 +50,11 @@ class RSkSVGNode : public SkSVGTransformableNode {
   ~RSkSVGNode() {}
 
   std::string svgNodeId;
+  RNSVGColorFillStruct fillColor;
+  RNSVGColorFillStruct strokeColor;
+  std::vector<std::string> renderablePropList{};
 
-  virtual void setRoot(RSkSVGNode * rootNode);
+  virtual void setRootNode(RSkSVGNode * rootNode);
   virtual SkSize getContainerSize()const;
   void setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr);
   bool setNumberAttribute( SkSVGAttribute attr,std::string stringValue);
@@ -76,8 +79,6 @@ class RSkSVGNode : public SkSVGTransformableNode {
  protected:
 
   RSkSVGNode * rootNode_{nullptr};
-  std::string fillBrushRef;
-  std::string strokeBrushRef;
 
   explicit RSkSVGNode(SkSVGTag tag);
 
@@ -87,6 +88,7 @@ class RSkSVGNode : public SkSVGTransformableNode {
   void setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps);
   void setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps);
   void setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProps);
+  void applyShader(SkPaint* paint,std::string brushRef,const SkSVGRenderContext& ctx) const;
 
  private :
 

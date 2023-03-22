@@ -28,8 +28,6 @@ class RSkSVGShape : public RSkSVGComponentNode {
 
  private:
 
-  void applyShader(SkPaint*,std::string,const SkSVGRenderContext&)const;
-
   typedef RSkSVGComponentNode INHERITED;
 };
 
