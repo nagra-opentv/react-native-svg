@@ -56,6 +56,8 @@ class RSkSVGNode : public SkSVGTransformableNode {
 
   virtual void setRootNode(RSkSVGNode * rootNode);
   virtual SkSize getContainerSize()const;
+  virtual void invalidateLayer();
+
   void setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr);
   bool setNumberAttribute( SkSVGAttribute attr,std::string stringValue);
   bool setStringAttribute( SkSVGAttribute attr,std::string stringValue);

@@ -139,6 +139,12 @@ void RSkSVGContainer::setRootNode(RSkSVGNode * rootNode) {
   }
 }
 
+void RSkSVGContainer::invalidateLayer(){
+  for (auto &item : childRSkNodeList_) {
+    item.second->invalidateLayer();
+  }
+}
+
 #ifdef ENABLE_SVG_RENDER_DEBUG
 void RSkSVGContainer::printChildList() {
   for (auto &item : childRSkNodeList_) {

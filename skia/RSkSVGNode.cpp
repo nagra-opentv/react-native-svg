@@ -8,6 +8,7 @@
 #include <unordered_map>
 
 #include "ReactSkia/utils/RnsLog.h"
+
 #include "RSkComponentRNSVGLinearGradient.h"
 #include "RSkComponentRNSVGSvgView.h"
 #include "RSkSVGComponentNode.h"
@@ -404,6 +405,16 @@ void RSkSVGNode::applyShader(SkPaint* paint,std::string brushRef,const SkSVGRend
       } else {
         RNS_LOG_ERROR(" Provided Invalid Svg Element as a brushRef : "<<brushRef);
       }
+    }
+  }
+}
+
+void RSkSVGNode::invalidateLayer(){
+  if(rootNode_) {
+    auto rootSvgContainerNode=static_cast<RSkComponentRNSVGSvgView *>(rootNode_);
+    if(rootSvgContainerNode) {
+     //  rootSvgContainerNode->layer()->invalidate(RnsShell::LayerInvalidateAll);
+       rootSvgContainerNode->drawAndSubmit(RnsShell::LayerInvalidateAll);
     }
   }
 }

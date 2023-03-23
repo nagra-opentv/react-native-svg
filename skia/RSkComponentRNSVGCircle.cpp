@@ -32,6 +32,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::updateComponentProps(Sha
   setCommonRenderableProps(newRNSVGCircleProps);
   setCommonNodeProps(newRNSVGCircleProps);
 
+  invalidateLayer();
   return RnsShell::LayerInvalidateAll;
 }
 
