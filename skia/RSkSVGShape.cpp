@@ -20,10 +20,7 @@ void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
   const auto fillType = ctx.presentationContext().fInherited.fFillRule->asFillType();
 
   auto renderShape =[&](SkPaint* paint,const RNSVGColorFillStruct & colorStruct){
-    paint->setAntiAlias(true);
-    if((colorStruct.type == RNSVGColorType::BRUSH_REF) && (!colorStruct.brushRef.empty())) {
-      applyShader(paint,colorStruct.brushRef,ctx);
-    }
+    setupPaintForRender(paint,colorStruct,ctx);
     this->onDraw(ctx.canvas(), ctx.lengthContext(), *paint, fillType);
   };
 

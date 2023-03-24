@@ -9,12 +9,12 @@
 
 #include "include/effects/SkGradientShader.h"
 
-#include "RSkSVGHiddenContainer.h"
+#include "RSkSVGComponentNode.h"
 
 namespace facebook {
 namespace react {
 
-class RSkComponentRNSVGLinearGradient final : public RSkSVGHiddenContainer {
+class RSkComponentRNSVGLinearGradient final : public RSkSVGComponentNode {
  public:
 
   RSkComponentRNSVGLinearGradient(const ShadowView &shadowView);
@@ -29,6 +29,7 @@ class RSkComponentRNSVGLinearGradient final : public RSkSVGHiddenContainer {
 
   // Override for Base class : RSkSvgNode
   void onSetAttribute(SkSVGAttribute, const SkSVGValue&) override;
+  void onRender(const SkSVGRenderContext&) const override;
 
  private:
 
@@ -40,7 +41,7 @@ class RSkComponentRNSVGLinearGradient final : public RSkSVGHiddenContainer {
   std::vector<SkScalar> stopOffset_;
   std::vector<SkColor> stopColor_;
 
-  typedef RSkSVGHiddenContainer INHERITED;
+  typedef RSkSVGComponentNode INHERITED;
 
 };
 

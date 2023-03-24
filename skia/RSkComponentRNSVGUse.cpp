@@ -15,21 +15,19 @@ RSkComponentRNSVGUse::RSkComponentRNSVGUse(const ShadowView &shadowView)
     : INHERITED(shadowView,LAYER_TYPE_VIRTUAL,SkSVGTag::kUse){}
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGUse::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
-  auto component = getComponentData();
-
-  auto const &newRNSVGUseProps = *std::static_pointer_cast<RNSVGUseProps const>(newViewProps);
   
-  RNS_LOG_DEBUG( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
+  auto const &newRNSVGUseProps = *std::static_pointer_cast<RNSVGUseProps const>(newViewProps);
 
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
+#ifdef ENABLE_RSKSVG_PROPS_DEBUG
   RNS_LOG_INFO("\n" <<
                "===Native Props for SVG Element Use==="<< "\n" <<
+               " X      : "<<newRNSVGUseProps.x << "\n" <<
                " Y      : "<<newRNSVGUseProps.y << "\n" <<
                " Href   : "<<newRNSVGUseProps.href.c_str() << "\n" <<
                " Width  : "<<newRNSVGUseProps.width << "\n" <<
                " Height : "<<newRNSVGUseProps.height << "\n" <<
                "======================================");
-#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
+#endif/*ENABLE_RSKSVG_PROPS_DEBUG*/
 
   setLengthAttribute(SkSVGAttribute::kX,newRNSVGUseProps.x);
   setLengthAttribute(SkSVGAttribute::kY,newRNSVGUseProps.y);
@@ -39,6 +37,8 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGUse::updateComponentProps(Shared
 
   setCommonRenderableProps(newRNSVGUseProps);
   setCommonNodeProps(newRNSVGUseProps);
+
+  invalidateLayer();
 
   return RnsShell::LayerInvalidateAll;
 }
@@ -81,12 +81,29 @@ bool RSkComponentRNSVGUse::onPrepareToRender(SkSVGRenderContext* ctx) const {
 }
 
 void RSkComponentRNSVGUse::onRender(const SkSVGRenderContext& ctx) const {
-  if(rootNode_) {
-    auto rootSvgContainerNode=static_cast<RSkComponentRNSVGSvgView *>(rootNode_);
+  if(rootSvgNode) {
+    auto rootSvgContainerNode=static_cast<RSkComponentRNSVGSvgView *>(rootSvgNode);
     if(rootSvgContainerNode) {
        RSkSVGNode**  nodeRef = rootSvgContainerNode->rskNodeIDMapper.find(href_);
       if (nodeRef && (*nodeRef)) {
+
+       // Apply Host props on Def node. On render completion reset it.
+        bool resetHrefNodeProps{false};
+        if(!renderablePropList.empty()) {
+          auto const &newRNSVGUseProps = *std::static_pointer_cast<RNSVGUseProps const>(getComponentData().props);
+          (*nodeRef)->setCommonRenderableProps(newRNSVGUseProps);
+          resetHrefNodeProps=true;
+        }
+
         (*nodeRef)->render(ctx);
+
+        // Reset Def node with it's own props
+        if(resetHrefNodeProps) {
+          auto const renderableProps = getCommonRenderableProps(*nodeRef);
+          if(renderableProps) {
+            (*nodeRef)->setCommonRenderableProps(*renderableProps);
+          }
+        }
       } else {
         RNS_LOG_ERROR(" The specified Href for the component is not available : "<<href_.c_str());
         return;

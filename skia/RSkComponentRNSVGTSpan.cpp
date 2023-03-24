@@ -31,6 +31,9 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGTSpan::updateComponentProps(Shar
   auto const &newRNSVGTSpanPropsProps = *std::static_pointer_cast<RNSVGTSpanProps const>(newViewProps);
   content_ = newRNSVGTSpanPropsProps.content;
   updateCommonTextProps(newViewProps);
+
+  invalidateLayer();
+
   return RnsShell::LayerInvalidateAll;
 }
 
@@ -47,11 +50,7 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
 
     auto buildAndDrawParagraph =[&](SkPaint* paint,ParagraphBuilderImpl *builder,const RNSVGColorFillStruct & colorStruct){
       if(paint && builder) {
-        paint->setAntiAlias(true);
-        RNS_LOG_INFO(" Color Type : "<<colorStruct.type << " brushRef : "<<colorStruct.brushRef);
-        if((colorStruct.type == RNSVGColorType::BRUSH_REF) && (!colorStruct.brushRef.empty())) {
-          applyShader(paint,colorStruct.brushRef,ctx);
-        }
+        setupPaintForRender(paint,colorStruct,ctx);
         textStyle.setForegroundColor(*paint);
         //Note: Decoration color is same as the color of text. So applying it here from paint.
         textStyle.setDecorationColor(paint->getColor());
@@ -78,11 +77,9 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
      };
 
     if (SkPaint* fillPaint = const_cast<SkPaint*>(ctx.fillPaint())) {
-      RNS_LOG_INFO(" Painting fillPaint");
       buildAndDrawParagraph(fillPaint,&fillBuilder,fillColor);
     }
     if (SkPaint* strokePaint = const_cast<SkPaint*>(ctx.strokePaint())) {
-      RNS_LOG_INFO(" Painting strokePaint");
       buildAndDrawParagraph(strokePaint,&strokeBuilder,strokeColor);
     }
 

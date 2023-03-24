@@ -21,9 +21,9 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
   SkSVGLengthContext       lctx(SkSize::Make(svgContainerSize_.width(), svgContainerSize_.height()));
   SkSVGPresentationContext pctx;
 
-#ifdef ENABLE_SVG_RENDER_DEBUG
+#ifdef ENABLE_RSKSVG_RENDER_DEBUG
   printChildList();
-#endif /*ENABLE_SVG_RENDER_DEBUG*/
+#endif /*ENABLE_RSKSVG_RENDER_DEBUG*/
 
   //1. Svg children are always drawn inside the bounds of parent SVGView conatiner, hence we will clip & draw the children
   // TODO: Consider utilizing Bitmap as an alternative strategy for platforms that have limited memory constraints
@@ -54,10 +54,10 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
   drawBorder(canvas,frame,borderMetrics,viewProps.backgroundColor);
 
   //3. Start render from Root SVG Node
-  RNS_LOG_INFO("---Start render from Root SVG Node---");
+  RNS_LOG_DEBUG("---Start render from Root SVG Node---");
   SkSVGIDMapper    dummyIDMapper; // Deprecated, will be using RSkSVGIDMapper
   INHERITED::render(SkSVGRenderContext(canvas, dummyIDMapper, lctx, pctx));
-  RNS_LOG_INFO("---render completed---");
+  RNS_LOG_DEBUG("---Render completed---");
 }
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {

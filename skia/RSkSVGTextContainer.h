@@ -25,6 +25,7 @@ class RSkSVGTextContainer : public RSkSVGContainer {
   ~RSkSVGTextContainer() {}
   void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override;
   void updateCommonTextProps(SharedProps newViewProps);
+  void resetContentBounds()const;
 
  protected:
 
@@ -34,6 +35,7 @@ class RSkSVGTextContainer : public RSkSVGContainer {
 
   void onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) override;
   void onSetRSkSVGAttribute(RSkSVGAttribute attr, const SkSVGValue& attrValue);
+  bool onPrepareToRender(SkSVGRenderContext*) const override;
   void setTextParent(RSkSVGNode * rootNode);
   TextStyle getContentTextStyle() const;
   SkPoint getContentDrawCoOrdinates()const;

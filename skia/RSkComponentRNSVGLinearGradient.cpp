@@ -17,7 +17,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLinearGradient::updateComponentP
 
   auto const &newRNSVGLinearGradientProps = *std::static_pointer_cast<RNSVGLinearGradientProps const>(newViewProps);
 
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
+#ifdef ENABLE_RSKSVG_PROPS_DEBUG
   RNS_LOG_INFO("\n" <<
                "===Native Props for SVG Element Circle==="<< "\n" <<
                " X1: "<<newRNSVGLinearGradientProps.x1 << "\n" <<
@@ -34,7 +34,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLinearGradient::updateComponentP
                   " Matrix 4 : "<<newRNSVGLinearGradientProps.gradientTransform[4] << "\n" <<
                   " Matrix 5 : "<<newRNSVGLinearGradientProps.gradientTransform[5]);
   }
-#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
+#endif/*ENABLE_RSKSVG_PROPS_DEBUG*/
   setLengthAttribute(SkSVGAttribute::kX1,newRNSVGLinearGradientProps.x1);
   setLengthAttribute(SkSVGAttribute::kX2,newRNSVGLinearGradientProps.x2);
   setLengthAttribute(SkSVGAttribute::kY1,newRNSVGLinearGradientProps.y1);
@@ -52,10 +52,10 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLinearGradient::updateComponentP
 
   for (int i = 0; i < newRNSVGLinearGradientProps.gradient.size();) {
 
-  #ifdef ENABLE_NATIVE_PROPS_DEBUG
+  #ifdef ENABLE_RSKSVG_PROPS_DEBUG
     RNS_LOG_INFO("gradient :: " <<i << " Item :: "<< newRNSVGLinearGradientProps.gradient[i]);
     RNS_LOG_INFO("gradient :: " <<i+1 << " Item :: "<< (SharedColor)newRNSVGLinearGradientProps.gradient[i+1]);
-  #endif/*ENABLE_NATIVE_PROPS_DEBUG*/
+  #endif/*ENABLE_RSKSVG_PROPS_DEBUG*/
 
     //The stop elements are ordered by offset followed by the color.
     //StopColor received is a combined value with stop opacity. 
@@ -66,7 +66,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLinearGradient::updateComponentP
 
   setCommonNodeProps(newRNSVGLinearGradientProps);
 
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
+#ifdef ENABLE_RSKSVG_PROPS_DEBUG
   for (auto item: stopOffset_) {
     RNS_LOG_INFO("stopOffset :: " <<item);
   }
@@ -78,7 +78,9 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLinearGradient::updateComponentP
                  "A :: " <<SkColorGetA(item) <<"\n"
     );
   }
-  #endif /*ENABLE_NATIVE_PROPS_DEBUG*/
+  #endif /*ENABLE_RSKSVG_PROPS_DEBUG*/
+
+  invalidateLayer();
 
   return RnsShell::LayerInvalidateAll;
 }
@@ -127,7 +129,9 @@ sk_sp<SkShader> RSkComponentRNSVGLinearGradient::getShader(const SkSVGRenderCont
     return SkGradientShader::MakeLinear(pts, &stopColor_[0], &stopOffset_[0], stopColor_.size(), SkTileMode::kClamp, 0, &gradientTransforMatrix_);
 }
 
-
+void RSkComponentRNSVGLinearGradient::onRender(const SkSVGRenderContext& ctx) const {
+// The Linear Gradient is a color type for SVG cannot be displayed as an independent element. So no Action required here.
+}
 
 } // namespace react
 } // namespace facebook

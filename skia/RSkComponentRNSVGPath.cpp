@@ -16,16 +16,18 @@ RSkComponentRNSVGPath::RSkComponentRNSVGPath(const ShadowView &shadowView)
 RnsShell::LayerInvalidateMask RSkComponentRNSVGPath::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
   auto const &newRNSVGPathProps = *std::static_pointer_cast<RNSVGPathProps const>(newViewProps);
-  #ifdef ENABLE_NATIVE_PROPS_DEBUG
+  #ifdef ENABLE_RSKSVG_PROPS_DEBUG
   RNS_LOG_INFO("\n" <<
                "===Native Props for SVG Element Path==="<< "\n" <<
                "Path String : "<<newRNSVGPathProps.d.c_str() << "\n" <<
                "=======================================");
-  #endif/*ENABLE_NATIVE_PROPS_DEBUG*/
+  #endif/*ENABLE_RSKSVG_PROPS_DEBUG*/
   setPathDataAttribute(SkSVGAttribute::kD,newRNSVGPathProps.d.c_str());// Native Prop
 
   setCommonRenderableProps(newRNSVGPathProps);
   setCommonNodeProps(newRNSVGPathProps);
+
+  invalidateLayer();
 
   return RnsShell::LayerInvalidateAll;
 }
@@ -47,7 +49,6 @@ void RSkComponentRNSVGPath::onDraw(SkCanvas* canvas, const SkSVGLengthContext&, 
   path_.setFillType(fillType);
   canvas->drawPath(path_, paint);
 }
-
 
 } // namespace react
 } // namespace facebook

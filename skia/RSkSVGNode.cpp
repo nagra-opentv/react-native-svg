@@ -14,8 +14,6 @@
 #include "RSkSVGComponentNode.h"
 #include "RSkSVGContainer.h"
 
-#define ENABLE_NATIVE_PROPS_DEBUG
-
 namespace facebook {
 namespace react {
 
@@ -23,16 +21,18 @@ RSkSVGNode::RSkSVGNode(SkSVGTag tag) : INHERITED(tag) {};
 
 void RSkSVGNode::setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps) {
 
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
+#ifdef ENABLE_RSKSVG_PROPS_DEBUG
   RNS_LOG_INFO("========== Common Renderable Props ==========");
-  RSkComponent* componetNode=dynamic_cast<RSkSVGComponentNode *>(this);
-  RNS_LOG_INFO("Supported Properties count  :" << renderableProps.propList.size() <<
-               " : for component: "<< componetNode->getComponentData().componentName);
+  auto node=dynamic_cast<RSkSVGComponentNode*>(this);
+  if(node) {
+    RNS_LOG_INFO("Supported Properties count  :" << renderableProps.propList.size() <<
+                 " : for component: "<< node->getRSkSvgComponentName(this));
+  }
   for (auto props : renderableProps.propList ) {
     RNS_LOG_INFO(props);
   }
   RNS_LOG_INFO("=============================================");
-#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
+#endif /*ENABLE_RSKSVG_PROPS_DEBUG*/
 
   #define APPLY_FILL_COLOUR         [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
                                       {node->setColorFromColorStruct((renderableProps).fill,SkSVGAttribute::kFill);}
@@ -70,7 +70,7 @@ void RSkSVGNode::setCommonRenderableProps(const RNSVGCommonRenderableProps  &ren
                                       {node->setNumberAttribute( SkSVGAttribute::kStrokeMiterLimit,std::to_string(renderableProps.strokeMiterlimit));}
 
   #define APPLY_VECTOR_EFFECT      [](RSkSVGNode *node,const RNSVGCommonRenderableProps  &renderableProps) \
-                                     {/*TODO*/}
+                                     {RNS_LOG_NOT_IMPL_MSG(" VectorEffect");}
 
   static std::unordered_map<std::string, std::function<void(RSkSVGNode *node,const RNSVGCommonRenderableProps)>> s_propUpdateFunctionMap={
     {"fill",APPLY_FILL_COLOUR},
@@ -88,7 +88,6 @@ void RSkSVGNode::setCommonRenderableProps(const RNSVGCommonRenderableProps  &ren
   };
 
   for (auto &item : renderableProps.propList) {
-    //Fill Props
     if(s_propUpdateFunctionMap.count(item) ) {
       s_propUpdateFunctionMap[item](this,renderableProps);
     } else {
@@ -101,13 +100,11 @@ void RSkSVGNode::setCommonRenderableProps(const RNSVGCommonRenderableProps  &ren
 void RSkSVGNode::setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps){
 
   svgNodeId=nodeProps.name;
-  //set Opacity
   setNumberAttribute(SkSVGAttribute::kOpacity,std::to_string(nodeProps.opacity).c_str());
-  //set Transform
   setTransformAttribute(SkSVGAttribute::kTransform,nodeProps.matrix);
-  //set clip properties :: TODO -- check the inheritence behavour for clip Props
-  setFillRuleAttribute(SkSVGAttribute::kClipRule,(nodeProps.clipRule == 0 ) ? "evenodd" :"nonzero");
-  setClipPathAttribute(SkSVGAttribute::kClipPath,nodeProps.clipPath.c_str());
+  if(!nodeProps.clipPath.empty()) {
+    RNS_LOG_NOT_IMPL_MSG("clipPath & ClipRule Property");
+  }
 }
 
 void RSkSVGNode::setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProps) {
@@ -128,7 +125,7 @@ void RSkSVGNode::setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProp
   RNS_SVG_SET_TEXT_FONT_ATTR(static_cast<SkSVGAttribute>(RSkSVGAttribute::kTextDecoration),commonGroupProps.font.textDecoration)
   RNS_SVG_SET_TEXT_FONT_ATTR(SkSVGAttribute::kTextAnchor,commonGroupProps.font.textAnchor)
 
-  #ifdef ENABLE_NATIVE_PROPS_DEBUG
+  #ifdef ENABLE_RSKSVG_PROPS_DEBUG
     RNS_LOG_INFO("\n" <<
                  "=== Common Text Props ==="<< "\n" <<
                  "FontSize     : "<<commonGroupProps.font.fontSize << "\n" <<
@@ -140,17 +137,19 @@ void RSkSVGNode::setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProp
                  "LetterSpacing: "<<commonGroupProps.font.letterSpacing << "\n" <<
                  "WordSpacing  : "<<commonGroupProps.font.wordSpacing<< "\n" <<
                  "========================");
-  #endif /*ENABLE_NATIVE_PROPS_DEBUG*/
+  #endif /*ENABLE_RSKSVG_PROPS_DEBUG*/
 }
 
 void RSkSVGNode::setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr){
 
-  #ifdef ENABLE_NATIVE_PROPS_DEBUG
+  #ifdef ENABLE_RSKSVG_PROPS_DEBUG
   RNS_LOG_INFO(" Color for prop : "<< ((attr == SkSVGAttribute::kFill) ? "Fill" : "Stroke" ) << "\n" <<
                " Color Type : "<<colorStruct.type <<
                " SharedColor: "<<colorStruct.payload <<
                " Brush Ref : "<<colorStruct.brushRef);
-  #endif/*ENABLE_NATIVE_PROPS_DEBUG*/
+  #endif/*ENABLE_RSKSVG_PROPS_DEBUG*/
+
+  (attr == SkSVGAttribute::kFill) ? (fillColor=colorStruct) : (strokeColor=colorStruct);
 
   if(colorStruct.type == RNSVGColorType::SOLID)  {
     if(colorStruct.payload) {
@@ -164,11 +163,14 @@ void RSkSVGNode::setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVG
  } else if(colorStruct.type ==  RNSVGColorType::CURRENT_COLOR) {
    setPaintAttribute(attr,"currentColor");
  } else if(colorStruct.type == RNSVGColorType::BRUSH_REF) {
-    (attr == SkSVGAttribute::kFill) ? (fillColor=colorStruct) : (strokeColor=colorStruct);
+    // Default paint is established here for generating paint through SKSVG. The assignment of shader to the paint object will take place prior to rendering.
+    SkColor color;
+    SkSVGPaint paint(color);
+    setAttribute(attr,SkSVGPaintValue(paint));
  } else if(colorStruct.type == RNSVGColorType::CONTEXT_FILL) {
-   RNS_LOG_TODO(" Support for color : context-fill , color struct type : " <<colorStruct.type);
+   RNS_LOG_NOT_IMPL_MSG("context-fill");
  } else if(colorStruct.type == RNSVGColorType::CONTEXT_STROKE) {
-   RNS_LOG_TODO(" Support for color : context-stroke , color struct type : " <<colorStruct.type);
+   RNS_LOG_NOT_IMPL_MSG("context-stroke");
  }
 }
 
@@ -189,26 +191,6 @@ bool RSkSVGNode::setColorAttribute(SkSVGAttribute attr, std::string stringValue)
     return false;
   }
   setAttribute(attr, SkSVGColorValue(color));
-  return true;
-}
-
-bool RSkSVGNode::setIRIAttribute(SkSVGAttribute attr, std::string stringValue) {
-  SkSVGStringType iri;
-  SkSVGAttributeParser parser(stringValue.c_str());
-  if (!parser.parseIRI(&iri)) {
-    return false;
-  }
-  setAttribute(attr, SkSVGStringValue(iri));
-  return true;
-}
-
-bool RSkSVGNode::setClipPathAttribute(SkSVGAttribute attr, std::string stringValue) {
-  SkSVGClip clip;
-  SkSVGAttributeParser parser(stringValue.c_str());
-  if (!parser.parseClipPath(&clip)) {
-    return false;
-  }
-  setAttribute(attr, SkSVGClipValue(clip));
   return true;
 }
 
@@ -278,36 +260,6 @@ bool RSkSVGNode::setLineJoinAttribute(SkSVGAttribute attr, std::string stringVal
   return true;
 }
 
-bool RSkSVGNode::setSpreadMethodAttribute(SkSVGAttribute attr,  std::string stringValue) {
-  SkSVGSpreadMethod spread;
-  SkSVGAttributeParser parser(stringValue.c_str());
-  if (!parser.parseSpreadMethod(&spread)) {
-    return false;
-  }
-  setAttribute(attr, SkSVGSpreadMethodValue(spread));
-  return true;
-}
-
-bool RSkSVGNode::setStopColorAttribute(SkSVGAttribute attr, std::string stringValue) {
-  SkSVGStopColor stopColor;
-  SkSVGAttributeParser parser(stringValue.c_str());
-  if (!parser.parseStopColor(&stopColor)) {
-    return false;
-  }
-  setAttribute(attr, SkSVGStopColorValue(stopColor));
-  return true;
-}
-
-bool RSkSVGNode::setPointsAttribute(SkSVGAttribute attr, std::string stringValue) {
-  SkSVGPointsType points;
-  SkSVGAttributeParser parser(stringValue.c_str());
-  if (!parser.parsePoints(&points)) {
-    return false;
-  }
-  setAttribute(attr, SkSVGPointsValue(points));
-  return true;
-}
-
 bool RSkSVGNode::setFillRuleAttribute(SkSVGAttribute attr, std::string stringValue) {
   SkSVGFillRule fillRule;
   SkSVGAttributeParser parser(stringValue.c_str());
@@ -318,23 +270,12 @@ bool RSkSVGNode::setFillRuleAttribute(SkSVGAttribute attr, std::string stringVal
   return true;
 }
 
-bool RSkSVGNode::setVisibilityAttribute(SkSVGAttribute attr, std::string stringValue) {
-  SkSVGVisibility visibility;
-  SkSVGAttributeParser parser(stringValue.c_str());
-  if (!parser.parseVisibility(&visibility)) {
-    return false;
-  }
-  setAttribute(attr, SkSVGVisibilityValue(visibility));
-  return true;
-}
-
 bool RSkSVGNode::setDashArrayAttribute(SkSVGAttribute attr, const std::vector<std::string> dashArrayAttribute) {
 
   if(dashArrayAttribute.empty()) return false;
 
   std::string dashArray;
   for(auto value : dashArrayAttribute) {
-    RNS_LOG_DEBUG("has strokeDasharray value: "<<value.c_str());
     dashArray.append(value + " ");
   }
 
@@ -351,7 +292,7 @@ bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Flo
 
   if(matrix.size() == 6) {
 
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
+#ifdef ENABLE_RSKSVG_PROPS_DEBUG
     RNS_LOG_INFO("\n"<<
                   " Matrix 0 : "<<matrix[0] << "\n" <<
                   " Matrix 1 : "<<matrix[1] << "\n" <<
@@ -359,7 +300,7 @@ bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Flo
                   " Matrix 3 : "<<matrix[3] << "\n" <<
                   " Matrix 4 : "<<matrix[4] << "\n" <<
                   " Matrix 5 : "<<matrix[5]);
-#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
+#endif/*ENABLE_RSKSVG_PROPS_DEBUG*/
 
     SkMatrix svgTransforMatrix;
     // Converting received Matrix from React Native framework which is in column major Order to row Major Order for SKia
@@ -376,45 +317,38 @@ bool RSkSVGNode::setTransformAttribute(SkSVGAttribute attr,const std::vector<Flo
   return false;
 }
 
-void RSkSVGNode::setRootNode(RSkSVGNode * rootNode) {
+void RSkSVGNode::setRootSvgNode(RSkSVGNode * rootNode) {
   if(rootNode && (rootNode->tag() == SkSVGTag::kSvg)) {
-    rootNode_=rootNode;
-  } 
-}
-
-SkSize RSkSVGNode::getContainerSize() const {
-  if( rootNode_ && (rootNode_->tag() == SkSVGTag::kSvg)) {
-    auto node=dynamic_cast<RSkComponentRNSVGSvgView *>(rootNode_);
+    rootSvgNode=rootNode;
+    #ifdef ENABLE_SVG_RENDER_DEBUG
+    auto node=dynamic_cast<RSkSVGComponentNode*>(this);
     if(node) {
-      return node->getContainerSize();
+      RNS_LOG_INFO(" setting component : "<< node->getRSkSvgComponentName(rootSvgNode) <<
+                 " as root Node for : "<< node->getRSkSvgComponentName(this));
     }
+    #endif/*ENABLE_SVG_RENDER_DEBUG*/
   }
-  return SkSize::Make(0, 0);
 }
 
-void RSkSVGNode::applyShader(SkPaint* paint,std::string brushRef,const SkSVGRenderContext& ctx) const{
-  if(rootNode_) {
-    auto rootSvgContainerNode=static_cast<RSkComponentRNSVGSvgView *>(rootNode_);
-    if(rootSvgContainerNode) {
-       RSkSVGNode**  nodeRef = rootSvgContainerNode->rskNodeIDMapper.find(SkString(brushRef));
-      if (nodeRef && (*nodeRef) && ((*nodeRef)->tag() == SkSVGTag::kLinearGradient)) {
-        auto linearGradientNode=dynamic_cast<RSkComponentRNSVGLinearGradient *>(*nodeRef);
-        if(linearGradientNode) {
-          paint->setShader(linearGradientNode->getShader(ctx));
+void RSkSVGNode::setupPaintForRender(SkPaint* paint,const RNSVGColorFillStruct & colorStruct,const SkSVGRenderContext& ctx) const{
+  if(paint) {
+    paint->setAntiAlias(true);
+    paint->setShader(nullptr);
+    if((colorStruct.type == RNSVGColorType::BRUSH_REF) && (!colorStruct.brushRef.empty())) {
+      if(rootSvgNode) {
+        auto rootSvgContainerNode=static_cast<RSkComponentRNSVGSvgView *>(rootSvgNode);
+        if(rootSvgContainerNode) {
+          RSkSVGNode**  nodeRef = rootSvgContainerNode->rskNodeIDMapper.find(SkString(colorStruct.brushRef));
+          if (nodeRef && (*nodeRef) && ((*nodeRef)->tag() == SkSVGTag::kLinearGradient)) {
+            auto linearGradientNode=dynamic_cast<RSkComponentRNSVGLinearGradient *>(*nodeRef);
+            if(linearGradientNode) {
+              paint->setShader(linearGradientNode->getShader(ctx));
+            }
+          } else {
+            RNS_LOG_ERROR(" Invalid Svg Element provided as a brushRef : "<<colorStruct.brushRef);
+          }
         }
-      } else {
-        RNS_LOG_ERROR(" Provided Invalid Svg Element as a brushRef : "<<brushRef);
       }
-    }
-  }
-}
-
-void RSkSVGNode::invalidateLayer(){
-  if(rootNode_) {
-    auto rootSvgContainerNode=static_cast<RSkComponentRNSVGSvgView *>(rootNode_);
-    if(rootSvgContainerNode) {
-     //  rootSvgContainerNode->layer()->invalidate(RnsShell::LayerInvalidateAll);
-       rootSvgContainerNode->drawAndSubmit(RnsShell::LayerInvalidateAll);
     }
   }
 }

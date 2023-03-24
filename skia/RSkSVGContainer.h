@@ -35,8 +35,7 @@ class RSkSVGContainer : public RSkSVGComponentNode {
   void OnPaint(SkCanvas *canvas) override;
 
   //Override for Base Class :RSkSVGNode
-  void invalidateLayer() override;
-  void setRootNode(RSkSVGNode * rootNode) override;
+  void setRootSvgNode(RSkSVGNode * rootNode) override;
   bool onPrepareToRender(SkSVGRenderContext*) const override;
   void onRender(const SkSVGRenderContext&) const override;
   bool hasChildren() const final;

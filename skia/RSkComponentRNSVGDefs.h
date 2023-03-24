@@ -11,7 +11,7 @@
 namespace facebook {
 namespace react {
 
-class RSkComponentRNSVGDefs: public RSkSVGHiddenContainer {
+class RSkComponentRNSVGDefs final : public RSkSVGHiddenContainer {
  public:
 
   RSkComponentRNSVGDefs(const ShadowView &shadowView) :

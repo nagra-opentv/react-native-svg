@@ -17,6 +17,17 @@ using namespace std;
 
 using RSkSVGIDMapper = SkTHashMap<SkString, RSkSVGNode*>;
 
+template<typename componentType,typename propsType>
+  const RNSVGCommonRenderableProps *  getCommonRenderablePropsFromComponent(RSkComponent* component) {
+    if(component) {
+      auto componetNode=static_cast<componentType *>(component);
+      auto const props= std::static_pointer_cast<propsType const>(componetNode->getComponentData().props);
+       return dynamic_cast<RNSVGCommonRenderableProps const*>(props.get());
+    } else {
+      return nullptr;
+    }
+}
+
 namespace facebook {
 namespace react {
 
@@ -29,6 +40,12 @@ class RSkSVGComponentNode : public RSkComponent,public RSkSVGNode {
   // Overrides for Base Class: RSkComponent
   void mountChildComponent(std::shared_ptr<RSkComponent> newChildComponent, const int index)override {};
   void unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index)override {};
+
+  virtual SkSize getContainerSize()const;
+  void invalidateLayer();
+  std::string getRSkSvgComponentName(RSkSVGNode *node) const;
+
+  const RNSVGCommonRenderableProps * getCommonRenderableProps(RSkSVGNode* node) const;
 
  protected:
 

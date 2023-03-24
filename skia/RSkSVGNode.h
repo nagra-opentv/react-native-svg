@@ -21,6 +21,9 @@
 
 #include "react/renderer/components/rnsvg/RNSVGProps.h"
 
+#undef ENABLE_RSKSVG_PROPS_DEBUG
+#undef ENABLE_RSKSVG_RENDER_DEBUG
+
 namespace facebook {
 namespace react {
 
@@ -54,9 +57,11 @@ class RSkSVGNode : public SkSVGTransformableNode {
   RNSVGColorFillStruct strokeColor;
   std::vector<std::string> renderablePropList{};
 
-  virtual void setRootNode(RSkSVGNode * rootNode);
-  virtual SkSize getContainerSize()const;
-  virtual void invalidateLayer();
+  virtual void setRootSvgNode(RSkSVGNode * rootSvgNode);
+
+  void setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps);
+  void setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps);
+  void setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProps);
 
   void setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr);
   bool setNumberAttribute( SkSVGAttribute attr,std::string stringValue);
@@ -69,28 +74,19 @@ class RSkSVGNode : public SkSVGTransformableNode {
   bool setLineCapAttribute( SkSVGAttribute attr,std::string stringValue);
   bool setLineJoinAttribute( SkSVGAttribute attr,std::string stringValue);
   bool setViewBoxAttribute( SkSVGAttribute attr,std::string stringValue);
-  bool setIRIAttribute( SkSVGAttribute attr,std::string stringValue);
-  bool setSpreadMethodAttribute( SkSVGAttribute attr,std::string stringValue);
-  bool setStopColorAttribute( SkSVGAttribute attr,std::string stringValue);
-  bool setPointsAttribute( SkSVGAttribute attr,std::string stringValue);
-  bool setVisibilityAttribute( SkSVGAttribute attr,std::string stringValue);
-  bool setClipPathAttribute( SkSVGAttribute attr,std::string stringValue);
   bool setTransformAttribute(SkSVGAttribute attr,const std::vector<Float> matrix);
   bool setDashArrayAttribute( SkSVGAttribute attr,const std::vector<std::string> dashArray);
 
  protected:
 
-  RSkSVGNode * rootNode_{nullptr};
+  RSkSVGNode * rootSvgNode{nullptr};
 
   explicit RSkSVGNode(SkSVGTag tag);
 
   SkPath onAsPath(const SkSVGRenderContext&)  const override;
   void appendChild(sk_sp<SkSVGNode>)  override;
 
-  void setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps);
-  void setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps);
-  void setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProps);
-  void applyShader(SkPaint* paint,std::string brushRef,const SkSVGRenderContext& ctx) const;
+  void setupPaintForRender(SkPaint* paint,const RNSVGColorFillStruct & colorStruct,const SkSVGRenderContext& ctx) const;
 
  private :
 
