@@ -18,7 +18,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGText::updateComponentProps(Share
 
   updateCommonTextProps(newViewProps);
 
-  invalidateLayer();
+  invalidateParentSvgContainer();
 
   return RnsShell::LayerInvalidateAll;
 }

@@ -27,7 +27,7 @@ RnsShell::LayerInvalidateMask RSkComponentRNSVGPath::updateComponentProps(Shared
   setCommonRenderableProps(newRNSVGPathProps);
   setCommonNodeProps(newRNSVGPathProps);
 
-  invalidateLayer();
+  invalidateParentSvgContainer();
 
   return RnsShell::LayerInvalidateAll;
 }

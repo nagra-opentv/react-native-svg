@@ -41,7 +41,6 @@ void RSkSVGContainer::mountChildComponent(
       rskNodeIDMapper.set(SkString(rskSvgNode->svgNodeId),rskSvgNode);
     }
 
-    // If the type of a Child Node is a container,then combine its defMap with that of its parent and discard its own.
     auto nodeContainer=dynamic_cast<RSkSVGContainer *>(rskSvgNode);
     if(nodeContainer) {
       auto mergeFn= [&](SkString keyName,RSkSVGNode** value){

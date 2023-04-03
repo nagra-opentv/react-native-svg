@@ -239,7 +239,7 @@ dynamic Uimanager::getConstantsForThirdpartyViewManager(std::string viewManagerN
   }else if(viewManagerName == "RNSVGLinearGradient") {
 
     dynamic componentNativeProps = folly::dynamic::object(
-         "x1", true)("x2", true)("y1", true)("y2", true)("gradientTransform",true)("gradient",true);
+         "x1", true)("x2", true)("y1", true)("y2", true)("gradientTransform",true)("gradient",true)("gradientUnits",true);
 
     auto nativeProps = folly::dynamic::merge_diff(svgCommonNodeProps,componentNativeProps) ;
 

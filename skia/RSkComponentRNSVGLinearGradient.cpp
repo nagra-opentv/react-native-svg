@@ -80,7 +80,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLinearGradient::updateComponentP
   }
   #endif /*ENABLE_RSKSVG_PROPS_DEBUG*/
 
-  invalidateLayer();
+  invalidateParentSvgContainer();
 
   return RnsShell::LayerInvalidateAll;
 }
@@ -130,7 +130,7 @@ sk_sp<SkShader> RSkComponentRNSVGLinearGradient::getShader(const SkSVGRenderCont
 }
 
 void RSkComponentRNSVGLinearGradient::onRender(const SkSVGRenderContext& ctx) const {
-// The Linear Gradient is a color type for SVG cannot be displayed as an independent element. So no Action required here.
+// The Linear Gradient is a paint type for SVG and cannot be displayed as an independent element. So no Action required here.
 }
 
 } // namespace react

@@ -32,7 +32,7 @@ SkSize RSkSVGComponentNode::getContainerSize() const {
   return SkSize::Make(0, 0);
 }
 
-void RSkSVGComponentNode::invalidateLayer(){
+void RSkSVGComponentNode::invalidateParentSvgContainer(){
 /*
   TODO: To enhance performance, consider the following tasks:
     1. Batch the InvalidateLayer calls and perform them once for the entire SVG container.

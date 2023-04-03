@@ -32,7 +32,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGTSpan::updateComponentProps(Shar
   content_ = newRNSVGTSpanPropsProps.content;
   updateCommonTextProps(newViewProps);
 
-  invalidateLayer();
+  invalidateParentSvgContainer();
 
   return RnsShell::LayerInvalidateAll;
 }

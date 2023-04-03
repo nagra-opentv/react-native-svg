@@ -9,7 +9,6 @@
 #include <map>
 
 #include "RSkSVGComponentNode.h"
-#define ENABLE_SVG_RENDER_DEBUG
 
 namespace facebook {
 namespace react {

@@ -42,7 +42,7 @@ class RSkSVGComponentNode : public RSkComponent,public RSkSVGNode {
   void unmountChildComponent(std::shared_ptr<RSkComponent> oldChildComponent,const int index)override {};
 
   virtual SkSize getContainerSize()const;
-  void invalidateLayer();
+  void invalidateParentSvgContainer();
   std::string getRSkSvgComponentName(RSkSVGNode *node) const;
 
   const RNSVGCommonRenderableProps * getCommonRenderableProps(RSkSVGNode* node) const;
