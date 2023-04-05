@@ -5,13 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "ReactSkia/components/RSkComponent.h"
 #include "RSkSVGComponentNode.h"
 
 namespace facebook {
 namespace react {
 
-class RSkComponentRNSVGUse: public RSkSVGComponentNode {
+class RSkComponentRNSVGUse final : public RSkSVGComponentNode {
  public:
 
   RSkComponentRNSVGUse(const ShadowView &shadowView);

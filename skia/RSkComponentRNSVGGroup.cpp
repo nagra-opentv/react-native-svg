@@ -21,6 +21,8 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGGroup::updateComponentProps(Shar
   setCommonNodeProps(newRNSVGGroupPropsProps);
   setCommonGroupProps(newRNSVGGroupPropsProps);
 
+  invalidateParentSvgContainer();
+
   return RnsShell::LayerInvalidateAll;
 }
 

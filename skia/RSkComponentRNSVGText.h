@@ -12,7 +12,7 @@
 namespace facebook {
 namespace react {
 
-class RSkComponentRNSVGText : public RSkSVGTextContainer{
+class RSkComponentRNSVGText final : public RSkSVGTextContainer{
  public:
 
   RSkComponentRNSVGText(const ShadowView &shadowView);

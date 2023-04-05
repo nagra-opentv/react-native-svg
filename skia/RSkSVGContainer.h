@@ -34,13 +34,14 @@ class RSkSVGContainer : public RSkSVGComponentNode {
   void OnPaint(SkCanvas *canvas) override;
 
   //Override for Base Class :RSkSVGNode
-  void setRoot(RSkSVGNode * rootNode) override;
+  void setRootSvgNode(RSkSVGNode * rootNode) override;
+  bool onPrepareToRender(SkSVGRenderContext*) const override;
   void onRender(const SkSVGRenderContext&) const override;
   bool hasChildren() const final;
 
-#ifdef ENABLE_SVG_CHILD_HIERARCHY_DEBUG
+#ifdef ENABLE_SVG_RENDER_DEBUG
   void printChildList();
-#endif //ENABLE_SVG_CHILD_HIERARCHY_DEBUG
+#endif //ENABLE_SVG_RENDER_DEBUG
 
   std::map<int,RSkSVGNode *> childRSkNodeList_;
 

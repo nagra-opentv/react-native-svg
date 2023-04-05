@@ -15,7 +15,6 @@ RSkSVGTextContainer::RSkSVGTextContainer(const ShadowView &shadowView,
                                          RnsShell::LayerType layerType,
                                          SkSVGTag tag)
     : INHERITED(shadowView,layerType,tag) {
-//TODO: To improve performance, Good to have single FontCollection & use it across all the TextContainers.
   fontCollection_ = sk_make_sp<skia::textlayout::FontCollection>();
   fontCollection_->setDefaultFontManager(SkFontMgr::RefDefault());
 }
@@ -23,8 +22,6 @@ RSkSVGTextContainer::RSkSVGTextContainer(const ShadowView &shadowView,
 void RSkSVGTextContainer::mountChildComponent(
     std::shared_ptr<RSkComponent> childComponent,
     const int index) {
-
-  RNS_LOG_DEBUG("Parent Componet :" << this->getComponentData().componentName<<" holding child :" << childComponent->getComponentData().componentName);
 
   if(!childComponent || !childComponent.get()) {
     RNS_LOG_ERROR("Invalid child component received");
@@ -50,9 +47,9 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
   setCommonNodeProps(newRNSVGTextPropsProps);
   setCommonGroupProps(newRNSVGTextPropsProps);
 
-#define RNS_SVG_SET_TEXT_FRAME_ATTR(attr,vectorValue,index)                      \
+#define RNS_SVG_SET_TEXT_FRAME_ATTR(attr,vectorValue,index)             \
   if(vectorValue.size() && (index < vectorValue.size() )) {             \
-    setLengthAttribute(attr,vectorValue[index]);                         \
+    setLengthAttribute(attr,vectorValue[index]);                        \
   }
 
 // The vector's first element (Vec[0]) specifies the dimensions for the entire text,
@@ -78,7 +75,7 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
                  "lengthAdjust : "<<(!newRNSVGTextPropsProps.lengthAdjust.empty() ? "Yes" : "No"));
   }
 
-#ifdef ENABLE_RNSVG_TEXT_NATIVE_PROPS_DEBUG
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
   RNS_LOG_INFO("========== TEXT Geometry Props ==========");
   for(auto value:newRNSVGTextPropsProps.x)
     RNS_LOG_INFO("x"<<value);
@@ -89,15 +86,31 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
   for(auto value:newRNSVGTextPropsProps.dy)
     RNS_LOG_INFO("dy"<<value);
   RNS_LOG_INFO("========================================");
-#endif /*ENABLE_RNSVG_TEXT_NATIVE_PROPS_DEBUG*/
+#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
+}
+
+bool RSkSVGTextContainer::onPrepareToRender(SkSVGRenderContext* ctx) const {
+  if(textParentNode_ == nullptr) {
+    resetContentBounds();
+  }
+  return this->INHERITED::onPrepareToRender(ctx);
+}
+
+void RSkSVGTextContainer::resetContentBounds() const{
+  std::vector<SkRect> emptyBounds;
+  containerContentBounds_.swap(emptyBounds);
+  for (auto &item : childRSkNodeList_) {
+    auto textNode = dynamic_cast<RSkSVGTextContainer *>(item.second);
+    if(textNode){
+      textNode->resetContentBounds();
+    }
+  }
 }
 
 TextStyle RSkSVGTextContainer::getContentTextStyle() const {
   TextStyle textStyle;
   SkSVGLength fontSize,letterSpacing,wordSpacing;
   SkString fontFamily,fontWeight,fontStyle,fontStretch,textDecoration;
-
-  //TODO: To Avoid querring Props on each render, Maintain  & Use Inherited Props Info.
 
   if(getFontFamily(fontFamily)) {
     textStyle.setFontFamilies({fontFamily});
@@ -115,7 +128,6 @@ TextStyle RSkSVGTextContainer::getContentTextStyle() const {
     TextDecorationMap::iterator it = textDecorationMap.find(textDecoration.c_str());
     if(it != textDecorationMap.end()) {
       textStyle.setDecoration(it->second);
-      //Note: Decoration color is same as the color of text. So it be applied from paint while render
     }
   }
   auto weight=[&]() {

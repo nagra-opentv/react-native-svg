@@ -27,6 +27,7 @@ using RNSVGDefsComponentDescriptor  = ConcreteComponentDescriptor<RNSVGDefsShado
 using RNSVGUseComponentDescriptor  = ConcreteComponentDescriptor<RNSVGUseShadowNode>;
 using RNSVGTextComponentDescriptor  = ConcreteComponentDescriptor<RNSVGTextShadowNode>;
 using RNSVGTSpanComponentDescriptor  = ConcreteComponentDescriptor<RNSVGTSpanShadowNode>;
+using RNSVGLinearGradientComponentDescriptor  = ConcreteComponentDescriptor<RNSVGLinearGradientShadowNode>;
 
 } // namespace react
 } // namespace facebook

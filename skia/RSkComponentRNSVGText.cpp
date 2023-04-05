@@ -17,6 +17,9 @@ RSkComponentRNSVGText::RSkComponentRNSVGText(const ShadowView &shadowView)
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGText::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
 
   updateCommonTextProps(newViewProps);
+
+  invalidateParentSvgContainer();
+
   return RnsShell::LayerInvalidateAll;
 }
 

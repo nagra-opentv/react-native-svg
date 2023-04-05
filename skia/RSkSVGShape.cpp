@@ -11,31 +11,39 @@ namespace facebook {
 namespace react {
 
 RSkSVGShape::RSkSVGShape(const ShadowView &shadowView,
-                                           RnsShell::LayerType layerType,
-                                           SkSVGTag tag)
+                         RnsShell::LayerType layerType,
+                         SkSVGTag tag)
     : INHERITED(shadowView,layerType,tag){}
 
 void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
 
   const auto fillType = ctx.presentationContext().fInherited.fFillRule->asFillType();
 
+  auto renderShape =[&](SkPaint* paint,const RNSVGColorFillStruct & colorStruct){
+    setupPaintForRender(paint,colorStruct,ctx);
+    this->onDraw(ctx.canvas(), ctx.lengthContext(), *paint, fillType);
+  };
+
   if (SkPaint* fillPaint = const_cast<SkPaint*>(ctx.fillPaint())) {
-    fillPaint->setAntiAlias(true);
-    this->onDraw(ctx.canvas(), ctx.lengthContext(), *fillPaint, fillType);
+    renderShape(fillPaint,fillColor);
   }
   if (SkPaint* strokePaint = const_cast<SkPaint*>(ctx.strokePaint())) {
-    strokePaint->setAntiAlias(true);
-    this->onDraw(ctx.canvas(), ctx.lengthContext(), *strokePaint, fillType);
+    renderShape(strokePaint,strokeColor);
   }
 
+#ifdef ENABLE_NATIVE_PROPS_DEBUG
   SkMatrix matrix=ctx.canvas()->getTotalMatrix();
-  RNS_LOG_DEBUG("\n"<<
-                " getScaleX      : "<<matrix.getScaleX() << "\n" <<
-                " getScaleY      : "<<matrix.getScaleY()<<  "\n" <<
-                " getTranslateX  : "<<matrix.getTranslateX()<<  "\n" <<
-                " getTranslateY  : "<<matrix.getTranslateY()<<  "\n" <<
-                " getSkewX       : "<<matrix.getSkewX()<<  "\n" <<
-                " getSkewY       : "<<matrix.getSkewY());
+  RNS_LOG_INFO(" Transform Matrix Applied on Canvas \n" <<
+               "----------------------------"<< "\n" <<
+               " getScaleX      : "<<matrix.getScaleX() << "\n" <<
+               " getScaleY      : "<<matrix.getScaleY()<<  "\n" <<
+               " getTranslateX  : "<<matrix.getTranslateX()<<  "\n" <<
+               " getTranslateY  : "<<matrix.getTranslateY()<<  "\n" <<
+               " getSkewX       : "<<matrix.getSkewX()<<  "\n" <<
+               " getSkewY       : "<<matrix.getSkewY()<<  "\n" <<
+               "----------------------------");
+#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
+
 }
 
 } // namespace react

@@ -29,7 +29,8 @@ To incorporate RNSSVGComponents from the third-party ReactNativeSVG:
     {"RNSVGDefs",RSkComponentProviderRNSVGDefsCls}, 
     {"RNSVGUse",RSkComponentProviderRNSVGUseCls},
     {"RNSVGText",RSkComponentProviderRNSVGTextCls},
-    {"RNSVGTSpan",RSkComponentProviderRNSVGTSpanCls}
+    {"RNSVGTSpan",RSkComponentProviderRNSVGTSpanCls},
+    {"RNSVGLinearGradient",RSkComponentProviderRNSVGLinearGradientCls},
 
 to add elemnts , add an entry in the following format
 {RNSVGElementName,RSkComponentProviderRNSVGElemnet functionobject}
@@ -47,6 +48,7 @@ RSkComponentProvider *RSkComponentProviderRNSVGDefsCls(); // RNSVGDefs
 RSkComponentProvider *RSkComponentProviderRNSVGUseCls(); // RNSVGUse
 RSkComponentProvider *RSkComponentProviderRNSVGTextCls() ; // RNSVGText
 RSkComponentProvider *RSkComponentProviderRNSVGTSpanCls() ; // RNSVGTSpan
+RSkComponentProvider *RSkComponentProviderRNSVGLinearGradientCls(); // RNSVGLinearGradient
 
 Follow the same pattern to extend the support for more SVG component.
 
@@ -234,7 +236,22 @@ dynamic Uimanager::getConstantsForThirdpartyViewManager(std::string viewManagerN
         BUBBLING_EVENTS_KEY, std::move(bubblingEventTypes))(
        DIRECT_EVENTS_KEY, std::move(directEventTypes));
     return {std::move(registry)};
-  } else {
+  }else if(viewManagerName == "RNSVGLinearGradient") {
+
+    dynamic componentNativeProps = folly::dynamic::object(
+         "x1", true)("x2", true)("y1", true)("y2", true)("gradientTransform",true)("gradient",true)("gradientUnits",true);
+
+    auto nativeProps = folly::dynamic::merge_diff(svgCommonNodeProps,componentNativeProps) ;
+
+    auto bubblingEventTypes = folly::dynamic::object();
+    auto directEventTypes = folly::dynamic::object();
+    auto registry = folly::dynamic::object(
+        NATIVE_PROPS_KEY, std::move(nativeProps))(
+        BASE_MODULE_NAME_KEY, "RCTView")(
+        BUBBLING_EVENTS_KEY, std::move(bubblingEventTypes))(
+       DIRECT_EVENTS_KEY, std::move(directEventTypes));
+    return {std::move(registry)};
+  }else {
   RNS_LOG_WARN("getConstantsForThirdpartyViewManager viewManagerName : " << viewManagerName << " not found");
 }
   auto nativeProps = folly::dynamic::object();

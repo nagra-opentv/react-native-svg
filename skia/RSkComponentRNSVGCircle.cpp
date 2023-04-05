@@ -17,20 +17,22 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGCircle::updateComponentProps(Sha
 
   auto const &newRNSVGCircleProps = *std::static_pointer_cast<RNSVGCircleProps const>(newViewProps);
 
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
+#ifdef ENABLE_RSKSVG_PROPS_DEBUG
   RNS_LOG_INFO("\n" <<
                "===Native Props for SVG Element Circle==="<< "\n" <<
                " CX: "<<newRNSVGCircleProps.cx << "\n" <<
                " CY: "<<newRNSVGCircleProps.cy << "\n" <<
                " r : "<<newRNSVGCircleProps.r << "\n" <<
                "=========================================");
-#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
+#endif /*ENABLE_RSKSVG_PROPS_DEBUG*/
   setLengthAttribute(SkSVGAttribute::kCx,newRNSVGCircleProps.cx);
   setLengthAttribute(SkSVGAttribute::kCy,newRNSVGCircleProps.cy);
   setLengthAttribute(SkSVGAttribute::kR,newRNSVGCircleProps.r);
 
   setCommonRenderableProps(newRNSVGCircleProps);
   setCommonNodeProps(newRNSVGCircleProps);
+
+  invalidateParentSvgContainer();
 
   return RnsShell::LayerInvalidateAll;
 }

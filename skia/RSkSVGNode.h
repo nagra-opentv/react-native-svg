@@ -17,7 +17,13 @@
 #include "include/core/SkColor.h"
 #include "include/utils/SkParsePath.h"
 
+#include "ReactSkia/views/common/RSkConversion.h"
+
 #include "react/renderer/components/rnsvg/RNSVGProps.h"
+
+#undef ENABLE_RSKSVG_PROPS_DEBUG
+#undef ENABLE_RSKSVG_RENDER_DEBUG
+
 namespace facebook {
 namespace react {
 
@@ -32,7 +38,7 @@ enum RSkSVGAttribute {
   kTextDecoration
 };
 
-enum RNSVGColorStruct {
+enum RNSVGColorType {
   SOLID,
   BRUSH_REF,
   CURRENT_COLOR,
@@ -47,9 +53,16 @@ class RSkSVGNode : public SkSVGTransformableNode {
   ~RSkSVGNode() {}
 
   std::string svgNodeId;
+  RNSVGColorFillStruct fillColor;
+  RNSVGColorFillStruct strokeColor;
+  std::vector<std::string> renderablePropList{};
 
-  virtual void setRoot(RSkSVGNode * rootNode);
-  virtual SkSize getContainerSize()const;
+  virtual void setRootSvgNode(RSkSVGNode * rootSvgNode);
+
+  void setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps);
+  void setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps);
+  void setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProps);
+
   void setColorFromColorStruct(RNSVGColorFillStruct  colorStruct,SkSVGAttribute attr);
   bool setNumberAttribute( SkSVGAttribute attr,std::string stringValue);
   bool setStringAttribute( SkSVGAttribute attr,std::string stringValue);
@@ -61,27 +74,19 @@ class RSkSVGNode : public SkSVGTransformableNode {
   bool setLineCapAttribute( SkSVGAttribute attr,std::string stringValue);
   bool setLineJoinAttribute( SkSVGAttribute attr,std::string stringValue);
   bool setViewBoxAttribute( SkSVGAttribute attr,std::string stringValue);
-  bool setIRIAttribute( SkSVGAttribute attr,std::string stringValue);
-  bool setSpreadMethodAttribute( SkSVGAttribute attr,std::string stringValue);
-  bool setStopColorAttribute( SkSVGAttribute attr,std::string stringValue);
-  bool setPointsAttribute( SkSVGAttribute attr,std::string stringValue);
-  bool setVisibilityAttribute( SkSVGAttribute attr,std::string stringValue);
-  bool setClipPathAttribute( SkSVGAttribute attr,std::string stringValue);
   bool setTransformAttribute(SkSVGAttribute attr,const std::vector<Float> matrix);
   bool setDashArrayAttribute( SkSVGAttribute attr,const std::vector<std::string> dashArray);
 
  protected:
 
-  RSkSVGNode * rootNode_{nullptr};
+  RSkSVGNode * rootSvgNode{nullptr};
 
   explicit RSkSVGNode(SkSVGTag tag);
 
   SkPath onAsPath(const SkSVGRenderContext&)  const override;
   void appendChild(sk_sp<SkSVGNode>)  override;
 
-  void setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps);
-  void setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps);
-  void setCommonGroupProps(const RNSVGGroupCommonrops &commonGroupProps);
+  void setupPaintForRender(SkPaint* paint,const RNSVGColorFillStruct & colorStruct,const SkSVGRenderContext& ctx) const;
 
  private :
 

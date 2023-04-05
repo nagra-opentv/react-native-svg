@@ -42,8 +42,6 @@ class RSkComponentRNSVGSvgView final : public RSkSVGContainer  {
   SkSVGLength height_ = SkSVGLength(100, SkSVGLength::Unit::kPercentage);
   SkRect viewBox_;
 
-  void alterSkiaDefaultPaint();
-
   typedef RSkSVGContainer INHERITED;
 };
 

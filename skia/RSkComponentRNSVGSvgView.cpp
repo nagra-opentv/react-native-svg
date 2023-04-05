@@ -21,9 +21,9 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
   SkSVGLengthContext       lctx(SkSize::Make(svgContainerSize_.width(), svgContainerSize_.height()));
   SkSVGPresentationContext pctx;
 
-#ifdef ENABLE_SVG_CHILD_HIERARCHY_DEBUG
+#ifdef ENABLE_RSKSVG_RENDER_DEBUG
   printChildList();
-#endif
+#endif /*ENABLE_RSKSVG_RENDER_DEBUG*/
 
   //1. Svg children are always drawn inside the bounds of parent SVGView conatiner, hence we will clip & draw the children
   // TODO: Consider utilizing Bitmap as an alternative strategy for platforms that have limited memory constraints
@@ -53,14 +53,11 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
   drawBackground(canvas,frame,borderMetrics,viewProps.backgroundColor);
   drawBorder(canvas,frame,borderMetrics,viewProps.backgroundColor);
 
-  // Fix: Altering Skia's defult paint behaviour to match with reference platform.
-  alterSkiaDefaultPaint();
-
   //3. Start render from Root SVG Node
   RNS_LOG_DEBUG("---Start render from Root SVG Node---");
   SkSVGIDMapper    dummyIDMapper; // Deprecated, will be using RSkSVGIDMapper
   INHERITED::render(SkSVGRenderContext(canvas, dummyIDMapper, lctx, pctx));
-
+  RNS_LOG_DEBUG("---Render completed---");
 }
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
@@ -124,6 +121,7 @@ bool RSkComponentRNSVGSvgView::onPrepareToRender(SkSVGRenderContext* ctx) const 
   if (viewPort != ctx->lengthContext().viewPort()) {
     ctx->writableLengthContext()->setViewPort(viewPort);
   }
+
   return this->INHERITED::onPrepareToRender(ctx);
 }
 
@@ -156,32 +154,6 @@ void RSkComponentRNSVGSvgView::onSetAttribute(SkSVGAttribute attr, const SkSVGVa
       break;
     default:
       this->INHERITED::onSetAttribute(attr, attrValue);
-  }
-}
-
-inline void RSkComponentRNSVGSvgView::alterSkiaDefaultPaint() {
-//Note: Skia's default paint is black. WhereIn on SVG Reference platform it's transparent
-//      To Match with Reference output, resetting color to transparent, if color not speciifed.
-
-//      This is done only on outtermost group/level 1 parent's of svg container , to enable
-//      children to inherit undefined value from it's parent. And for the same reason it's been
-//      done once all the child elements are inserted to the SVGView.
-
-  for (auto &item:childRSkNodeList_) {
-    RNS_LOG_DEBUG(" Child Tag : "<<(int)item.second->tag());
-    if(item.second->tag() == SkSVGTag::kG) {
-      auto componentNode=dynamic_cast<RSkComponentRNSVGGroup *>(item.second);
-      if(componentNode) {
-        auto const &newRNSVGGroupPropsProps = *std::static_pointer_cast<RNSVGGroupProps const>(componentNode->getComponentData().props);
-        // Reset Stroke & Fill Color if not specifed to transparent
-        if(std::find (newRNSVGGroupPropsProps.propList.begin(), newRNSVGGroupPropsProps.propList.end(), "fill") == newRNSVGGroupPropsProps.propList.end()) {
-          componentNode->setPaintAttribute(SkSVGAttribute::kFill,"none");
-        }
-        if(std::find (newRNSVGGroupPropsProps.propList.begin(), newRNSVGGroupPropsProps.propList.end(), "stroke") == newRNSVGGroupPropsProps.propList.end()) {
-          componentNode->setPaintAttribute(SkSVGAttribute::kStroke,"none");
-        }
-      }
-    }
   }
 }
 
