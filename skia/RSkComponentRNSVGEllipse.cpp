@@ -80,5 +80,19 @@ void RSkComponentRNSVGEllipse::onDraw(SkCanvas* canvas, const SkSVGLengthContext
   canvas->drawOval(rect, paint);
 }
 
+SkRect RSkComponentRNSVGEllipse::getObjectBoundingBox(const SkSVGLengthContext& lctx) const {
+
+  SkScalar cx = lctx.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
+  SkScalar cy = lctx.resolve(cy_, SkSVGLengthContext::LengthType::kVertical);
+  SkScalar rx = lctx.resolve(rx_, SkSVGLengthContext::LengthType::kHorizontal);
+  SkScalar ry = lctx.resolve(ry_, SkSVGLengthContext::LengthType::kVertical);
+
+  if((rx <= 0) || (ry <= 0)) {
+    return  SkRect::MakeEmpty();
+  }
+
+  return SkRect::MakeXYWH(cx - rx, cy - ry, rx * 2, ry * 2);
+}
+
 } // namespace react
 } // namespace facebook

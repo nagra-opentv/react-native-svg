@@ -80,5 +80,15 @@ void RSkComponentRNSVGLine::onDraw(SkCanvas* canvas, const SkSVGLengthContext& l
   canvas->drawLine(p0, p1, paint);
 }
 
+SkRect RSkComponentRNSVGLine::getObjectBoundingBox(const SkSVGLengthContext& lctx) const {
+  SkScalar x1,x2,y1,y2;
+  x1=lctx.resolve(x1_, SkSVGLengthContext::LengthType::kHorizontal);
+  x2=lctx.resolve(x2_, SkSVGLengthContext::LengthType::kHorizontal);
+  y1=lctx.resolve(y2_, SkSVGLengthContext::LengthType::kVertical);
+  y2=lctx.resolve(y2_, SkSVGLengthContext::LengthType::kVertical);
+
+  return SkRect::MakeXYWH(x1,y1,(x2-x1),(y2-y1));
+}
+
 } // namespace react
 } // namespace facebook

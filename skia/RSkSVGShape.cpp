@@ -31,7 +31,7 @@ void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
     renderShape(strokePaint,strokeColor);
   }
 
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
+#ifdef ENABLE_RSKSVG_PROPS_DEBUG
   SkMatrix matrix=ctx.canvas()->getTotalMatrix();
   RNS_LOG_INFO(" Transform Matrix Applied on Canvas \n" <<
                "----------------------------"<< "\n" <<
@@ -42,7 +42,7 @@ void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
                " getSkewX       : "<<matrix.getSkewX()<<  "\n" <<
                " getSkewY       : "<<matrix.getSkewY()<<  "\n" <<
                "----------------------------");
-#endif/*ENABLE_NATIVE_PROPS_DEBUG*/
+#endif/*ENABLE_RSKSVG_PROPS_DEBUG*/
 
 }
 

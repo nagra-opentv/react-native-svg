@@ -91,6 +91,9 @@ void RSkComponentRNSVGRect::onDraw(SkCanvas* canvas, const SkSVGLengthContext& l
   canvas->drawRRect(rrect, paint);  
 }
 
+SkRect RSkComponentRNSVGRect::getObjectBoundingBox(const SkSVGLengthContext& lctx ) const {
+    return lctx.resolveRect(x_,y_,width_,height_);
+}
 
 } // namespace react
 } // namespace facebook

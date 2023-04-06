@@ -50,5 +50,9 @@ void RSkComponentRNSVGPath::onDraw(SkCanvas* canvas, const SkSVGLengthContext&, 
   canvas->drawPath(path_, paint);
 }
 
+SkRect RSkComponentRNSVGPath::getObjectBoundingBox(const SkSVGLengthContext& lctx) const {
+  return path_.computeTightBounds();
+}
+
 } // namespace react
 } // namespace facebook

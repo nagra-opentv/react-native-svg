@@ -57,7 +57,7 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
         builder->pushStyle(textStyle);
         builder->addText(content_.c_str(), content_.length());
         paragraph = builder->Build();
-        paragraph->layout(getContainerSize().width()); // Get Container Size from SVGView
+        paragraph->layout(getContainerSize().width());
         std::vector<LineMetrics> metrics;
         paragraph->getLineMetrics(metrics);
         SkScalar xOffset{0};
@@ -133,6 +133,25 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
     }
   }
   INHERITED::onRender(ctx);
+}
+
+SkRect RSkComponentRNSVGTSpan::getObjectBoundingBox(const SkSVGLengthContext& lctx) const{
+
+  if(content_.size()) {
+    ParagraphStyle paraStyle;
+    paraStyle.setMaxLines(1);
+    ParagraphBuilderImpl builder(paraStyle, fontCollection_);
+    TextStyle textStyle=getContentTextStyle();
+    std::unique_ptr<Paragraph> paragraph;
+    builder.pushStyle(textStyle);
+    builder.addText(content_.c_str(), content_.length());
+    paragraph = builder.Build();
+    paragraph->layout(getContainerSize().width());
+    auto impl = static_cast<ParagraphImpl*>(paragraph.get());
+    return impl->getBoundaries();
+  }
+  return SkRect::MakeEmpty();
+
 }
 
 } // namespace react

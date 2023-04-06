@@ -21,6 +21,8 @@ class RSkComponentRNSVGEllipse final : public RSkSVGShape{
   // Overrides for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
 
+  SkRect getObjectBoundingBox(const SkSVGLengthContext&) const override;
+
  protected:
 
   // Overrides for Base class : RSkSVGShape

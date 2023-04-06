@@ -73,5 +73,18 @@ void RSkComponentRNSVGCircle::onDraw(SkCanvas* canvas, const SkSVGLengthContext&
  
 }
 
+SkRect RSkComponentRNSVGCircle::getObjectBoundingBox(const SkSVGLengthContext& lctx) const {
+
+  SkScalar cx = lctx.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
+  SkScalar cy = lctx.resolve(cy_, SkSVGLengthContext::LengthType::kVertical);
+  SkScalar  r = lctx.resolve(r_ , SkSVGLengthContext::LengthType::kOther);
+
+  if(r <= 0) {
+    return  SkRect::MakeEmpty();
+  }
+
+  return SkRect::MakeXYWH(cx - r, cy - r, r * 2, r * 2);
+}
+
 } // namespace react
 } // namespace facebook

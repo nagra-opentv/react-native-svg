@@ -65,7 +65,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(Sh
   auto component = getComponentData();
   auto const &newRNSVGViewProps = *std::static_pointer_cast<RNSVGSvgViewProps const>(newViewProps);
 
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
+#ifdef ENABLE_RSKSVG_PROPS_DEBUG
   RNS_LOG_INFO( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
   RNS_LOG_INFO("\n" <<
                "===Native Props for SVG Element View==="<< "\n" <<
@@ -76,7 +76,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(Sh
                "tintColor : "<<newRNSVGViewProps.tintColor << "\n" <<
                "color     : "<<newRNSVGViewProps.color << "\n" <<
                "=======================================");
-#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
+#endif /*ENABLE_RSKSVG_PROPS_DEBUG*/
 
   std::string viewBox=std::to_string(newRNSVGViewProps.minX) + " "+ \
                       std::to_string(newRNSVGViewProps.minY)+ " " + \
