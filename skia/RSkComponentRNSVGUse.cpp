@@ -65,22 +65,22 @@ void RSkComponentRNSVGUse::onSetAttribute(SkSVGAttribute attr, const SkSVGValue&
   }
 }
 
-bool RSkComponentRNSVGUse::onPrepareToRender(SkSVGRenderContext* ctx) const {
+bool RSkComponentRNSVGUse::onPrepareToRender(SkSVGRenderContext* renderContext) const {
 
-  if (href_.isEmpty() || !INHERITED::onPrepareToRender(ctx)) {
+  if (href_.isEmpty() || !INHERITED::onPrepareToRender(renderContext)) {
     return false;
   }
 
   if (x_.value() || y_.value()) {
     // Restored when the local SkSVGRenderContext leaves scope.
-    ctx->saveOnce();
-    ctx->canvas()->translate(x_.value(), y_.value());
+    renderContext->saveOnce();
+    renderContext->canvas()->translate(x_.value(), y_.value());
   }
 
   return true;
 }
 
-void RSkComponentRNSVGUse::onRender(const SkSVGRenderContext& ctx) const {
+void RSkComponentRNSVGUse::onRender(const SkSVGRenderContext& renderContext) const {
   if(rootSvgNode) {
     auto rootSvgContainerNode=static_cast<RSkComponentRNSVGSvgView *>(rootSvgNode);
     if(rootSvgContainerNode) {
@@ -95,7 +95,7 @@ void RSkComponentRNSVGUse::onRender(const SkSVGRenderContext& ctx) const {
           resetHrefNodeProps=true;
         }
 
-        (*nodeRef)->render(ctx);
+        (*nodeRef)->render(renderContext);
 
         // Reset Def node with it's own props
         if(resetHrefNodeProps) {

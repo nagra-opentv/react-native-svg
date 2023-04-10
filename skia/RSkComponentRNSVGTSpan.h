@@ -30,6 +30,7 @@ class RSkComponentRNSVGTSpan final : public RSkSVGTextContainer {
   void onRender(const SkSVGRenderContext&) const override;
 
  private:
+  std::unique_ptr<Paragraph> buildParagraph(TextStyle textStyle) const;
   typedef RSkSVGTextContainer INHERITED;
 };
 

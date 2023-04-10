@@ -15,24 +15,24 @@ RSkSVGShape::RSkSVGShape(const ShadowView &shadowView,
                          SkSVGTag tag)
     : INHERITED(shadowView,layerType,tag){}
 
-void RSkSVGShape::onRender(const SkSVGRenderContext& ctx) const {
+void RSkSVGShape::onRender(const SkSVGRenderContext& renderContext) const {
 
-  const auto fillType = ctx.presentationContext().fInherited.fFillRule->asFillType();
+  const auto fillType = renderContext.presentationContext().fInherited.fFillRule->asFillType();
 
   auto renderShape =[&](SkPaint* paint,const RNSVGColorFillStruct & colorStruct){
-    setupPaintForRender(paint,colorStruct,ctx);
-    this->onDraw(ctx.canvas(), ctx.lengthContext(), *paint, fillType);
+    setupPaintForRender(paint,colorStruct,renderContext);
+    this->onDraw(renderContext.canvas(), renderContext.lengthContext(), *paint, fillType);
   };
 
-  if (SkPaint* fillPaint = const_cast<SkPaint*>(ctx.fillPaint())) {
+  if (SkPaint* fillPaint = const_cast<SkPaint*>(renderContext.fillPaint())) {
     renderShape(fillPaint,fillColor);
   }
-  if (SkPaint* strokePaint = const_cast<SkPaint*>(ctx.strokePaint())) {
+  if (SkPaint* strokePaint = const_cast<SkPaint*>(renderContext.strokePaint())) {
     renderShape(strokePaint,strokeColor);
   }
 
 #ifdef ENABLE_RSKSVG_PROPS_DEBUG
-  SkMatrix matrix=ctx.canvas()->getTotalMatrix();
+  SkMatrix matrix=renderContext.canvas()->getTotalMatrix();
   RNS_LOG_INFO(" Transform Matrix Applied on Canvas \n" <<
                "----------------------------"<< "\n" <<
                " getScaleX      : "<<matrix.getScaleX() << "\n" <<

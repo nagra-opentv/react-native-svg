@@ -330,7 +330,7 @@ void RSkSVGNode::setRootSvgNode(RSkSVGNode * rootNode) {
   }
 }
 
-void RSkSVGNode::setupPaintForRender(SkPaint* paint,const RNSVGColorFillStruct & colorStruct,const SkSVGRenderContext& ctx) const{
+void RSkSVGNode::setupPaintForRender(SkPaint* paint,const RNSVGColorFillStruct & colorStruct,const SkSVGRenderContext& renderContext) const{
   if(paint) {
     paint->setAntiAlias(true);
     paint->setShader(nullptr);
@@ -342,7 +342,7 @@ void RSkSVGNode::setupPaintForRender(SkPaint* paint,const RNSVGColorFillStruct &
           if (nodeRef && (*nodeRef) && ((*nodeRef)->tag() == SkSVGTag::kLinearGradient)) {
             auto linearGradientNode=dynamic_cast<RSkComponentRNSVGLinearGradient *>(*nodeRef);
             if(linearGradientNode) {
-              paint->setShader(linearGradientNode->getShader(ctx.lengthContext(),this->getObjectBoundingBox(ctx.lengthContext())));
+              paint->setShader(linearGradientNode->getShader(renderContext.lengthContext(),this->getObjectBoundingBox(renderContext.lengthContext())));
             }
           } else {
             RNS_LOG_ERROR(" Invalid Svg Element provided as a brushRef : "<<colorStruct.brushRef);

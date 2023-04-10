@@ -60,12 +60,12 @@ void RSkComponentRNSVGCircle::onSetAttribute(SkSVGAttribute attr, const SkSVGVal
   }
 }
 
-void RSkComponentRNSVGCircle::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,
+void RSkComponentRNSVGCircle::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lengthContext,
                          const SkPaint& paint, SkPathFillType) const {
 
-  SkScalar cx = lctx.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
-  SkScalar cy = lctx.resolve(cy_, SkSVGLengthContext::LengthType::kVertical);
-  SkScalar  r = lctx.resolve(r_ , SkSVGLengthContext::LengthType::kOther);
+  SkScalar cx = lengthContext.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
+  SkScalar cy = lengthContext.resolve(cy_, SkSVGLengthContext::LengthType::kVertical);
+  SkScalar  r = lengthContext.resolve(r_ , SkSVGLengthContext::LengthType::kOther);
 
   if (r > 0) {
     canvas->drawCircle(cx, cy, r, paint);
@@ -73,11 +73,11 @@ void RSkComponentRNSVGCircle::onDraw(SkCanvas* canvas, const SkSVGLengthContext&
  
 }
 
-SkRect RSkComponentRNSVGCircle::getObjectBoundingBox(const SkSVGLengthContext& lctx) const {
+SkRect RSkComponentRNSVGCircle::getObjectBoundingBox(const SkSVGLengthContext& lengthContext) const {
 
-  SkScalar cx = lctx.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
-  SkScalar cy = lctx.resolve(cy_, SkSVGLengthContext::LengthType::kVertical);
-  SkScalar  r = lctx.resolve(r_ , SkSVGLengthContext::LengthType::kOther);
+  SkScalar cx = lengthContext.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
+  SkScalar cy = lengthContext.resolve(cy_, SkSVGLengthContext::LengthType::kVertical);
+  SkScalar  r = lengthContext.resolve(r_ , SkSVGLengthContext::LengthType::kOther);
 
   if(r <= 0) {
     return  SkRect::MakeEmpty();

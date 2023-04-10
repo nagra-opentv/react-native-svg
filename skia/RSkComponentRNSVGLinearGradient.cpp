@@ -115,19 +115,19 @@ void RSkComponentRNSVGLinearGradient::onSetAttribute(SkSVGAttribute attr, const 
   }
 }
 
-sk_sp<SkShader> RSkComponentRNSVGLinearGradient::getShader(const SkSVGLengthContext& lctx,SkRect boundingBox)  {
+sk_sp<SkShader> RSkComponentRNSVGLinearGradient::getShader(const SkSVGLengthContext& lengthContext,SkRect boundingBox)  {
 
     if(stopColors_.empty() || stopOffsets_.empty() || (stopOffsets_.size() != stopColors_.size())) {
       return nullptr;
     }
-    const SkSVGLengthContext lengthctx =  (gradientUnit_ == 0) // 0 -objectBoundingBox 1-userSpaceOnUse
-                                          ? SkSVGLengthContext({boundingBox.width(), boundingBox.height()})
-                                          : lctx;
+    const SkSVGLengthContext localLengthContext =  ((gradientUnit_ == 0) && (!boundingBox.isEmpty())) // 0 -objectBoundingBox 1-userSpaceOnUse
+                                                   ? SkSVGLengthContext({boundingBox.width(), boundingBox.height()})
+                                                   : lengthContext;
 
-    const auto x1 = lengthctx.resolve(x1_, SkSVGLengthContext::LengthType::kHorizontal);
-    const auto y1 = lengthctx.resolve(y1_, SkSVGLengthContext::LengthType::kVertical);
-    const auto x2 = lengthctx.resolve(x2_, SkSVGLengthContext::LengthType::kHorizontal);
-    const auto y2 = lengthctx.resolve(y2_, SkSVGLengthContext::LengthType::kVertical);
+    const auto x1 = localLengthContext.resolve(x1_, SkSVGLengthContext::LengthType::kHorizontal);
+    const auto y1 = localLengthContext.resolve(y1_, SkSVGLengthContext::LengthType::kVertical);
+    const auto x2 = localLengthContext.resolve(x2_, SkSVGLengthContext::LengthType::kHorizontal);
+    const auto y2 = localLengthContext.resolve(y2_, SkSVGLengthContext::LengthType::kVertical);
 
     const SkPoint pts[2] = { {x1, y1}, {x2, y2}};
 
