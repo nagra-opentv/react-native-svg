@@ -14,6 +14,11 @@
 namespace facebook {
 namespace react {
 
+enum  GradientUnits{
+  objectBoundingBox = 0,
+  userSpaceOnUse =1
+};
+
 class RSkComponentRNSVGLinearGradient final : public RSkSVGComponentNode {
  public:
 

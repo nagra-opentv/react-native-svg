@@ -27,9 +27,8 @@ auto RNSVGSvgViewModule::getMethods() -> std::vector<Method> {
   return {
     Method(
       "toDataURL",
-      [this] (dynamic args) {
+      [] (dynamic args) {
         RNS_LOG_NOT_IMPL;
-        RNS_UNUSED(this);
         return;
       }),
   };
@@ -38,7 +37,7 @@ auto RNSVGSvgViewModule::getMethods() -> std::vector<Method> {
 #ifdef __cplusplus
 extern "C" {
 #endif
-RNS_EXPORT_MODULE(RNSVGSvgViewModule)
+RNS_EXPORT_MODULE_WITHOUT_SUFFIX(RNSVGSvgViewModule)
 #ifdef __cplusplus
 }
 #endif

@@ -18,8 +18,8 @@
         "RNSVGUse"
       ],
       "TurboModuleRegistryGetEnforcingSpec" : [
-        "RNSVGRenderable",
-        "RNSVGSvgView"
+        "RNSVGRenderableModule",
+        "RNSVGSvgViewModule"
       ]
     }
   },

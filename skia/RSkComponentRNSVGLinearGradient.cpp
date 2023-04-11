@@ -120,7 +120,7 @@ sk_sp<SkShader> RSkComponentRNSVGLinearGradient::getShader(const SkSVGLengthCont
     if(stopColors_.empty() || stopOffsets_.empty() || (stopOffsets_.size() != stopColors_.size())) {
       return nullptr;
     }
-    const SkSVGLengthContext localLengthContext =  ((gradientUnit_ == 0) && (!boundingBox.isEmpty())) // 0 -objectBoundingBox 1-userSpaceOnUse
+    const SkSVGLengthContext localLengthContext =  ((gradientUnit_ == GradientUnits::objectBoundingBox) && (!boundingBox.isEmpty()))
                                                    ? SkSVGLengthContext({boundingBox.width(), boundingBox.height()})
                                                    : lengthContext;
 

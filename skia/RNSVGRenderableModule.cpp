@@ -19,7 +19,6 @@ std::string RNSVGRenderableModule::getName() {
 }
 
 auto RNSVGRenderableModule::getConstants() -> std::map<std::string, folly::dynamic> {
-  RNS_LOG_NOT_IMPL;
   return {};
 }
 
@@ -75,7 +74,7 @@ auto RNSVGRenderableModule::getMethods() -> std::vector<Method> {
 #ifdef __cplusplus
 extern "C" {
 #endif
-RNS_EXPORT_MODULE(RNSVGRenderableModule)
+RNS_EXPORT_MODULE_WITHOUT_SUFFIX(RNSVGRenderableModule)
 #ifdef __cplusplus
 }
 #endif
