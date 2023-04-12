@@ -58,6 +58,7 @@ class RSkSVGNode : public SkSVGTransformableNode {
   std::vector<std::string> renderablePropList{};
 
   virtual void setRootSvgNode(RSkSVGNode * rootSvgNode);
+  virtual SkRect getObjectBoundingBox(const SkSVGLengthContext&) const;
 
   void setCommonRenderableProps(const RNSVGCommonRenderableProps  &renderableProps);
   void setCommonNodeProps(const RNSVGCommonNodeProps &nodeProps);

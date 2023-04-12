@@ -14,6 +14,11 @@
 namespace facebook {
 namespace react {
 
+enum  GradientUnits{
+  objectBoundingBox = 0,
+  userSpaceOnUse =1
+};
+
 class RSkComponentRNSVGLinearGradient final : public RSkSVGComponentNode {
  public:
 
@@ -23,7 +28,7 @@ class RSkComponentRNSVGLinearGradient final : public RSkSVGComponentNode {
   // Override for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
 
-  sk_sp<SkShader> getShader(const SkSVGRenderContext& ctx);
+  sk_sp<SkShader> getShader(const SkSVGLengthContext& ctx,SkRect boundingBox);
 
  protected:
 
@@ -38,8 +43,9 @@ class RSkComponentRNSVGLinearGradient final : public RSkSVGComponentNode {
   SkSVGLength x2_ = SkSVGLength(0);
   SkSVGLength y2_ = SkSVGLength(0);
   SkMatrix gradientTransforMatrix_;
-  std::vector<SkScalar> stopOffset_;
-  std::vector<SkColor> stopColor_;
+  std::vector<SkScalar> stopOffsets_;
+  std::vector<SkColor> stopColors_;
+  int gradientUnit_{0};
 
   typedef RSkSVGComponentNode INHERITED;
 

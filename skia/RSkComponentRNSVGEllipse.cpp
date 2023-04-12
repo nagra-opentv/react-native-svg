@@ -67,17 +67,31 @@ void RSkComponentRNSVGEllipse::onSetAttribute(SkSVGAttribute attr, const SkSVGVa
   }
 }
 
-void RSkComponentRNSVGEllipse::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,const SkPaint& paint, SkPathFillType) const {
-  SkScalar cx = lctx.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
-  SkScalar cy = lctx.resolve(cy_, SkSVGLengthContext::LengthType::kVertical);
-  SkScalar rx = lctx.resolve(rx_, SkSVGLengthContext::LengthType::kHorizontal);
-  SkScalar ry = lctx.resolve(ry_, SkSVGLengthContext::LengthType::kVertical);
+void RSkComponentRNSVGEllipse::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lengthContext,const SkPaint& paint, SkPathFillType) const {
+  SkScalar cx = lengthContext.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
+  SkScalar cy = lengthContext.resolve(cy_, SkSVGLengthContext::LengthType::kVertical);
+  SkScalar rx = lengthContext.resolve(rx_, SkSVGLengthContext::LengthType::kHorizontal);
+  SkScalar ry = lengthContext.resolve(ry_, SkSVGLengthContext::LengthType::kVertical);
     
   SkRect rect =(rx > 0 && ry > 0)
         ? SkRect::MakeXYWH(cx - rx, cy - ry, rx * 2, ry * 2)
         : SkRect::MakeEmpty();
     
   canvas->drawOval(rect, paint);
+}
+
+SkRect RSkComponentRNSVGEllipse::getObjectBoundingBox(const SkSVGLengthContext& lengthContext) const {
+
+  SkScalar cx = lengthContext.resolve(cx_, SkSVGLengthContext::LengthType::kHorizontal);
+  SkScalar cy = lengthContext.resolve(cy_, SkSVGLengthContext::LengthType::kVertical);
+  SkScalar rx = lengthContext.resolve(rx_, SkSVGLengthContext::LengthType::kHorizontal);
+  SkScalar ry = lengthContext.resolve(ry_, SkSVGLengthContext::LengthType::kVertical);
+
+  if((rx <= 0) || (ry <= 0)) {
+    return  SkRect::MakeEmpty();
+  }
+
+  return SkRect::MakeXYWH(cx - rx, cy - ry, rx * 2, ry * 2);
 }
 
 } // namespace react

@@ -18,8 +18,8 @@ RSkComponentRNSVGSvgView::RSkComponentRNSVGSvgView(const ShadowView &shadowView)
     : INHERITED(shadowView,LAYER_TYPE_PICTURE,SkSVGTag::kSvg) {}
 
 void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
-  SkSVGLengthContext       lctx(SkSize::Make(svgContainerSize_.width(), svgContainerSize_.height()));
-  SkSVGPresentationContext pctx;
+  SkSVGLengthContext       lengthContext(SkSize::Make(svgContainerSize_.width(), svgContainerSize_.height()));
+  SkSVGPresentationContext presentationContext;
 
 #ifdef ENABLE_RSKSVG_RENDER_DEBUG
   printChildList();
@@ -28,8 +28,8 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
   //1. Svg children are always drawn inside the bounds of parent SVGView conatiner, hence we will clip & draw the children
   // TODO: Consider utilizing Bitmap as an alternative strategy for platforms that have limited memory constraints
   SkAutoCanvasRestore save(canvas, true);
-  canvas->clipRect(SkRect::MakeXYWH(lctx.resolve(x_, SkSVGLengthContext::LengthType::kHorizontal),
-                                    lctx.resolve(y_, SkSVGLengthContext::LengthType::kVertical),
+  canvas->clipRect(SkRect::MakeXYWH(lengthContext.resolve(x_, SkSVGLengthContext::LengthType::kHorizontal),
+                                    lengthContext.resolve(y_, SkSVGLengthContext::LengthType::kVertical),
                                     svgContainerSize_.width(),
                                     svgContainerSize_.height())
                   );
@@ -44,11 +44,11 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
   auto layerRef=layer();
   if(layerRef->isShadowVisible) {
     drawShadow(canvas,frame,borderMetrics,
-                    viewProps.backgroundColor,
-                    layerRef->shadowColor,layerRef->shadowOffset,layerRef->shadowOpacity,
-                    layerRef->opacity,
-                    layerRef->shadowImageFilter,layerRef->shadowMaskFilter
-                   );
+               viewProps.backgroundColor,
+               layerRef->shadowColor,layerRef->shadowOffset,layerRef->shadowOpacity,
+               layerRef->opacity,
+               layerRef->shadowImageFilter,layerRef->shadowMaskFilter
+              );
   }
   drawBackground(canvas,frame,borderMetrics,viewProps.backgroundColor);
   drawBorder(canvas,frame,borderMetrics,viewProps.backgroundColor);
@@ -56,7 +56,7 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
   //3. Start render from Root SVG Node
   RNS_LOG_DEBUG("---Start render from Root SVG Node---");
   SkSVGIDMapper    dummyIDMapper; // Deprecated, will be using RSkSVGIDMapper
-  INHERITED::render(SkSVGRenderContext(canvas, dummyIDMapper, lctx, pctx));
+  INHERITED::render(SkSVGRenderContext(canvas, dummyIDMapper, lengthContext, presentationContext));
   RNS_LOG_DEBUG("---Render completed---");
 }
 
@@ -65,7 +65,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(Sh
   auto component = getComponentData();
   auto const &newRNSVGViewProps = *std::static_pointer_cast<RNSVGSvgViewProps const>(newViewProps);
 
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
+#ifdef ENABLE_RSKSVG_PROPS_DEBUG
   RNS_LOG_INFO( " Width :: "<<component.layoutMetrics.frame.size.width<<" Height :: "<<component.layoutMetrics.frame.size.height<< " X:: "<<component.layoutMetrics.frame.origin.x<< " Y:: "<<component.layoutMetrics.frame.origin.y);
   RNS_LOG_INFO("\n" <<
                "===Native Props for SVG Element View==="<< "\n" <<
@@ -76,7 +76,7 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(Sh
                "tintColor : "<<newRNSVGViewProps.tintColor << "\n" <<
                "color     : "<<newRNSVGViewProps.color << "\n" <<
                "=======================================");
-#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
+#endif /*ENABLE_RSKSVG_PROPS_DEBUG*/
 
   std::string viewBox=std::to_string(newRNSVGViewProps.minX) + " "+ \
                       std::to_string(newRNSVGViewProps.minY)+ " " + \
@@ -99,8 +99,8 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(Sh
   return RnsShell::LayerInvalidateAll;
 }
 
-bool RSkComponentRNSVGSvgView::onPrepareToRender(SkSVGRenderContext* ctx) const {
-  auto viewPortRect  = ctx->lengthContext().resolveRect(SkSVGLength(0),SkSVGLength(0),width_,height_);
+bool RSkComponentRNSVGSvgView::onPrepareToRender(SkSVGRenderContext* renderContext) const {
+  auto viewPortRect  = renderContext->lengthContext().resolveRect(SkSVGLength(0),SkSVGLength(0),width_,height_);
   auto viewPort      = SkSize::Make(viewPortRect.width(), viewPortRect.height());
   SkMatrix contentMatrix;
 
@@ -110,19 +110,19 @@ bool RSkComponentRNSVGSvgView::onPrepareToRender(SkSVGRenderContext* ctx) const 
     contentMatrix.preConcat(
       SkMatrix::MakeRectToRect(viewBox_, viewPortRect, SkMatrix::kFill_ScaleToFit));
   }
-  contentMatrix.postTranslate(ctx->lengthContext().resolve(x_, SkSVGLengthContext::LengthType::kHorizontal),
-                              ctx->lengthContext().resolve(y_, SkSVGLengthContext::LengthType::kVertical));
+  contentMatrix.postTranslate(renderContext->lengthContext().resolve(x_, SkSVGLengthContext::LengthType::kHorizontal),
+                              renderContext->lengthContext().resolve(y_, SkSVGLengthContext::LengthType::kVertical));
 
   if (!contentMatrix.isIdentity()) {
-    ctx->saveOnce();
-    ctx->canvas()->concat(contentMatrix);
+    renderContext->saveOnce();
+    renderContext->canvas()->concat(contentMatrix);
   }
 
-  if (viewPort != ctx->lengthContext().viewPort()) {
-    ctx->writableLengthContext()->setViewPort(viewPort);
+  if (viewPort != renderContext->lengthContext().viewPort()) {
+    renderContext->writableLengthContext()->setViewPort(viewPort);
   }
 
-  return this->INHERITED::onPrepareToRender(ctx);
+  return this->INHERITED::onPrepareToRender(renderContext);
 }
 
 void RSkComponentRNSVGSvgView::onSetAttribute(SkSVGAttribute attr, const SkSVGValue& attrValue) {

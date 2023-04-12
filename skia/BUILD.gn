@@ -18,19 +18,24 @@ config("LibRnsvg_config") {
                   ]
 }
 
-rn_cxx_component("Rnsvg") {
+rns_cxx_tp_component("rnsvg") {
 
-  # RNS Native module and its dependencies
-  sources = [
-  ]
 
   # RNS react common dependencies
-  sources += [
+  sources = [
     "react/renderer/components/rnsvg/RNSVGShadowNodes.cpp",
     "react/renderer/components/rnsvg/RNSVGShadowNodes.h",
     "react/renderer/components/rnsvg/RNSVGProps.cpp",
     "react/renderer/components/rnsvg/RNSVGProps.h",
     "react/renderer/components/rnsvg/RNSVGComponentDescriptors.h"
+  ]
+
+# RNS Native Module and its dependencies
+  sources += [
+    "RNSVGRenderableModule.cpp",
+    "RNSVGRenderableModule.h",
+    "RNSVGSvgViewModule.cpp",
+    "RNSVGSvgViewModule.h",
   ]
 
   # RNS Fabric Component and its dependencies

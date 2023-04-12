@@ -67,17 +67,27 @@ void RSkComponentRNSVGLine::onSetAttribute(SkSVGAttribute attr, const SkSVGValue
   }
 }
 
-void RSkComponentRNSVGLine::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lctx,
+void RSkComponentRNSVGLine::onDraw(SkCanvas* canvas, const SkSVGLengthContext& lengthContext,
                          const SkPaint& paint, SkPathFillType) const {
 
   SkPoint p0, p1;
-  p0=SkPoint::Make(lctx.resolve(x1_, SkSVGLengthContext::LengthType::kHorizontal),
-                   lctx.resolve(y1_, SkSVGLengthContext::LengthType::kVertical));
+  p0=SkPoint::Make(lengthContext.resolve(x1_, SkSVGLengthContext::LengthType::kHorizontal),
+                   lengthContext.resolve(y1_, SkSVGLengthContext::LengthType::kVertical));
 
-  p1=SkPoint::Make(lctx.resolve(x2_, SkSVGLengthContext::LengthType::kHorizontal),
-                   lctx.resolve(y2_, SkSVGLengthContext::LengthType::kVertical));
+  p1=SkPoint::Make(lengthContext.resolve(x2_, SkSVGLengthContext::LengthType::kHorizontal),
+                   lengthContext.resolve(y2_, SkSVGLengthContext::LengthType::kVertical));
 
   canvas->drawLine(p0, p1, paint);
+}
+
+SkRect RSkComponentRNSVGLine::getObjectBoundingBox(const SkSVGLengthContext& lengthContext) const {
+  SkScalar x1,x2,y1,y2;
+  x1=lengthContext.resolve(x1_, SkSVGLengthContext::LengthType::kHorizontal);
+  x2=lengthContext.resolve(x2_, SkSVGLengthContext::LengthType::kHorizontal);
+  y1=lengthContext.resolve(y2_, SkSVGLengthContext::LengthType::kVertical);
+  y2=lengthContext.resolve(y2_, SkSVGLengthContext::LengthType::kVertical);
+
+  return SkRect::MakeXYWH(x1,y1,(x2-x1),(y2-y1));
 }
 
 } // namespace react

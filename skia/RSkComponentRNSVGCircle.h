@@ -18,6 +18,8 @@ class RSkComponentRNSVGCircle final : public RSkSVGShape{
   RSkComponentRNSVGCircle(const ShadowView &shadowView);
   ~RSkComponentRNSVGCircle() {}
 
+  SkRect getObjectBoundingBox(const SkSVGLengthContext&) const override;
+
   // Override for Base Class: RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
 

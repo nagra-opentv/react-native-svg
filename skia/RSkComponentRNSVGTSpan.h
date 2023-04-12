@@ -19,6 +19,8 @@ class RSkComponentRNSVGTSpan final : public RSkSVGTextContainer {
   RSkComponentRNSVGTSpan(const ShadowView &shadowView);
   ~RSkComponentRNSVGTSpan() {}
 
+  SkRect getObjectBoundingBox(const SkSVGLengthContext&) const override;
+
  // Override for Base class : RSkComponent
   RnsShell::LayerInvalidateMask updateComponentProps(SharedProps newViewProps,bool forceUpdate) override;
 
@@ -28,6 +30,7 @@ class RSkComponentRNSVGTSpan final : public RSkSVGTextContainer {
   void onRender(const SkSVGRenderContext&) const override;
 
  private:
+  std::unique_ptr<Paragraph> buildParagraph(TextStyle textStyle) const;
   typedef RSkSVGTextContainer INHERITED;
 };
 

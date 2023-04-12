@@ -330,7 +330,7 @@ void RSkSVGNode::setRootSvgNode(RSkSVGNode * rootNode) {
   }
 }
 
-void RSkSVGNode::setupPaintForRender(SkPaint* paint,const RNSVGColorFillStruct & colorStruct,const SkSVGRenderContext& ctx) const{
+void RSkSVGNode::setupPaintForRender(SkPaint* paint,const RNSVGColorFillStruct & colorStruct,const SkSVGRenderContext& renderContext) const{
   if(paint) {
     paint->setAntiAlias(true);
     paint->setShader(nullptr);
@@ -342,7 +342,7 @@ void RSkSVGNode::setupPaintForRender(SkPaint* paint,const RNSVGColorFillStruct &
           if (nodeRef && (*nodeRef) && ((*nodeRef)->tag() == SkSVGTag::kLinearGradient)) {
             auto linearGradientNode=dynamic_cast<RSkComponentRNSVGLinearGradient *>(*nodeRef);
             if(linearGradientNode) {
-              paint->setShader(linearGradientNode->getShader(ctx));
+              paint->setShader(linearGradientNode->getShader(renderContext.lengthContext(),this->getObjectBoundingBox(renderContext.lengthContext())));
             }
           } else {
             RNS_LOG_ERROR(" Invalid Svg Element provided as a brushRef : "<<colorStruct.brushRef);
@@ -358,6 +358,10 @@ SkPath RSkSVGNode::onAsPath(const SkSVGRenderContext&)  const  {
   RNS_LOG_TODO("onAsPath : TO BE IMPLEMENTED IN CONTAINER & EACH SHAPE COMPONENT");
   return path;
 };
+
+SkRect RSkSVGNode::getObjectBoundingBox(const SkSVGLengthContext& lctx) const {
+  return SkRect::MakeEmpty();
+}
 
 void RSkSVGNode::appendChild(sk_sp<SkSVGNode>) {
   // Override from SKSVG Engine is Deprecated. 

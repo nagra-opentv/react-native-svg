@@ -20,10 +20,11 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLinearGradient::updateComponentP
 #ifdef ENABLE_RSKSVG_PROPS_DEBUG
   RNS_LOG_INFO("\n" <<
                "===Native Props for SVG Element Circle==="<< "\n" <<
-               " X1: "<<newRNSVGLinearGradientProps.x1 << "\n" <<
-               " Y1: "<<newRNSVGLinearGradientProps.y1 << "\n" <<
-               " X2: "<<newRNSVGLinearGradientProps.x2 << "\n" <<
-               " Y2: "<<newRNSVGLinearGradientProps.y2 << "\n" <<
+               " X1            : "<<newRNSVGLinearGradientProps.x1 << "\n" <<
+               " Y1            : "<<newRNSVGLinearGradientProps.y1 << "\n" <<
+               " X2            : "<<newRNSVGLinearGradientProps.x2 << "\n" <<
+               " Y2            : "<<newRNSVGLinearGradientProps.y2 << "\n" <<
+               " gradientUnits : "<<newRNSVGLinearGradientProps.gradientUnits << "\n" <<
                "==========================================");
   if(newRNSVGLinearGradientProps.gradientTransform.size() == 6) {
     RNS_LOG_INFO("gradientTransform : \n"<<
@@ -50,28 +51,29 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGLinearGradient::updateComponentP
     gradientTransforMatrix_[SkMatrix::kMTransY] = newRNSVGLinearGradientProps.gradientTransform[5];  // vertical translation
   }
 
-  for (int i = 0; i < newRNSVGLinearGradientProps.gradient.size();) {
+  for (int index = 0; index < newRNSVGLinearGradientProps.gradient.size();) {
 
   #ifdef ENABLE_RSKSVG_PROPS_DEBUG
-    RNS_LOG_INFO("gradient :: " <<i << " Item :: "<< newRNSVGLinearGradientProps.gradient[i]);
-    RNS_LOG_INFO("gradient :: " <<i+1 << " Item :: "<< (SharedColor)newRNSVGLinearGradientProps.gradient[i+1]);
+    RNS_LOG_INFO("gradient :: " <<index << " Item :: "<< newRNSVGLinearGradientProps.gradient[index]);
+    RNS_LOG_INFO("gradient :: " <<index+1 << " Item :: "<< (SharedColor)newRNSVGLinearGradientProps.gradient[index+1]);
   #endif/*ENABLE_RSKSVG_PROPS_DEBUG*/
 
     //The stop elements are ordered by offset followed by the color.
     //StopColor received is a combined value with stop opacity. 
-    stopOffset_.push_back(newRNSVGLinearGradientProps.gradient[i]);
-    stopColor_.push_back(RSkColorFromSharedColor((SharedColor)newRNSVGLinearGradientProps.gradient[i+1], SK_ColorTRANSPARENT));
-    i=i+2;
+    stopOffsets_.push_back(newRNSVGLinearGradientProps.gradient[index]);
+    stopColors_.push_back(RSkColorFromSharedColor((SharedColor)newRNSVGLinearGradientProps.gradient[index+1], SK_ColorTRANSPARENT));
+    index=index+2;
   }
+  gradientUnit_ = newRNSVGLinearGradientProps.gradientUnits;
 
   setCommonNodeProps(newRNSVGLinearGradientProps);
 
 #ifdef ENABLE_RSKSVG_PROPS_DEBUG
-  for (auto item: stopOffset_) {
+  for (auto item: stopOffsets_) {
     RNS_LOG_INFO("stopOffset :: " <<item);
   }
-  for (auto item: stopColor_) {
-    RNS_LOG_INFO("stopColor_ ::\n"<<
+  for (auto item: stopColors_) {
+    RNS_LOG_INFO("stopColors_ ::\n"<<
                  "R :: " << SkColorGetR(item)<<"\n"
                  "G :: " << SkColorGetG(item)<<"\n"
                  "B :: " << SkColorGetB(item)<<"\n"
@@ -113,20 +115,23 @@ void RSkComponentRNSVGLinearGradient::onSetAttribute(SkSVGAttribute attr, const 
   }
 }
 
-sk_sp<SkShader> RSkComponentRNSVGLinearGradient::getShader(const SkSVGRenderContext& ctx)  {
+sk_sp<SkShader> RSkComponentRNSVGLinearGradient::getShader(const SkSVGLengthContext& lengthContext,SkRect boundingBox)  {
 
-    if(stopColor_.empty() || stopOffset_.empty() || (stopOffset_.size() != stopColor_.size())) {
+    if(stopColors_.empty() || stopOffsets_.empty() || (stopOffsets_.size() != stopColors_.size())) {
       return nullptr;
     }
-    const auto& lctx = ctx.lengthContext();
-    const auto x1 = lctx.resolve(x1_, SkSVGLengthContext::LengthType::kHorizontal);
-    const auto y1 = lctx.resolve(y1_, SkSVGLengthContext::LengthType::kVertical);
-    const auto x2 = lctx.resolve(x2_, SkSVGLengthContext::LengthType::kHorizontal);
-    const auto y2 = lctx.resolve(y2_, SkSVGLengthContext::LengthType::kVertical);
+    const SkSVGLengthContext localLengthContext =  ((gradientUnit_ == GradientUnits::objectBoundingBox) && (!boundingBox.isEmpty()))
+                                                   ? SkSVGLengthContext({boundingBox.width(), boundingBox.height()})
+                                                   : lengthContext;
+
+    const auto x1 = localLengthContext.resolve(x1_, SkSVGLengthContext::LengthType::kHorizontal);
+    const auto y1 = localLengthContext.resolve(y1_, SkSVGLengthContext::LengthType::kVertical);
+    const auto x2 = localLengthContext.resolve(x2_, SkSVGLengthContext::LengthType::kHorizontal);
+    const auto y2 = localLengthContext.resolve(y2_, SkSVGLengthContext::LengthType::kVertical);
 
     const SkPoint pts[2] = { {x1, y1}, {x2, y2}};
 
-    return SkGradientShader::MakeLinear(pts, &stopColor_[0], &stopOffset_[0], stopColor_.size(), SkTileMode::kClamp, 0, &gradientTransforMatrix_);
+    return SkGradientShader::MakeLinear(pts, &stopColors_[0], &stopOffsets_[0], stopColors_.size(), SkTileMode::kClamp, 0, &gradientTransforMatrix_);
 }
 
 void RSkComponentRNSVGLinearGradient::onRender(const SkSVGRenderContext& ctx) const {

@@ -37,50 +37,44 @@ RnsShell::LayerInvalidateMask  RSkComponentRNSVGTSpan::updateComponentProps(Shar
   return RnsShell::LayerInvalidateAll;
 }
 
-void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
+void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& renderContext) const {
   if(content_.size()) {
 
-    ParagraphStyle paraStyle;
-    paraStyle.setMaxLines(1);//Svg text content to be presented in single line. 
-    ParagraphBuilderImpl fillBuilder(paraStyle, fontCollection_);
-    ParagraphBuilderImpl strokeBuilder(paraStyle, fontCollection_);
     TextStyle textStyle=getContentTextStyle();
     SkPoint frame=getContentDrawCoOrdinates();
     std::unique_ptr<Paragraph> paragraph;
 
-    auto buildAndDrawParagraph =[&](SkPaint* paint,ParagraphBuilderImpl *builder,const RNSVGColorFillStruct & colorStruct){
-      if(paint && builder) {
-        setupPaintForRender(paint,colorStruct,ctx);
+    auto buildAndDrawParagraph =[&](SkPaint* paint,const RNSVGColorFillStruct & colorStruct){
+      if(paint) {
+        setupPaintForRender(paint,colorStruct,renderContext);
         textStyle.setForegroundColor(*paint);
-        //Note: Decoration color is same as the color of text. So applying it here from paint.
         textStyle.setDecorationColor(paint->getColor());
-        builder->pushStyle(textStyle);
-        builder->addText(content_.c_str(), content_.length());
-        paragraph = builder->Build();
-        paragraph->layout(getContainerSize().width()); // Get Container Size from SVGView
-        std::vector<LineMetrics> metrics;
-        paragraph->getLineMetrics(metrics);
-        SkScalar xOffset{0};
-        SkString textAnchor;
-        if(getTextAnchor(textAnchor)) {
-          auto impl = static_cast<ParagraphImpl*>(paragraph.get());
-          xOffset=getTextAnchorXOffset(impl->getBoundaries().width(),textAnchor);
+        paragraph=buildParagraph(textStyle);
+        if(paragraph) {
+          SkScalar xOffset{0};
+          SkString textAnchor;
+          if(getTextAnchor(textAnchor)) {
+            auto impl = static_cast<ParagraphImpl*>(paragraph.get());
+            xOffset=getTextAnchorXOffset(impl->getBoundaries().width(),textAnchor);
+          }
+          // SkParagraph draw from TopLeft as like Other Skia components Rect...,which gives Text appear as Hanging Text.As below.
+          /*____________________________
+            HANGING TEXT LOOKS LIKE THIS
+            ____________________________
+          */
+          // Shifting up Draw Point/Baseline to have behavior as text written on line/Baseline.
+          std::vector<LineMetrics> metrics;
+          paragraph->getLineMetrics(metrics);
+          paragraph->paint(renderContext.canvas(), frame.x()+xOffset, frame.y()-metrics[0].fBaseline);
         }
-        // SkParagraph draw from TopLeft as like Other Skia components Rect...,which gives Text appear as Hanging Text.As below.
-        /*____________________________
-          HANGING TEXT LOOKS LIKE THIS
-          ____________________________
-        */
-        // Shifting up Draw Point/Baseline to have behaviour as text written on line/Baseline.
-        paragraph->paint(ctx.canvas(), frame.x()+xOffset, frame.y()-metrics[0].fBaseline);
       }
-     };
+    };
 
-    if (SkPaint* fillPaint = const_cast<SkPaint*>(ctx.fillPaint())) {
-      buildAndDrawParagraph(fillPaint,&fillBuilder,fillColor);
+    if (SkPaint* fillPaint = const_cast<SkPaint*>(renderContext.fillPaint())) {
+      buildAndDrawParagraph(fillPaint,fillColor);
     }
-    if (SkPaint* strokePaint = const_cast<SkPaint*>(ctx.strokePaint())) {
-      buildAndDrawParagraph(strokePaint,&strokeBuilder,strokeColor);
+    if (SkPaint* strokePaint = const_cast<SkPaint*>(renderContext.strokePaint())) {
+      buildAndDrawParagraph(strokePaint,strokeColor);
     }
 
     if(paragraph) {
@@ -102,7 +96,7 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
       SkPaint anchorPaint;
       anchorPaint.setStrokeWidth(3);
       anchorPaint.setColor(SK_ColorRED);
-      ctx.canvas()->drawPoint(frameRect.x(), frameRect.y(),anchorPaint);
+      renderContext.canvas()->drawPoint(frameRect.x(), frameRect.y(),anchorPaint);
 
       // Visualize Text BaseLine, Ascent & Descent
       SkPaint baseLinePaint,ascentPaint,descentPaint;
@@ -132,7 +126,35 @@ void RSkComponentRNSVGTSpan::onRender(const SkSVGRenderContext& ctx) const {
     #endif/*RNS_SVG_TSPAN_PAINT_TEXT_BOUNDS*/
     }
   }
-  INHERITED::onRender(ctx);
+  INHERITED::onRender(renderContext);
+}
+
+std::unique_ptr<Paragraph> RSkComponentRNSVGTSpan::buildParagraph(TextStyle  textStyle) const{
+
+  ParagraphStyle paraStyle;
+  paraStyle.setMaxLines(1);//Svg text content to be presented in single line.
+  ParagraphBuilderImpl builder(paraStyle, fontCollection_);
+  std::unique_ptr<Paragraph> paragraph;
+
+  builder.pushStyle(textStyle);
+  builder.addText(content_.c_str(), content_.length());
+  paragraph = builder.Build();
+  if(paragraph) {
+    paragraph->layout(getContainerSize().width());
+  }
+
+  return paragraph;
+}
+
+SkRect RSkComponentRNSVGTSpan::getObjectBoundingBox(const SkSVGLengthContext& ) const{
+
+  if(content_.size()) {
+    std::unique_ptr<Paragraph> paragraph = buildParagraph(getContentTextStyle());
+    auto impl = static_cast<ParagraphImpl*>(paragraph.get());
+    return impl->getBoundaries();
+  }
+  return SkRect::MakeEmpty();
+
 }
 
 } // namespace react

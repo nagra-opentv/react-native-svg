@@ -75,7 +75,7 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
                  "lengthAdjust : "<<(!newRNSVGTextPropsProps.lengthAdjust.empty() ? "Yes" : "No"));
   }
 
-#ifdef ENABLE_NATIVE_PROPS_DEBUG
+#ifdef ENABLE_RSKSVG_PROPS_DEBUG
   RNS_LOG_INFO("========== TEXT Geometry Props ==========");
   for(auto value:newRNSVGTextPropsProps.x)
     RNS_LOG_INFO("x"<<value);
@@ -86,7 +86,7 @@ void  RSkSVGTextContainer::updateCommonTextProps(SharedProps newViewProps) {
   for(auto value:newRNSVGTextPropsProps.dy)
     RNS_LOG_INFO("dy"<<value);
   RNS_LOG_INFO("========================================");
-#endif /*ENABLE_NATIVE_PROPS_DEBUG*/
+#endif /*ENABLE_RSKSVG_PROPS_DEBUG*/
 }
 
 bool RSkSVGTextContainer::onPrepareToRender(SkSVGRenderContext* ctx) const {
