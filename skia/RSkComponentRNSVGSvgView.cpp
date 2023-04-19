@@ -51,13 +51,14 @@ void RSkComponentRNSVGSvgView::OnPaint(SkCanvas *canvas) {
               );
   }
   drawBackground(canvas,frame,borderMetrics,viewProps.backgroundColor);
-  drawBorder(canvas,frame,borderMetrics,viewProps.backgroundColor);
-
   //3. Start render from Root SVG Node
   RNS_LOG_DEBUG("---Start render from Root SVG Node---");
   SkSVGIDMapper    dummyIDMapper; // Deprecated, will be using RSkSVGIDMapper
   INHERITED::render(SkSVGRenderContext(canvas, dummyIDMapper, lengthContext, presentationContext));
   RNS_LOG_DEBUG("---Render completed---");
+
+  drawBorder(canvas,frame,borderMetrics,viewProps.backgroundColor);
+
 }
 
 RnsShell::LayerInvalidateMask  RSkComponentRNSVGSvgView::updateComponentProps(SharedProps newViewProps,bool forceUpdate) {
